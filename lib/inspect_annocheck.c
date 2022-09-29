@@ -28,14 +28,8 @@
 
 #include "rpminspect.h"
 
-/*
- * libannocheck uses a 'struct libannocheck_internals *' as the handle
- * for all calls.  That definition is not in libannocheck.h, so we
- * will just use a 'void *' since the handle is opaque anyway.  I will
- * call it annohandle here to make it clear I am using this for
- * libannocheck calls.
- */
-typedef void annohandle;
+/* (from libannocheck.h) */
+struct libannocheck_internals;
 
 /* Global variables */
 static bool reported = false;
@@ -142,7 +136,7 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     char *details = NULL;
     string_list_t *slist = NULL;
     string_entry_t *sentry = NULL;
-    annohandle *anno = NULL;
+    struct libannocheck_internals *anno = NULL;
     libannocheck_error annoerr = 0;
     struct libannocheck_test *annotests = NULL;
     unsigned int numtests = 0;
