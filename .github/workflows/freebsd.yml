@@ -1,0 +1,58 @@
+name: FreeBSD
+
+on:
+    push:
+        branches: [ main ]
+        paths-ignore:
+        - AUTHORS.md
+        - CC-BY-4.0.txt
+        - CODE_OF_CONDUCT.md
+        - COPYING
+        - COPYING.LIB
+        - HISTORY
+        - LICENSE-2.0.txt
+        - MISSING
+        - README.md
+        - TODO
+        - 'contrib/**'
+        - 'data/**'
+        - 'doc/**'
+        - 'po/**'
+        - 'regress/**'
+
+jobs:
+    freebsd:
+        # Use containers on this specific macos image
+        # https://github.com/marketplace/actions/freebsd-vm
+        runs-on: macos-12
+
+        # All of these steps run from within the main source
+        # directory, so think of that as your $PWD
+        steps:
+            # Requirements before the git clone can happen
+            - name: git clone requirements
+              run: |
+                  git config --global --add safe.directory /__w/rpminspect/rpminspect
+
+            # This means clone the git repo
+            - uses: actions/checkout@v3
+
+            # Within the container, install the dependencies, build,
+            # and run the test suite
+            - name: Build and run the test suite
+              uses: vmactions/freebsd-vm@v0.1.5
+              with:
+                  usesh: true
+                  run: |
+                      # Install GNU make(1) so we can use the instreqs target
+                      pkg install -y gmake
+
+                      # Install build dependencies and set up the target
+                      make instreqs
+
+                      # Build the software and run the test suite
+                      meson setup build --werror -D b_buildtype=debug -D b_coverage=true -D with_libkmod=false -D with_libcap=false
+                      ninja -C build -v
+                      env LANG=en_US.UTF-8 meson test -C build -v
+                      ninja -C build coverage
+                      curl -s https://codecov.io/bash | bash

@@ -22,8 +22,19 @@ tar -xvf mandoc.tar.gz
   echo 'CFLAGS="-g -fPIC"';
 } > "${SUBDIR}"/configure.local
 
-( cd "${SUBDIR}" && ./configure && make && make lib-install )
+( cd "${SUBDIR}" && ./configure && gmake && gmake lib-install )
 rm -rf mandoc.tar.gz "${SUBDIR}"
+
+# The 'rc' shell in FreeBSD is not the rc shell rpminspect expects, so
+# just build it manually.
+git clone https://github.com/rakitzis/rc.git
+cd rc || exit 1
+autoreconf -f -i -v
+./configure --prefix=/usr/local
+gmake
+gmake install
+cd "${CWD}" || exit 1
+rm -rf rc
 
 # Update the clamav database
 freshclam
