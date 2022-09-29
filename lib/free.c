@@ -235,7 +235,6 @@ void free_rpminspect(struct rpminspect *ri)
 
     free(ri->commands.msgunfmt);
     free(ri->commands.desktop_file_validate);
-    free(ri->commands.annocheck);
     free(ri->commands.abidiff);
     free(ri->commands.kmidiff);
 

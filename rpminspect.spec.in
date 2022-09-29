@@ -37,6 +37,7 @@ BuildRequires:  clamav-devel
 BuildRequires:  libmandoc-devel >= 1.14.5
 BuildRequires:  gnupg2
 BuildRequires:  libicu-devel
+BuildRequires:  annobin-annocheck
 
 
 %description
@@ -88,14 +89,6 @@ Requires:       zsh
 Requires:       tcsh
 Requires:       rc
 Requires:       bash
-%endif
-
-# The annocheck program is used by the annocheck inspection.  If it is
-# not present, you can disable the annocheck inspection.
-%if 0%{?rhel} >= 8 || 0%{?epel} >= 8 || 0%{?fedora}
-Recommends:     /usr/bin/annocheck
-%else
-Requires:       /usr/bin/annocheck
 %endif
 
 # The abidiff and kmidiff inspections require a external executable by

@@ -120,6 +120,7 @@ meson and ninja, plus the following libraries:
 | [curl](https://curl.se/) | :heavy_check_mark: | | [MIT](https://spdx.org/licenses/MIT.html) |
 | [ClamAV](https://www.clamav.net/) | :heavy_check_mark: | | [GPL-2.0-only](https://spdx.org/licenses/GPL-2.0-only.html) |
 | [gettext](https://www.gnu.org/software/gettext/) | | .po to .mo | [GPL-3.0-or-later](https://spdx.org/licenses/GPL-3.0-or-later.html) |
+| [libannocheck](https://sourceware.org/annobin/) | | | [GPL-3.0-or-later](https://spdx.org/licenses/GPL-3.0-or-later.html) |
 
 Additionally, the unit test suite requires the following packages:
 
@@ -143,7 +144,6 @@ there are a number of userspace programs used:
     /usr/bin/msgunfmt
     /usr/bin/abidiff [optional]
     /usr/bin/kmidiff [optional]
-    /usr/bin/annocheck [optional]
 
 The provided spec file template uses the Fedora locations for these
 files, but in the program, they must be on the runtime system.

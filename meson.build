@@ -197,6 +197,29 @@ else
     libcap = disabler()
 endif
 
+# libannocheck
+if get_option('with_libannocheck')
+    if not cc.has_header('libannocheck.h')
+        error('*** unable to find libannocheck.h header')
+    endif
+
+    libannocheck = cc.find_library('annocheck',
+                                   dirs : search_dirs,
+                                   required : true,
+                                   static : false)
+
+    if libannocheck.found()
+        message('found shared libannocheck')
+    else
+        error('*** unable to find libannocheck')
+    endif
+
+    add_project_arguments('-D_WITH_LIBANNOCHECK', language : 'c')
+else
+    message('disable libannocheck support')
+    libannocheck = disabler()
+endif
+
 # dlopen
 if not cc.has_function('dlopen', args : ['-ldl'], dependencies : [zlib])
     error('*** unable to find dlopen() in libdl')

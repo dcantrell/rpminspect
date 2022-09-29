@@ -22,10 +22,22 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <err.h>
 #include <assert.h>
+#include <libannocheck.h>
 
 #include "rpminspect.h"
 
+/*
+ * libannocheck uses a 'struct libannocheck_internals *' as the handle
+ * for all calls.  That definition is not in libannocheck.h, so we
+ * will just use a 'void *' since the handle is opaque anyway.  I will
+ * call it annohandle here to make it clear I am using this for
+ * libannocheck calls.
+ */
+typedef void annohandle;
+
+/* Global variables */
 static bool reported = false;
 
 /* Trim workdir substrings from a generated string. */
@@ -81,6 +93,39 @@ static char *build_annocheck_cmd(const char *cmd, const char *opts, const char *
     return r;
 }
 
+/*
+ * Try to map the product release string to an appropriate
+ * libannocheck profile.  This is going to be something that will need
+ * maintenance over time.  Since the profile list is embedded in
+ * libannocheck, there's no easy way to discover changes.  The
+ * assumption here is the profile naming scheme remains the same.
+ */
+static void set_libannocheck_profile(struct libannocheck_internals *anno, const char *product_release)
+{
+    const char **profiles = NULL;
+    unsigned int num_profiles = 0;
+    unsigned int i = 0;
+    libannocheck_error annoerr = 0;
+
+    assert(anno != NULL);
+    assert(product_release != NULL);
+
+    /* get libannocheck profiles first */
+    annoerr = libannocheck_get_known_profiles(anno, &profiles, &num_profiles);
+
+    if (annoerr != 0) {
+         warnx(_("libannocheck_get_known_profiles error: %s"), libannocheck_get_error_message(anno, annoerr));
+         return;
+    }
+
+    /* iterate over the profiles to try and find a match */
+    for (i = 0; i < num_profiles; i++) {
+DEBUG_PRINT("profiles[%u]=|%s|\n", i, profiles[i]);
+    }
+
+    return;
+}
+
 static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 {
     bool result = true;
@@ -97,6 +142,10 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     char *details = NULL;
     string_list_t *slist = NULL;
     string_entry_t *sentry = NULL;
+    annohandle *anno = NULL;
+    libannocheck_error annoerr = 0;
+    struct libannocheck_test *annotests = NULL;
+    unsigned int numtests = 0;
     struct result_params params;
 
     assert(ri != NULL);
@@ -133,15 +182,60 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
     /* Run each annocheck test and report the results */
     HASH_ITER(hh, ri->annocheck, hentry, tmp_hentry) {
+        /* initialize libannocheck for this test on this file */
+        anno = libannocheck_init(libannocheck_get_version(), file->fullpath, get_after_debuginfo_path(ri, file, arch));
+
+        /* get the list of known tests */
+        annoerr = libannocheck_get_known_tests(anno, &annotests, &numtests);
+
+        if (annoerr != 0) {
+             warnx(_("libannocheck_get_known_tests error: %s"), libannocheck_get_error_message(anno, annoerr));
+             libannocheck_finish(anno);
+             continue;
+        }
+
+        /* enable libannocheck profile if there's a match */
+        set_libannocheck_profile(anno, ri->product_release);
+
+
+
+
+/* XXX
+ *
+ * map the product release to an annocheck profile and enable that
+ *
+ * read the options and anything that is enable or disable, call libannocheck_enable or libannocheck_disable as appropriate
+ *     for all of the options from the config file, only honor enable/disable ones for tests
+ *     note which ones are skipped as part of -v messages
+ *
+ * call libannocheck_get_known_tests to get the array of known tests
+ *
+ * call libannocheck_run_tests and report results
+ *
+ * libannocheck_finish
+ */
+        annoerr = libannocheck_finish(anno);
+
+        if (annoerr != 0) {
+            warnx(_("libannocheck_finish error: %s"), libannocheck_get_error_message(anno, annoerr));
+            continue;
+        }
+
+
+continue;
+
+
+
+
         /* Run the test on the file */
-        after_cmd = build_annocheck_cmd(ri->commands.annocheck, hentry->value, get_after_debuginfo_path(ri, file, arch), file->fullpath);
+        after_cmd = build_annocheck_cmd("annocheck", hentry->value, get_after_debuginfo_path(ri, file, arch), file->fullpath);
         argv = build_argv(after_cmd);
         after_out = run_cmd_vpe(&after_exit, ri->worksubdir, argv);
         free_argv(argv);
 
         /* If we have a before build, run the command on that */
         if (file->peer_file) {
-            before_cmd = build_annocheck_cmd(ri->commands.annocheck, hentry->value, get_before_debuginfo_path(ri, file, arch), file->peer_file->fullpath);
+            before_cmd = build_annocheck_cmd("annocheck", hentry->value, get_before_debuginfo_path(ri, file, arch), file->peer_file->fullpath);
             argv = build_argv(before_cmd);
             before_out = run_cmd_vpe(&before_exit, ri->workdir, argv);
             free_argv(argv);

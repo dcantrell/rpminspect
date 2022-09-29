@@ -63,7 +63,9 @@ struct inspect inspections[] = {
     { INSPECT_UPSTREAM,      "upstream",      false, &inspect_upstream },
     { INSPECT_OWNERSHIP,     "ownership",     true,  &inspect_ownership },
     { INSPECT_SHELLSYNTAX,   "shellsyntax",   true,  &inspect_shellsyntax },
+#ifdef _WITH_LIBANNOCHECK
     { INSPECT_ANNOCHECK,     "annocheck",     true,  &inspect_annocheck },
+#endif
     { INSPECT_DSODEPS,       "dsodeps",       false, &inspect_dsodeps },
     { INSPECT_FILESIZE,      "filesize",      false, &inspect_filesize },
     { INSPECT_PERMISSIONS,   "permissions",   true,  &inspect_permissions },
@@ -185,8 +187,10 @@ uint64_t inspection_id(const char *name)
         return INSPECT_OWNERSHIP;
     } else if (!strcmp(name, NAME_SHELLSYNTAX)) {
         return INSPECT_SHELLSYNTAX;
+#ifdef _WITH_LIBANNOCHECK
     } else if (!strcmp(name, NAME_ANNOCHECK)) {
         return INSPECT_ANNOCHECK;
+#endif
     } else if (!strcmp(name, NAME_DSODEPS)) {
         return INSPECT_DSODEPS;
     } else if (!strcmp(name, NAME_FILESIZE)) {
@@ -290,8 +294,10 @@ const char *inspection_desc(const uint64_t inspection)
             return DESC_OWNERSHIP;
         case INSPECT_SHELLSYNTAX:
             return DESC_SHELLSYNTAX;
+#ifdef _WITH_LIBANNOCHECK
         case INSPECT_ANNOCHECK:
             return DESC_ANNOCHECK;
+#endif
         case INSPECT_DSODEPS:
             return DESC_DSODEPS;
         case INSPECT_FILESIZE:
@@ -396,6 +402,10 @@ const char *inspection_header_to_desc(const char *header)
         i = INSPECT_OWNERSHIP;
     } else if (!strcmp(header, NAME_SHELLSYNTAX)) {
         i = INSPECT_SHELLSYNTAX;
+#ifdef _WITH_LIBANNOCHECK
+    } else if (!strcmp(header, NAME_ANNOCHECK)) {
+        i = INSPECT_ANNOCHECK;
+#endif
     } else if (!strcmp(header, NAME_DSODEPS)) {
         i = INSPECT_DSODEPS;
     } else if (!strcmp(header, NAME_FILESIZE)) {

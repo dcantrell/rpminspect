@@ -138,10 +138,6 @@ void dump_cfg(const struct rpminspect *ri)
         printf("    desktop-file-validate: %s\n", ri->commands.desktop_file_validate);
     }
 
-    if (ri->commands.annocheck) {
-        printf("    annocheck: %s\n", ri->commands.annocheck);
-    }
-
     if (ri->commands.abidiff) {
         printf("    abidiff: %s\n", ri->commands.abidiff);
     }

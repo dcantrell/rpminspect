@@ -29,6 +29,10 @@
 #include <xmlrpc-c/client.h>
 #include <openssl/crypto.h>
 
+#ifdef _WITH_LIBANNOCHECK
+#include <libannocheck.h>
+#endif
+
 #include "rpminspect.h"
 
 /* For older versions of OpenSSL */
@@ -186,6 +190,14 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
     xasprintf(&entry->data, "xmlrpc-c version %u.%u.%u", major, minor, update);
     TAILQ_INSERT_TAIL(list, entry, items);
 
+#ifdef _WITH_LIBANNOCHECK
+    /* libannocheck */
+    entry = calloc(1, sizeof(*entry));
+    assert(entry != NULL);
+    xasprintf(&entry->data, "libannocheck version %u", libannocheck_get_version());
+    TAILQ_INSERT_TAIL(list, entry, items);
+#endif
+
     /*
      * COMMANDS
      * External commands rpminspect runs.  We capture version info.
@@ -198,22 +210,6 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
 
     entry = TAILQ_FIRST(details);
     ver = strdup(entry->data);
-    list_free(details, free);
-
-    entry = calloc(1, sizeof(*entry));
-    assert(entry != NULL);
-    xasprintf(&entry->data, "%s", ver);
-    TAILQ_INSERT_TAIL(list, entry, items);
-
-    free(ver);
-
-    /* annocheck */
-    tmp = run_cmd(&exitcode, ri->worksubdir, ri->commands.annocheck, "--version", NULL);
-    details = strsplit(tmp, "\n");
-    free(tmp);
-
-    entry = TAILQ_FIRST(details);
-    ver = strreplace(entry->data, ": Version ", " version ");
     list_free(details, free);
 
     entry = calloc(1, sizeof(*entry));

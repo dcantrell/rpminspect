@@ -1112,9 +1112,6 @@ static int read_cfgfile(struct rpminspect *ri, const char *filename)
                         } else if (!strcmp(key, SECTION_DESKTOP_FILE_VALIDATE)) {
                             free(ri->commands.desktop_file_validate);
                             ri->commands.desktop_file_validate = strdup(t);
-                        } else if (!strcmp(key, SECTION_ANNOCHECK)) {
-                            free(ri->commands.annocheck);
-                            ri->commands.annocheck = strdup(t);
                         } else if (!strcmp(key, SECTION_ABIDIFF)) {
                             free(ri->commands.abidiff);
                             ri->commands.abidiff = strdup(t);
@@ -2204,7 +2201,6 @@ struct rpminspect *calloc_rpminspect(struct rpminspect *ri)
     /* Initialize commands */
     ri->commands.msgunfmt = strdup(MSGUNFMT_CMD);
     ri->commands.desktop_file_validate = strdup(DESKTOP_FILE_VALIDATE_CMD);
-    ri->commands.annocheck = strdup(ANNOCHECK_CMD);
     ri->commands.abidiff = strdup(ABIDIFF_CMD);
     ri->commands.kmidiff = strdup(KMIDIFF_CMD);
 

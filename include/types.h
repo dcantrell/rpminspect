@@ -384,7 +384,6 @@ struct command_paths {
     char *diff;
     char *msgunfmt;
     char *desktop_file_validate;
-    char *annocheck;
     char *abidiff;
     char *kmidiff;
 };

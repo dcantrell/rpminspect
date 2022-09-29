@@ -37,7 +37,6 @@ librpminspect_sources = [
     'inspect.c',
     'inspect_addedfiles.c',
     'inspect_abidiff.c',
-    'inspect_annocheck.c',
     'inspect_arch.c',
     'inspect_badfuncs.c',
     'inspect_changedfiles.c',
@@ -139,6 +138,11 @@ endif
 if get_option('with_libcap')
     librpminspect_sources += [ 'inspect_capabilities.c' ]
     deps += [ libcap ]
+endif
+
+if get_option('with_libannocheck')
+    librpminspect_sources += [ 'inspect_annocheck.c' ]
+    deps += [ libannocheck ]
 endif
 
 librpminspect = library(
