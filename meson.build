@@ -207,6 +207,7 @@ if get_option('with_libannocheck')
                                    dirs : search_dirs,
                                    required : true,
                                    static : false)
+    libiberty = cc.find_library('iberty', dirs : search_dirs, required : true, static : true)
 
     if libannocheck.found()
         message('found shared libannocheck')
