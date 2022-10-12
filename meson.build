@@ -199,22 +199,7 @@ endif
 
 # libannocheck
 if get_option('with_libannocheck')
-    if not cc.has_header('libannocheck.h')
-        error('*** unable to find libannocheck.h header')
-    endif
-
-    libannocheck = cc.find_library('annocheck',
-                                   dirs : search_dirs,
-                                   required : true,
-                                   static : false)
-    libiberty = cc.find_library('iberty', dirs : search_dirs, required : true, static : true)
-
-    if libannocheck.found()
-        message('found shared libannocheck')
-    else
-        error('*** unable to find libannocheck')
-    endif
-
+    libannocheck = dependency('libannocheck', required : true)
     add_project_arguments('-D_WITH_LIBANNOCHECK', language : 'c')
 else
     message('disable libannocheck support')

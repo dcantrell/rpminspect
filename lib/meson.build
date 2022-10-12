@@ -142,7 +142,7 @@ endif
 
 if get_option('with_libannocheck')
     librpminspect_sources += [ 'inspect_annocheck.c' ]
-    deps += [ libannocheck, libiberty ]
+    deps += [ libannocheck ]
 endif
 
 librpminspect = library(

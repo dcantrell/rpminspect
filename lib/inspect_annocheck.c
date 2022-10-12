@@ -28,8 +28,7 @@
 
 #include "rpminspect.h"
 
-/* (from libannocheck.h) */
-struct libannocheck_internals;
+const unsigned int libannocheck_version = 1088;
 
 /* Global variables */
 static bool reported = false;
@@ -177,7 +176,13 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     /* Run each annocheck test and report the results */
     HASH_ITER(hh, ri->annocheck, hentry, tmp_hentry) {
         /* initialize libannocheck for this test on this file */
-        anno = libannocheck_init(libannocheck_get_version(), file->fullpath, get_after_debuginfo_path(ri, file, arch));
+        annoerr = libannocheck_init(libannocheck_get_version(), file->fullpath, get_after_debuginfo_path(ri, file, arch), &anno);
+
+        if (annoerr != 0) {
+             warnx(_("libannocheck_init error: %s"), libannocheck_get_error_message(anno, annoerr));
+             libannocheck_finish(anno);
+             continue;
+        }
 
         /* get the list of known tests */
         annoerr = libannocheck_get_known_tests(anno, &annotests, &numtests);
@@ -217,6 +222,9 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
 
 continue;
+
+
+
 
 
 
