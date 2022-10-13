@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>rpminspect report viewer</title>
+  <meta charset="utf-8">
+
+  <style>
+    .flexgap {
+        display: flex;
+        align-items: center;
+        gap: 1em;
+    }
+
+    .legend {
+        padding: 1em 0.5em;
+        border: lightgray;
+        border-width: 1px;
+        border-style: solid;
+        box-shadow: 2px 2px 2px lightgrey;
+    }
+    .legend span,label { padding: 5px; }
+
+    /* diagnostics expander */
+    #diagnostics {
+        padding: 1ex;
+        margin: 3ex;
+        background-color: #F2F2F2;
+        box-shadow: 2px 2px 2px lightgrey;
+    }
+    #diagnostics summary { padding: 0.5em; }
+    #diagnostics .diagnostics-check { margin-top: 1em; }
+
+    /* inspection summary flex table */
+    #summary {
+        gap: 2px;
+        margin: 5ex;
+        max-width: 100ex;
+        flex-wrap: wrap;
+    }
+    .summary-result {
+        width: 15ex; /* needs to fit "pathmigration" */
+        padding: 12px 4px;
+        color: black;
+        text-decoration: none;
+        /* define the border here already, to maintain the layout */
+        border-width: 1px;
+        border-style: solid;
+        border-color: black;
+    }
+    .summary-result.selected {
+        padding: 10px 2px;
+        border-color: blue;
+        border-width: 3px;
+    }
+
+    .filter { margin-bottom: 2em; }
+
+    .waiver {
+        background-color: lightgray;
+        font-size: small;
+        padding: 3px;
+        white-space: nowrap;
+    }
+
+    .result {
+        min-width: 9ex; /* needs to fit "VERIFY" */
+        padding: 5px;
+        text-align: center;
+        margin: 2px 0;
+    }
+    .result-OK { background-color: #E8FFE8; }
+    .result-INFO { background-color: lightblue; }
+    .result-VERIFY { background-color: darkorange; font-weight: bold; }
+    .result-BAD { background-color: #FF4D4D; font-weight: bold; }
+
+    .verbatim {
+        white-space: pre-wrap;
+        background-color: #e0e0e0;
+        font-size: small;
+        font-family: monospace;
+        padding: 1ex;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="flexgap">
+    <h2><a href="https://github.com/rpminspect/rpminspect/issues">rpminspect</a></h2>
+    <div class="legend">
+        <label>Legend:</label>
+        <span class="result-OK">OK</span>
+        <span class="result-INFO">INFO</span>
+        <span class="result-VERIFY">VERIFY</span>
+        <span class="result-BAD">BAD</span>
+    </div>
+  </header>
+
+  <main>
+    <details id="diagnostics"></details>
+    <div id="summary" class="flexgap"></div>
+    <div id="details"></div>
+  </main>
+</body>
+
+<script type="module">
+
+import {html, render } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js';
+
+const RESULTS = ['OK', 'INFO', 'VERIFY', 'BAD'];
+
+const getFilters = () => RESULTS.filter(v => document.getElementById('show_' + v)?.checked);
+
+// global state
+let selectedInspection = 'license';
+let resultFilter = null;
+
+// Compute an overall result for inspections
+// Return a list of { name, results: [...], result } objects
+// results is a list of all occuring result types, sorted like RESULTS
+// result is the most severe of results (i.e. last array item)
+function getInspectionResults(report) {
+    const inspections = [];
+
+    for (const inspection in report) {
+        const seen = new Set()
+        report[inspection].forEach(check => seen.add(check.result));
+        const seen_sorted = RESULTS.filter(r => seen.has(r));
+        inspections.push({name: inspection, results: seen_sorted, result: seen_sorted[seen_sorted.length - 1]});
+    }
+    return inspections;
+}
+
+function renderDiagnostics(checks) {
+    const renderedChecks = [html`<summary>Diagnostics</summary>`];
+
+    for (const check of checks) {
+        renderedChecks.push(html`
+            <div class="diagnostics-check">${check.message}</span>
+            ${check.details && html`<div class="verbatim">${check.details}</div>`}
+            `
+        );
+    }
+
+    return renderedChecks;
+}
+
+function renderInspection(name, checks, resultTypes) {
+    if (checks.length == 0)
+        return null;
+
+    const renderedChecks = [];
+    for (const check of checks) {
+        if (resultFilter !== null && !resultFilter.has(check.result))
+            continue;
+
+        const waiver = check['waiver authorization'] && html`<span class="waiver">${check['waiver authorization']}</span>`;
+        const remedy = check.remedy && html`<h4>Suggested remedy:</h4><p class="remedy">${check.remedy}</p>`;
+
+        renderedChecks.push(html`
+            <div class="flexgap">
+              <span class="result result-${check.result}">${check.result}</span>
+              <span>${check.message}</span>
+              ${waiver}
+            </div>
+            ${remedy}
+            ${check.details && html`<div class="verbatim">${check.details}</div>`}
+            `
+        );
+    }
+
+    const isChecked = r => !resultFilter || resultFilter.has(r);
+    const onChange = (r, checked) => {
+        if (resultFilter === null)
+            resultFilter = new Set(resultTypes);
+        if (checked)
+            resultFilter.add(r);
+        else
+            resultFilter.delete(r);
+        render(renderInspection(name, checks, resultTypes), document.getElementById('details'));
+    };
+
+    let filter = null;
+    if (resultTypes && resultTypes.length > 1) {
+        const resultTypesHTML = resultTypes.map(r =>
+            html`<input id="show_${r}" type="checkbox" ?checked=${isChecked(r)} @change=${ev => onChange(r, ev.target.checked)} />
+                 <label for="show_${r}" class="result-${r}">${r}</label`);
+        filter = html`<div class="filter">
+                          <label>Filter:</label>
+                          ${resultTypesHTML}
+                      </div>`;
+    }
+
+    return html`
+        <h2>${name}</h2>
+        ${filter}
+        ${renderedChecks}`;
+}
+
+/* data structure looks like this:
+   {
+     "inspection-name": [
+       {
+         "result": "INFO",
+         "waiver authorization": "Not Waivable",
+         "message": "summary",
+         "details": "long text"
+       },
+       ...
+   }
+*/
+
+function renderResults(report) {
+    const inspections = getInspectionResults(report);
+    const summary = [];
+
+    const onInspectionClicked = ev => {
+        selectedInspection = ev.target.text;
+        // reset the filter whenever the view changes
+        resultFilter = null;
+        renderResults(report);
+    }
+
+    let selectedResultTypes = null;
+
+    inspections.forEach(inspection => {
+        if (inspection.name == 'diagnostics')
+            return render(renderDiagnostics(report.diagnostics), document.getElementById('diagnostics'));
+
+        summary.push(html`<a class="summary-result result-${inspection.result} ${selectedInspection == inspection.name ? 'selected' : ''}"
+                             @click=${onInspectionClicked} href="#">${inspection.name}</a>`);
+        if (inspection.name == selectedInspection)
+            selectedResultTypes = inspection.results;
+    });
+    render(summary, document.getElementById('summary'));
+
+    if (selectedInspection)
+        render(renderInspection(selectedInspection, report[selectedInspection], selectedResultTypes),
+               document.getElementById('details'));
+}
+
+const renderError = error => render(error, document.getElementById('details'));
+
+/*
+ * main
+ */
+
+const url = new URLSearchParams(window.location.search).get('url') ?? './result.json';
+try {
+    const response = await fetch(url);
+    if (response.ok)
+        renderResults(await response.json());
+    else
+        renderError(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+} catch (error) {
+    renderError(`Failed to fetch ${url}: ${error}`);
+}
+
+</script>
+
+</html>
