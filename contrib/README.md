@@ -2,7 +2,8 @@
 
 ## rpminspect-report
 
-It is a web application dedicated to displaying rpminspect json reports. It provides a filtering
+[rpminspect-report](https://softwarefactory-project.io/r/plugins/gitiles/software-factory/rpminspect-report)
+is a web application dedicated to displaying rpminspect json reports. It provides a filtering
 system to ease displaying alert messages of specific severities.
 
 The application is deployed at https://fedora.softwarefactory-project.io/rpminspect-report
