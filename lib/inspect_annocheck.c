@@ -28,8 +28,6 @@
 
 #include "rpminspect.h"
 
-const unsigned int libannocheck_version = 1088;
-
 /* Global variables */
 static bool reported = false;
 
@@ -100,23 +98,50 @@ static void set_libannocheck_profile(struct libannocheck_internals *anno, const 
     unsigned int i = 0;
     libannocheck_error annoerr = 0;
 
-    assert(anno != NULL);
-    assert(product_release != NULL);
+    if (anno == NULL || product_release == NULL) {
+        return;
+    }
 
     /* get libannocheck profiles first */
     annoerr = libannocheck_get_known_profiles(anno, &profiles, &num_profiles);
 
-    if (annoerr != 0) {
+    if (annoerr != libannocheck_error_none) {
          warnx(_("libannocheck_get_known_profiles error: %s"), libannocheck_get_error_message(anno, annoerr));
          return;
     }
 
     /* iterate over the profiles to try and find a match */
     for (i = 0; i < num_profiles; i++) {
-DEBUG_PRINT("profiles[%u]=|%s|\n", i, profiles[i]);
+        /* XXX: this needs a map in the config file */
+        if (strsuffix(product_release, profiles[i]) || (strprefix(product_release, ".fc") && !strcmp(profiles[i], "rawhide"))) {
+            annoerr = libannocheck_enable_profile(anno, profiles[i]);
+
+            if (annoerr != libannocheck_error_none) {
+                warnx(_("libannocheck_enable_profile error: %s"), libannocheck_get_error_message(anno, annoerr));
+            }
+
+            return;
+        }
     }
 
     return;
+}
+
+static const char *get_state(libannocheck_test_state s)
+{
+    if (s == 0) {
+        return _("NOT RUN");
+    } else if (s == 1) {
+        return _("PASSED");
+    } else if (s == 2) {
+        return _("FAILED");
+    } else if (s == 3) {
+        return _("MAYBE");
+    } else if (s == 4) {
+        return _("SKIPPED");
+    } else {
+        return _("UNKNOWN");
+    }
 }
 
 static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
@@ -138,7 +163,10 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     struct libannocheck_internals *anno = NULL;
     libannocheck_error annoerr = 0;
     struct libannocheck_test *annotests = NULL;
+    unsigned int i = 0;
     unsigned int numtests = 0;
+    unsigned int failed = 0;
+    unsigned int maybe = 0;
     struct result_params params;
 
     assert(ri != NULL);
@@ -176,25 +204,74 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     /* Run each annocheck test and report the results */
     HASH_ITER(hh, ri->annocheck, hentry, tmp_hentry) {
         /* initialize libannocheck for this test on this file */
-        annoerr = libannocheck_init(libannocheck_get_version(), file->fullpath, get_after_debuginfo_path(ri, file, arch), &anno);
+        annoerr = libannocheck_init(LIBANNOCHECK_VERSION, file->fullpath, get_after_debuginfo_path(ri, file, arch), &anno);
 
-        if (annoerr != 0) {
+/* XXX --------------------^  this needs to be combined with the new libannocheck_reinit() call for the loop */
+
+        if (annoerr != libannocheck_error_none) {
              warnx(_("libannocheck_init error: %s"), libannocheck_get_error_message(anno, annoerr));
-             libannocheck_finish(anno);
-             continue;
-        }
-
-        /* get the list of known tests */
-        annoerr = libannocheck_get_known_tests(anno, &annotests, &numtests);
-
-        if (annoerr != 0) {
-             warnx(_("libannocheck_get_known_tests error: %s"), libannocheck_get_error_message(anno, annoerr));
              libannocheck_finish(anno);
              continue;
         }
 
         /* enable libannocheck profile if there's a match */
         set_libannocheck_profile(anno, ri->product_release);
+
+
+
+/* XXX -- remove once profile sorting from the cfg file is present _and_ test option handling for rpminspect */
+annoerr = libannocheck_enable_all_tests(anno);
+
+if (annoerr != libannocheck_error_none) {
+    warnx(_("libannocheck_enable_all_tests error: %s:"), libannocheck_get_error_message(anno, annoerr));
+    libannocheck_finish(anno);
+    continue;
+}
+
+
+
+        /* run the tests */
+        annoerr = libannocheck_run_tests(anno, &failed, &maybe);
+
+        if (annoerr != libannocheck_error_none) {
+            warnx(_("libannocheck_run_tests error: %s:"), libannocheck_get_error_message(anno, annoerr));
+            libannocheck_finish(anno);
+            continue;
+        }
+
+        /* get the list of known tests */
+        annoerr = libannocheck_get_known_tests(anno, &annotests, &numtests);
+
+        if (annoerr != libannocheck_error_none) {
+             warnx(_("libannocheck_get_known_tests error: %s"), libannocheck_get_error_message(anno, annoerr));
+             libannocheck_finish(anno);
+             continue;
+        }
+
+        /* report results */
+        for (i = 0; i < numtests; i++) {
+            if (!annotests[i].enabled) {
+                continue;
+            }
+
+DEBUG_PRINT("name=|%s|\n", annotests[i].name);
+DEBUG_PRINT("description=|%s|\n", annotests[i].description);
+DEBUG_PRINT("doc_url=|%s|\n", annotests[i].doc_url);
+DEBUG_PRINT("result_reason=|%s|\n", annotests[i].result_reason);
+DEBUG_PRINT("result_source=|%s|\n", annotests[i].result_source);
+DEBUG_PRINT("state=|%s|\n\n", get_state(annotests[i].state));
+        }
+
+/* XXX -- move all this outside the for loop once I'm using libannocheck_reinit() */
+        /* close out */
+        annoerr = libannocheck_finish(anno);
+
+        if (annoerr != libannocheck_error_none) {
+            warnx(_("libannocheck_finish error: %s"), libannocheck_get_error_message(anno, annoerr));
+            continue;
+        }
+/* XXX */
+
 
 
 
@@ -207,18 +284,13 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
  *     for all of the options from the config file, only honor enable/disable ones for tests
  *     note which ones are skipped as part of -v messages
  *
- * call libannocheck_get_known_tests to get the array of known tests
- *
  * call libannocheck_run_tests and report results
  *
  * libannocheck_finish
  */
-        annoerr = libannocheck_finish(anno);
 
-        if (annoerr != 0) {
-            warnx(_("libannocheck_finish error: %s"), libannocheck_get_error_message(anno, annoerr));
-            continue;
-        }
+
+
 
 
 continue;
@@ -227,112 +299,112 @@ continue;
 
 
 
-
-
-        /* Run the test on the file */
-        after_cmd = build_annocheck_cmd("annocheck", hentry->value, get_after_debuginfo_path(ri, file, arch), file->fullpath);
-        argv = build_argv(after_cmd);
-        after_out = run_cmd_vpe(&after_exit, ri->worksubdir, argv);
-        free_argv(argv);
-
-        /* If we have a before build, run the command on that */
-        if (file->peer_file) {
-            before_cmd = build_annocheck_cmd("annocheck", hentry->value, get_before_debuginfo_path(ri, file, arch), file->peer_file->fullpath);
-            argv = build_argv(before_cmd);
-            before_out = run_cmd_vpe(&before_exit, ri->workdir, argv);
-            free_argv(argv);
-
-            /* Build a reporting message if we need to */
-            if (before_exit == 0 && after_exit == 0) {
-                xasprintf(&params.msg, _("annocheck '%s' test passes for %s on %s"), hentry->key, file->localpath, arch);
-            } else if (before_exit && after_exit == 0) {
-                xasprintf(&params.msg, _("annocheck '%s' test now passes for %s on %s"), hentry->key, file->localpath, arch);
-            } else if (before_exit == 0 && after_exit) {
-                xasprintf(&params.msg, _("annocheck '%s' test now fails for %s on %s"), hentry->key, file->localpath, arch);
-                params.severity = ri->annocheck_failure_severity;
-                params.verb = VERB_CHANGED;
-                result = !(ri->annocheck_failure_severity >= RESULT_VERIFY);
-            } else if (after_exit) {
-                xasprintf(&params.msg, _("annocheck '%s' test fails for %s on %s"), hentry->key, file->localpath, arch);
-                params.severity = ri->annocheck_failure_severity;
-                params.verb = VERB_CHANGED;
-                result = !(ri->annocheck_failure_severity >= RESULT_VERIFY);
-            }
-        } else {
-            if (after_exit == 0) {
-                xasprintf(&params.msg, _("annocheck '%s' test passes for %s on %s"), hentry->key, file->localpath, arch);
-            } else if (after_exit) {
-                xasprintf(&params.msg, _("annocheck '%s' test fails for %s on %s"), hentry->key, file->localpath, arch);
-                params.severity = ri->annocheck_failure_severity;
-                params.verb = VERB_CHANGED;
-                result = !(ri->annocheck_failure_severity >= RESULT_VERIFY);
-            }
-        }
-
-        /* Report the results */
-        if (params.msg) {
-            /* trim the before build working directory and generate details */
-            if (before_cmd) {
-                before_cmd = trim_workdir(file->peer_file, before_cmd);
-                xasprintf(&details, "Command: %s\nExit Code: %d\n    compared with the output of:\nCommand: %s\nExit Code: %d\n\n%s", before_cmd, before_exit, after_cmd, after_exit, after_out);
-            } else {
-                xasprintf(&details, "Command: %s\nExit Code: %d\n\n%s", after_cmd, after_exit, after_out);
-            }
-
-            /* trim the after build working directory */
-            details = trim_workdir(file, details);
-
-            params.details = details;
-            add_result(ri, &params);
-            reported = true;
-            free(params.msg);
-        }
-
-        /* Check for loss of -O2 -D_FORTIFY_SOURCE=2 */
-        /* XXX: this will change with a move to libannocheck */
-        if (after_out) {
-            slist = strsplit(after_out, "\n");
-            assert(slist != NULL);
-
-            TAILQ_FOREACH(sentry, slist, items) {
-                if (strprefix(sentry->data, "FAIL:") && (strstr(sentry->data, "fortify") || strstr(sentry->data, "optimization"))) {
-                    init_result_params(&params);
-                    params.header = NAME_ANNOCHECK;
-                    params.waiverauth = WAIVABLE_BY_SECURITY;
-                    params.remedy = REMEDY_ANNOCHECK_FORTIFY_SOURCE;
-                    params.arch = arch;
-                    params.file = file->localpath;
-                    params.verb = VERB_REMOVED;
-                    params.noun = _("lost -D_FORTIFY_SOURCE in ${FILE} on ${ARCH}");
-                    params.severity = get_secrule_result_severity(ri, file, SECRULE_FORTIFYSOURCE);
-
-                    xasprintf(&params.msg, _("%s may have lost -D_FORTIFY_SOURCE on %s"), file->localpath, arch);
-                    params.details = details;
-
-                    if (params.severity != RESULT_NULL && params.severity != RESULT_SKIP) {
-                        add_result(ri, &params);
-                        reported = true;
-                        result = !(params.severity >= RESULT_VERIFY);
-                    }
-
-                    break;
-                }
-            }
-
-            list_free(slist, free);
-        }
-
-        /* Cleanup */
-        free(details);
-
-        free(after_out);
-        free(before_out);
-
-        free(after_cmd);
-        free(before_cmd);
-
-        after_exit = 0;
-        before_exit = 0;
+/* XXX: here be old dragons, leaving here for now as it serves as a reminder of what I report now */
+//
+//        /* Run the test on the file */
+//        after_cmd = build_annocheck_cmd("annocheck", hentry->value, get_after_debuginfo_path(ri, file, arch), file->fullpath);
+//        argv = build_argv(after_cmd);
+//        after_out = run_cmd_vpe(&after_exit, ri->worksubdir, argv);
+//        free_argv(argv);
+//
+//        /* If we have a before build, run the command on that */
+//        if (file->peer_file) {
+//            before_cmd = build_annocheck_cmd("annocheck", hentry->value, get_before_debuginfo_path(ri, file, arch), file->peer_file->fullpath);
+//            argv = build_argv(before_cmd);
+//            before_out = run_cmd_vpe(&before_exit, ri->workdir, argv);
+//            free_argv(argv);
+//
+//            /* Build a reporting message if we need to */
+//            if (before_exit == 0 && after_exit == 0) {
+//                xasprintf(&params.msg, _("annocheck '%s' test passes for %s on %s"), hentry->key, file->localpath, arch);
+//            } else if (before_exit && after_exit == 0) {
+//                xasprintf(&params.msg, _("annocheck '%s' test now passes for %s on %s"), hentry->key, file->localpath, arch);
+//            } else if (before_exit == 0 && after_exit) {
+//                xasprintf(&params.msg, _("annocheck '%s' test now fails for %s on %s"), hentry->key, file->localpath, arch);
+//                params.severity = ri->annocheck_failure_severity;
+//                params.verb = VERB_CHANGED;
+//                result = !(ri->annocheck_failure_severity >= RESULT_VERIFY);
+//            } else if (after_exit) {
+//                xasprintf(&params.msg, _("annocheck '%s' test fails for %s on %s"), hentry->key, file->localpath, arch);
+//                params.severity = ri->annocheck_failure_severity;
+//                params.verb = VERB_CHANGED;
+//                result = !(ri->annocheck_failure_severity >= RESULT_VERIFY);
+//            }
+//        } else {
+//            if (after_exit == 0) {
+//                xasprintf(&params.msg, _("annocheck '%s' test passes for %s on %s"), hentry->key, file->localpath, arch);
+//            } else if (after_exit) {
+//                xasprintf(&params.msg, _("annocheck '%s' test fails for %s on %s"), hentry->key, file->localpath, arch);
+//                params.severity = ri->annocheck_failure_severity;
+//                params.verb = VERB_CHANGED;
+//                result = !(ri->annocheck_failure_severity >= RESULT_VERIFY);
+//            }
+//        }
+//
+//        /* Report the results */
+//        if (params.msg) {
+//            /* trim the before build working directory and generate details */
+//            if (before_cmd) {
+//                before_cmd = trim_workdir(file->peer_file, before_cmd);
+//                xasprintf(&details, "Command: %s\nExit Code: %d\n    compared with the output of:\nCommand: %s\nExit Code: %d\n\n%s", before_cmd, before_exit, after_cmd, after_exit, after_out);
+//            } else {
+//                xasprintf(&details, "Command: %s\nExit Code: %d\n\n%s", after_cmd, after_exit, after_out);
+//            }
+//
+//            /* trim the after build working directory */
+//            details = trim_workdir(file, details);
+//
+//            params.details = details;
+//            add_result(ri, &params);
+//            reported = true;
+//            free(params.msg);
+//        }
+//
+//        /* Check for loss of -O2 -D_FORTIFY_SOURCE=2 */
+//        /* XXX: this will change with a move to libannocheck */
+//        if (after_out) {
+//            slist = strsplit(after_out, "\n");
+//            assert(slist != NULL);
+//
+//            TAILQ_FOREACH(sentry, slist, items) {
+//                if (strprefix(sentry->data, "FAIL:") && (strstr(sentry->data, "fortify") || strstr(sentry->data, "optimization"))) {
+//                    init_result_params(&params);
+//                    params.header = NAME_ANNOCHECK;
+//                    params.waiverauth = WAIVABLE_BY_SECURITY;
+//                    params.remedy = REMEDY_ANNOCHECK_FORTIFY_SOURCE;
+//                    params.arch = arch;
+//                    params.file = file->localpath;
+//                    params.verb = VERB_REMOVED;
+//                    params.noun = _("lost -D_FORTIFY_SOURCE in ${FILE} on ${ARCH}");
+//                    params.severity = get_secrule_result_severity(ri, file, SECRULE_FORTIFYSOURCE);
+//
+//                    xasprintf(&params.msg, _("%s may have lost -D_FORTIFY_SOURCE on %s"), file->localpath, arch);
+//                    params.details = details;
+//
+//                    if (params.severity != RESULT_NULL && params.severity != RESULT_SKIP) {
+//                        add_result(ri, &params);
+//                        reported = true;
+//                        result = !(params.severity >= RESULT_VERIFY);
+//                    }
+//
+//                    break;
+//                }
+//            }
+//
+//            list_free(slist, free);
+//        }
+//
+//        /* Cleanup */
+//        free(details);
+//
+//        free(after_out);
+//        free(before_out);
+//
+//        free(after_cmd);
+//        free(before_cmd);
+//
+//        after_exit = 0;
+//        before_exit = 0;
     }
 
     return result;
