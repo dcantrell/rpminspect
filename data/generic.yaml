@@ -57,10 +57,6 @@ commands:
     # Freedesktop.org
     #desktop-file-validate: /usr/bin/desktop-file-validate
 
-    # annocheck(1) from the annobin project:
-    # https://sourceware.org/git/annobin.git
-    #annocheck: /usr/bin/annocheck
-
     # abidiff(1) and kmidiff(1) from libabigail
     #abidiff: /usr/bin/abidiff
     #kmidiff: /usr/bin/kmidiff
@@ -558,10 +554,24 @@ annocheck:
     # the output.
     failure_severity: VERIFY
 
-    # annocheck(1) tests to run.  The left side of the colon is the
-    # test name you want to use and the right side are the arguments
-    # to the annocheck executable before giving it the full path to
-    # the filename.
+    # Optional name of the annocheck profile to set.  If used this
+    # must be a valid profile name from annocheck.  That is, one that
+    # is returned by libannocheck_get_known_profiles() which does not
+    # necessarily include aliases as shown in annocheck(1) --help
+    # output.
+    #
+    # This setting should be enable in vendor data packages as
+    # necessary.  The default mode of operation in rpminspect is to
+    # not enable a profile.
+    #profile: rawhide
+
+    # annocheck(1) hardened tests to run.  The left side of the colon
+    # is the test name you want to use and the right side are the
+    # arguments to the annocheck executable.  Valid options can be
+    # seen with 'annocheck --help-hardened' and specifically the
+    # '--skip-* and corresponding '--test-*' options.  Options that
+    # affect the output of the annocheck executable are ignored by
+    # rpminspect as it has its own reporting format.
     #
     # This section is optional.  If no annocheck tests are defined
     # here, rpminspect will skip the annocheck inspection.
@@ -569,7 +579,7 @@ annocheck:
     # These job entries may be listed here or under a block named
     # 'jobs:' if you prefer.
     jobs:
-        - hardened: --ignore-unknown --verbose
+        - hardened: --ignore-unknown
 
     # In an optional rpminspect.yaml file in the current directory,
     # you can supply extra arguments to defined annocheck runs.  If
