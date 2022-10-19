@@ -82,6 +82,7 @@
 #define SECTION_PRIMARY                  "primary"
 #define SECTION_PRODUCT_RELEASE          "product_release"
 #define SECTION_PRODUCTS                 "products"
+#define SECTION_PROFILE                  "profile"
 #define SECTION_PROFILEDIR               "profiledir"
 #define SECTION_PROVIDES                 "provides"
 #define SECTION_RECOMMENDS               "recommends"

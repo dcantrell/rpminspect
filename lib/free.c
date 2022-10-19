@@ -257,6 +257,7 @@ void free_rpminspect(struct rpminspect *ri)
     list_free(ri->shells, free);
     free_string_map(ri->jvm);
     free_string_map(ri->annocheck);
+    free(ri->annocheck_profile);
     free_string_map(ri->pathmigration);
     list_free(ri->pathmigration_excluded_paths, free);
     free_string_map(ri->products);

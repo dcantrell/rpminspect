@@ -151,7 +151,8 @@ enum {
     BLOCK_ENVIRONMENT = 72,
     BLOCK_LICENSEDB = 73,
     BLOCK_DEBUGINFO = 74,
-    BLOCK_PATCH_AUTOMACROS = 75
+    BLOCK_PATCH_AUTOMACROS = 75,
+    BLOCK_ANNOCHECK_PROFILE = 76
 };
 
 static int add_regex(const char *pattern, regex_t **regex_out)
@@ -994,6 +995,8 @@ static int read_cfgfile(struct rpminspect *ri, const char *filename)
                             block = BLOCK_ANNOCHECK_EXTRA_OPTS;
                         } else if (!strcmp(key, SECTION_IGNORE)) {
                             block = BLOCK_IGNORE;
+                        } else if (!strcmp(key, SECTION_PROFILE)) {
+                            block = BLOCK_ANNOCHECK_PROFILE;
                         } else if (strcmp(key, t)) {
                             /* continue support the old syntax for the yaml file */
                             process_table(key, t, false, false, &ri->annocheck);
@@ -1269,6 +1272,9 @@ static int read_cfgfile(struct rpminspect *ri, const char *filename)
                                 warnx(_("Invalid annocheck failure_reporting_level: %s, defaulting to %s."), t, strseverity(RESULT_VERIFY));
                                 ri->annocheck_failure_severity = RESULT_VERIFY;
                             }
+                        } else if (block == BLOCK_ANNOCHECK_PROFILE) {
+                            free(ri->annocheck_profile);
+                            ri->annocheck_profile = strdup(t);
                         }
                     } else if (group == BLOCK_JAVABYTECODE) {
                         process_table(key, t, false, true, &ri->jvm);
