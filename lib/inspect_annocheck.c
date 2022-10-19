@@ -32,6 +32,7 @@
 static bool reported = false;
 
 /* Trim workdir substrings from a generated string. */
+/*
 static char *trim_workdir(const rpmfile_entry_t *file, char *s)
 {
     size_t fl = 0;
@@ -61,11 +62,13 @@ static char *trim_workdir(const rpmfile_entry_t *file, char *s)
 
     return s;
 }
+*/
 
 /*
  * Build the annocheck command to run and report in the output.  This
  * is a single string the caller must free.
  */
+/*
 static char *build_annocheck_cmd(const char *cmd, const char *opts, const char *debugpath, const char *path)
 {
     char *r = NULL;
@@ -83,6 +86,7 @@ static char *build_annocheck_cmd(const char *cmd, const char *opts, const char *
 
     return r;
 }
+*/
 
 /*
  * Try to map the product release string to an appropriate
@@ -148,18 +152,18 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 {
     bool result = true;
     const char *arch = NULL;
-    char **argv = NULL;
-    char *before_cmd = NULL;
-    char *after_cmd = NULL;
+//    char **argv = NULL;
+//    char *before_cmd = NULL;
+//    char *after_cmd = NULL;
     string_map_t *hentry = NULL;
     string_map_t *tmp_hentry = NULL;
-    char *after_out = NULL;
-    int after_exit = 0;
-    char *before_out = NULL;
-    int before_exit = 0;
-    char *details = NULL;
-    string_list_t *slist = NULL;
-    string_entry_t *sentry = NULL;
+//    char *after_out = NULL;
+//    int after_exit = 0;
+//    char *before_out = NULL;
+//    int before_exit = 0;
+//    char *details = NULL;
+//    string_list_t *slist = NULL;
+//    string_entry_t *sentry = NULL;
     struct libannocheck_internals *anno = NULL;
     libannocheck_error annoerr = 0;
     struct libannocheck_test *annotests = NULL;
@@ -203,15 +207,24 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
     /* Run each annocheck test and report the results */
     HASH_ITER(hh, ri->annocheck, hentry, tmp_hentry) {
-        /* initialize libannocheck for this test on this file */
-        annoerr = libannocheck_init(LIBANNOCHECK_VERSION, file->fullpath, get_after_debuginfo_path(ri, file, arch), &anno);
+        if (anno == NULL) {
+            /* initialize libannocheck for this test on this file */
+            annoerr = libannocheck_init(LIBANNOCHECK_VERSION, file->fullpath, get_after_debuginfo_path(ri, file, arch), &anno);
 
-/* XXX --------------------^  this needs to be combined with the new libannocheck_reinit() call for the loop */
+            if (annoerr != libannocheck_error_none) {
+                 warnx(_("libannocheck_init error: %s"), libannocheck_get_error_message(anno, annoerr));
+                 libannocheck_finish(anno);
+                 return false;
+            }
+        } else {
+            /* reinitialize with a new file */
+            annoerr = libannocheck_reinit(anno, file->fullpath, get_after_debuginfo_path(ri, file, arch));
 
-        if (annoerr != libannocheck_error_none) {
-             warnx(_("libannocheck_init error: %s"), libannocheck_get_error_message(anno, annoerr));
-             libannocheck_finish(anno);
-             continue;
+            if (annoerr != libannocheck_error_none) {
+                 warnx(_("libannocheck_reinit error: %s"), libannocheck_get_error_message(anno, annoerr));
+                 libannocheck_finish(anno);
+                 continue;
+            }
         }
 
         /* enable libannocheck profile if there's a match */
@@ -251,6 +264,7 @@ if (annoerr != libannocheck_error_none) {
         /* report results */
         for (i = 0; i < numtests; i++) {
             if (!annotests[i].enabled) {
+DEBUG_PRINT("test %s is disabled\n", annotests[i].name);
                 continue;
             }
 
@@ -291,9 +305,6 @@ DEBUG_PRINT("state=|%s|\n\n", get_state(annotests[i].state));
 
 
 
-
-
-continue;
 
 
 
@@ -419,11 +430,6 @@ bool inspect_annocheck(struct rpminspect *ri)
     struct result_params params;
 
     assert(ri != NULL);
-
-    /* skip if we have no annocheck tests defined */
-    if (ri->annocheck == NULL) {
-        return true;
-    }
 
     /* run the annocheck tests across all ELF files */
     result = foreach_peer_file(ri, NAME_ANNOCHECK, annocheck_driver);
