@@ -140,8 +140,8 @@ enum {
     BLOCK_LICENSEDB = 73,
     BLOCK_DEBUGINFO = 74,
     BLOCK_PATCH_AUTOMACROS = 75,
-    BLOCK_ANNOCHECK_PROFILE = 76,
-    BLOCK_MODULARITY = 77
+    BLOCK_MODULARITY = 76,
+    BLOCK_ANNOCHECK_PROFILE = 77
 };
 
 static int add_regex(const char *pattern, regex_t **regex_out)
