@@ -65,30 +65,6 @@ static char *trim_workdir(const rpmfile_entry_t *file, char *s)
 */
 
 /*
- * Build the annocheck command to run and report in the output.  This
- * is a single string the caller must free.
- */
-/*
-static char *build_annocheck_cmd(const char *cmd, const char *opts, const char *debugpath, const char *path)
-{
-    char *r = NULL;
-
-    assert(cmd != NULL);
-    assert(path != NULL);
-
-    if (opts == NULL && debugpath == NULL) {
-        xasprintf(&r, "%s %s", cmd, path);
-    } else if (opts && debugpath == NULL) {
-        xasprintf(&r, "%s %s %s", cmd, opts, path);
-    } else if (opts && debugpath) {
-        xasprintf(&r, "%s %s --debug-dir=%s %s", cmd, opts, debugpath, path);
-    }
-
-    return r;
-}
-*/
-
-/*
  * Try to map the product release string to an appropriate
  * libannocheck profile.  This is going to be something that will need
  * maintenance over time.  Since the profile list is embedded in
