@@ -81,10 +81,13 @@ main configuration is loaded, then if you specify a profile name
 rpminspect will load that configuration file and any values specified
 will override what came from the default configuration file.  Think of
 the main configuration file as the common one and profile
-configuration files are optional overlays.  Profiles must be in
-the 'profiledir' directory and follow the naming scheme of
-PROFILE.yaml.  It is common for vendors to provide a set of profiles
-in addition to a main configuration file.
+configuration files are optional overlays.  In the data package,
+profiles should be of the form PROFILENAME.yaml and exist in
+the 'profiledir' subdirectory.  If you specify a PROFILENAME to this
+option, rpminspect will search for the profile in 'profiledir'.  You
+can also pass a PATH to this option and rpminspect will attempt to
+load the profile from that file.  It is common for vendors to provide
+a set of profiles in addition to a main configuration file.
 .RS
 .PP
 The format of a profile configuration file is the same as the

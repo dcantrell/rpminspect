@@ -2239,7 +2239,7 @@ struct rpminspect *init_rpminspect(struct rpminspect *ri, const char *cfgfile, c
         ri = calloc_rpminspect(ri);
     }
 
-    /* Read in the config file if we have it */
+    /* Read in the config file */
     if (cfgfile) {
         cfg = calloc(1, sizeof(*cfg));
         assert(cfg != NULL);
@@ -2249,7 +2249,7 @@ struct rpminspect *init_rpminspect(struct rpminspect *ri, const char *cfgfile, c
         if ((cfg->data == NULL) || (access(cfg->data, F_OK|R_OK) == -1)) {
             free(cfg->data);
             free(cfg);
-            return NULL;
+            errx(RI_PROGRAM_ERROR, _("*** missing configuration file `%s'"), cfgfile);
         }
 
         /* Read the main configuration file to get things started */
@@ -2290,21 +2290,31 @@ struct rpminspect *init_rpminspect(struct rpminspect *ri, const char *cfgfile, c
 
     /* If a profile is specified, read an overlay config file */
     if (profile) {
-        xasprintf(&tmp, "%s/%s%s", ri->profiledir, profile, YAML_FILENAME_EXTENSION);
-        filename = realpath(tmp, NULL);
-
-        if ((filename == NULL) || (access(filename, F_OK|R_OK) == -1)) {
-            errx(RI_MISSING_PROFILE, _("*** unable to find profile '%s'"), profile);
-        } else {
+        if (access(profile, F_OK|R_OK) == 0) {
+            /* user specified a path for the profile option, use it */
             i = read_cfgfile(ri, filename);
 
             if (i) {
                 warn(_("*** error reading '%s'"), filename);
                 return NULL;
             }
-        }
+        } else {
+            /* user specified a profile name, try to find it in profiledir */
+            xasprintf(&tmp, "%s/%s%s", ri->profiledir, profile, YAML_FILENAME_EXTENSION);
+            filename = realpath(tmp, NULL);
 
-        free(tmp);
+            if ((filename == NULL) || (access(filename, F_OK|R_OK) == -1)) {
+                errx(RI_MISSING_PROFILE, _("*** unable to find profile '%s'"), profile);
+            }
+
+            i = read_cfgfile(ri, filename);
+            free(tmp);
+
+            if (i) {
+                warn(_("*** error reading '%s'"), filename);
+                return NULL;
+            }
+        }
     }
 
     /* ./rpminspect.yaml if it exists */
