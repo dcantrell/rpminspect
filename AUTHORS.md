@@ -31,6 +31,8 @@ Contributors
 
 - Jim Bair <jbair@redhat.com>
 
+- Martin Pitt <martin@piware.de>
+
 - Michal Srb <michal@redhat.com>
 
 - Miro Hrončok <miro@hroncok.cz>
