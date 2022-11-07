@@ -266,6 +266,13 @@
  */
 #define REMEDY_MODULARITY _("This package is part of a module but is missing the %{modularitylabel} header tag.  Add this as a %define in the spec file and rebuild.")
 
+/**
+ * @def REMEDY_MODULARITY_STATIC_CONTEXT
+ *
+ * How to address problems with /data/static_context in module metadata.
+ */
+#define REMEDY_MODULARITY_STATIC_CONTEXT _("This build either contains a valid or invalid /data/static_context setting.  Refer to the module rules for the product you are building to determine what the setting should be.  The rpminspect configuration settings also set the rules determining if the /data/static_context setting is required, forbidden, or recommend.")
+
 /** @} */
 
 /**

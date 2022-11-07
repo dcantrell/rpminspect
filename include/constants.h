@@ -869,6 +869,28 @@
 
 /** @} */
 
+/**
+ * @defgroup Modularity constants.
+ *
+ * @{
+ */
+
+/**
+ * @def MODULEMD_FILENAME
+ *
+ * The name of the module metadata file.
+ */
+#define MODULEMD_FILENAME "modulemd.txt"
+
+/**
+ * @def MODULEMD_ARCH_FILENAME
+ *
+ * The filename pattern for architecture-specific modulemd files.
+ */
+#define MODULEMD_ARCH_FILENAME "modulemd.%s.txt"
+
+/** @} */
+
 /** @} */
 
 #endif

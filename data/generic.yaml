@@ -255,6 +255,27 @@ metadata:
         - .localdomain
         - .example.com
 
+modularity:
+    # This block only applies to RPM-based modules, something you will
+    # find in Fedora Linux and Fedora-derived Linux distributions.
+    # Roughly speaking they are collections of RPMs necessary for a
+    # specific purpose (e.g., a web application server) and contain
+    # additional metadata.  For more information, see:
+    #
+    # https://docs.fedoraproject.org/en-US/modularity/
+    #
+    # rpminspect can check RPMs that are part of a module since module
+    # builds can come from Koji.
+
+    # Should modules carry a "static_context: true" setting?  The
+    # possible options that rpminspect can check and report on are:
+    #
+    #     required     RPMs in modules must have setting
+    #     forbidden    RPMs in modules must not have the setting
+    #     recommend    RPMs do not need it, but if missing then rpminspect
+    #                  will recommend its addition.
+    #static_context: required
+
 elf:
     # File paths to include in or exclude from specific tests. Each
     # value is a POSIX extended regular expression (man 7

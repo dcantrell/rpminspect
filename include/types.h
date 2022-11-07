@@ -333,6 +333,14 @@ typedef struct _caps_entry_t {
 
 typedef TAILQ_HEAD(caps_entry_s, _caps_entry_t) caps_t;
 
+/* Modularity static context types */
+typedef enum _static_context_t {
+    STATIC_CONTEXT_NULL = 0,
+    STATIC_CONTEXT_REQUIRED = 1,
+    STATIC_CONTEXT_FORBIDDEN = 2,
+    STATIC_CONTEXT_RECOMMEND = 3
+} static_context_t;
+
 /* Spec filename matching types */
 typedef enum _specname_match_t {
     MATCH_NULL = 0,
@@ -497,6 +505,9 @@ struct rpminspect {
                                 * from certain package strings.
                                 */
     char *vendor;              /* Required vendor string */
+
+    /* Modularity values */
+    static_context_t modularity_static_context;
 
     /* Required subdomain for buildhosts -- multiple subdomains allowed */
     string_list_t *buildhost_subdomain;
@@ -703,6 +714,10 @@ struct rpminspect {
     char *before_rel;               /* before Release w/o %{?dist} */
     char *after_rel;                /* after Release w/o ${?dist} */
     int rebase_build;               /* indicates if this is a rebased build */
+
+    /* specific to module builds */
+    bool before_static_context;
+    bool after_static_context;
 
     /* local disk space requirements */
     unsigned long int download_size;

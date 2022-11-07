@@ -201,16 +201,14 @@ static int copytree(const char *fpath, const struct stat *sb, int tflag, struct 
     } else if (S_ISREG(sb->st_mode) || S_ISLNK(sb->st_mode)) {
         h = get_rpm_header(workri, fpath);
 
-        if (h == NULL) {
-            free(bufpath);
-            return ret;
-        }
+        if (h) {
+            /* filter out RPMs from excluded architectures */
+            arch = get_rpm_header_arch(h);
 
-        arch = get_rpm_header_arch(h);
-
-        if (!allowed_arch(workri, arch)) {
-            free(bufpath);
-            return 0;
+            if (!allowed_arch(workri, arch)) {
+                free(bufpath);
+                return 0;
+            }
         }
 
         if (copyfile(fpath, bufpath, true, false)) {
@@ -255,6 +253,7 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
     FILE *fp = NULL;
     yaml_parser_t parser;
     yaml_token_t token;
+    char *value = NULL;
     int in_filter = 0;
     string_list_t *filter = NULL;
 
@@ -351,8 +350,8 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
             }
 
             /* Get the main metadata file */
-            dst = strappend(dst, "/modulemd.txt", NULL);
-            xasprintf(&src, "%s/packages/%s/%s/%s/files/module/modulemd.txt", workri->kojimbs, build->package_name, build->version, build->release);
+            dst = strappend(dst, "/", MODULEMD_FILENAME, NULL);
+            xasprintf(&src, "%s/packages/%s/%s/%s/files/module/%s", workri->kojimbs, build->package_name, build->version, build->release, MODULEMD_FILENAME);
             curl_get_file(workri->verbose, src, dst);
             free(src);
 
@@ -388,14 +387,16 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
                         return -1;
                     }
 
+                    value = (char *) token.data.scalar.value;
+
                     switch (token.type) {
                         case YAML_SCALAR_TOKEN:
-                            if ((in_filter == 0) && !strcmp((char *) token.data.scalar.value, "filter")) {
+                            if ((in_filter == 0) && !strcmp(value, "filter")) {
                                 in_filter++;
-                            } else if ((in_filter == 1) && !strcmp((char *) token.data.scalar.value, "rpms")) {
+                            } else if ((in_filter == 1) && !strcmp(value, "rpms")) {
                                 in_filter++;
                             } else if (in_filter == 2) {
-                                filter = list_add(filter, (char *) token.data.scalar.value);
+                                filter = list_add(filter, value);
                             }
 
                             break;
@@ -447,14 +448,14 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
             /* for modules, get the per-arch module metadata */
             if (workri->buildtype == KOJI_BUILD_MODULE) {
                 if (fetch_only) {
-                    xasprintf(&dst, "%s/%s/modulemd.%s.txt", workri->worksubdir, rpm->arch, rpm->arch);
+                    xasprintf(&dst, "%s/%s/"MODULEMD_ARCH_FILENAME, workri->worksubdir, rpm->arch, rpm->arch);
                 } else {
-                    xasprintf(&dst, "%s/%s/%s/modulemd.%s.txt", workri->worksubdir, build_desc[whichbuild], rpm->arch, rpm->arch);
+                    xasprintf(&dst, "%s/%s/%s/"MODULEMD_ARCH_FILENAME, workri->worksubdir, build_desc[whichbuild], rpm->arch, rpm->arch);
                 }
 
                 /* only download this file if we have not already gotten it */
                 if (access(dst, F_OK|R_OK)) {
-                    xasprintf(&src, "%s/packages/%s/%s/%s/files/module/modulemd.%s.txt", workri->kojimbs, build->package_name, build->version, build->release, rpm->arch);
+                    xasprintf(&src, "%s/packages/%s/%s/%s/files/module/"MODULEMD_ARCH_FILENAME, workri->kojimbs, build->package_name, build->version, build->release, rpm->arch);
                     curl_get_file(workri->verbose, src, dst);
                     free(src);
                 }
@@ -765,7 +766,6 @@ static bool is_task_id(const char *id)
 
     return true;
 }
-
 
 /*
  * Try to see if a given koji_task can be represented as a koji_build.

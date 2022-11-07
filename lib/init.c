@@ -152,7 +152,8 @@ enum {
     BLOCK_LICENSEDB = 73,
     BLOCK_DEBUGINFO = 74,
     BLOCK_PATCH_AUTOMACROS = 75,
-    BLOCK_ANNOCHECK_PROFILE = 76
+    BLOCK_ANNOCHECK_PROFILE = 76,
+    BLOCK_MODULARITY = 77
 };
 
 static int add_regex(const char *pattern, regex_t **regex_out)
@@ -763,6 +764,9 @@ static int read_cfgfile(struct rpminspect *ri, const char *filename)
                     } else if (!strcmp(key, NAME_METADATA)) {
                         block = BLOCK_NULL;
                         group = BLOCK_METADATA;
+                    } else if (!strcmp(key, NAME_MODULARITY)) {
+                        block = BLOCK_MODULARITY;
+                        group = BLOCK_NULL;
                     } else if (!strcmp(key, NAME_ELF)) {
                         block = BLOCK_NULL;
                         group = BLOCK_ELF;
@@ -1172,6 +1176,19 @@ static int read_cfgfile(struct rpminspect *ri, const char *filename)
                             } else {
                                 ri->specprimary = PRIMARY_NAME;
                                 warnx(_("*** unknown specname primary setting '%s', defaulting to 'name'"), t);
+                            }
+                        }
+                    } else if (block == BLOCK_MODULARITY) {
+                        if (!strcmp(key, SECTION_STATIC_CONTEXT)) {
+                            if (!strcasecmp(t, TOKEN_REQUIRED)) {
+                                ri->modularity_static_context = STATIC_CONTEXT_REQUIRED;
+                            } else if (!strcasecmp(t, TOKEN_FORBIDDEN)) {
+                                ri->modularity_static_context = STATIC_CONTEXT_FORBIDDEN;
+                            } else if (!strcasecmp(t, TOKEN_RECOMMEND)) {
+                                ri->modularity_static_context = STATIC_CONTEXT_RECOMMEND;
+                            } else {
+                                ri->modularity_static_context = STATIC_CONTEXT_NULL;
+                                warnx(_("*** unknown modularity static context settings '%s'"), t);
                             }
                         }
                     } else if (group == BLOCK_ELF) {

@@ -91,6 +91,7 @@
 #define SECTION_SECURITY_PATH_PREFIX     "security_path_prefix"
 #define SECTION_SHELLS                   "shells"
 #define SECTION_SIZE_THRESHOLD           "size_threshold"
+#define SECTION_STATIC_CONTEXT           "static_context"
 #define SECTION_SUGGESTS                 "suggests"
 #define SECTION_SUPPLEMENTS              "supplements"
 #define SECTION_SUPPRESSION_FILE         "suppression_file"
@@ -111,5 +112,8 @@
 #define TOKEN_INFO_ONLY2                 "info_only"
 #define TOKEN_ON                         "on"
 #define TOKEN_OFF                        "off"
+#define TOKEN_REQUIRED                   "required"
+#define TOKEN_FORBIDDEN                  "forbidden"
+#define TOKEN_RECOMMEND                  "recommend"
 
 #endif
