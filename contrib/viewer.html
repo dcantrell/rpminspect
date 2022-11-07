@@ -45,11 +45,11 @@
         /* define the border here already, to maintain the layout */
         border-width: 1px;
         border-style: solid;
-        border-color: black;
+        border-color: black !important; /* override .result-SKIP */
     }
     .summary-result.selected {
         padding: 10px 2px;
-        border-color: blue;
+        border-color: blue !important; /* override .result-SKIP */
         border-width: 3px;
     }
 
@@ -68,6 +68,7 @@
         text-align: center;
         margin: 2px 0;
     }
+    .result-SKIP { background-color: white; border-width: 1px; border-color: lightgray; border-style: solid; }
     .result-OK { background-color: #E8FFE8; }
     .result-INFO { background-color: lightblue; }
     .result-VERIFY { background-color: darkorange; font-weight: bold; }
@@ -88,6 +89,7 @@
     <h2><a href="https://github.com/rpminspect/rpminspect/issues">rpminspect</a></h2>
     <div class="legend">
         <label>Legend:</label>
+        <span class="result-SKIP">SKIP</span>
         <span class="result-OK">OK</span>
         <span class="result-INFO">INFO</span>
         <span class="result-VERIFY">VERIFY</span>
@@ -106,7 +108,7 @@
 
 import {html, render } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js';
 
-const RESULTS = ['OK', 'INFO', 'VERIFY', 'BAD'];
+const RESULTS = ['SKIP', 'OK', 'INFO', 'VERIFY', 'BAD'];
 
 const getFilters = () => RESULTS.filter(v => document.getElementById('show_' + v)?.checked);
 
