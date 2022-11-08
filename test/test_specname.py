@@ -24,7 +24,7 @@ from baseclass import TestSRPM, TestRPMs, TestKoji
 # Verify spec filename matches package name on SRPM (OK)
 class SpecNameSRPM(TestSRPM):
     def setUp(self):
-        TestSRPM.setUp(self)
+        super().setUp()
         self.inspection = "specname"
         self.result = "OK"
 
@@ -32,7 +32,7 @@ class SpecNameSRPM(TestSRPM):
 # Verify spec filename matches package name on Koji build (OK)
 class SpecNameKojiBuild(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.inspection = "specname"
         self.result = "OK"
 
@@ -40,7 +40,7 @@ class SpecNameKojiBuild(TestKoji):
 # Verify spec filename test on binary RPMs fails (BAD)
 class SpecNameRPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.inspection = "specname"
         self.result = "INFO"
         self.waiver_auth = "Not Waivable"
@@ -50,7 +50,7 @@ class SpecNameRPMs(TestRPMs):
 class BadSpecNameSRPM(TestSRPM):
     @unittest.skip("requires addSpecBasename() support in rpmfluff")
     def setUp(self):
-        TestSRPM.setUp(self)
+        super().setUp()
         self.rpm.addSpecBasename("badspecname")
         self.inspection = "specname"
         self.result = "BAD"
@@ -61,7 +61,7 @@ class BadSpecNameSRPM(TestSRPM):
 class BadSpecNameKojiBuild(TestKoji):
     @unittest.skip("requires addSpecBasename() support in rpmfluff")
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.addSpecBasename("badspecname")
         self.inspection = "specname"
         self.result = "BAD"

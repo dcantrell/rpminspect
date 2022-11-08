@@ -39,7 +39,7 @@ invalid_xml = """<?xml version='1.0'?>
 # XML file is well formed in RPM (OK)
 class XMLWellFormedRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.add_installed_file(
             "/usr/share/data/valid.xml", rpmfluff.SourceFile("valid.xml", valid_xml)
         )
@@ -50,7 +50,7 @@ class XMLWellFormedRPM(TestRPMs):
 # XML file is well formed in Koji build (OK)
 class XMLWellFormedKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_installed_file(
             "/usr/share/data/valid.xml", rpmfluff.SourceFile("valid.xml", valid_xml)
         )
@@ -61,7 +61,7 @@ class XMLWellFormedKoji(TestKoji):
 # XML file is well formed in compare RPMs (OK)
 class XMLWellFormedCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid.xml", rpmfluff.SourceFile("valid.xml", valid_xml)
         )
@@ -75,7 +75,7 @@ class XMLWellFormedCompareRPMs(TestCompareRPMs):
 # XML file is well formed in compare Koji builds (OK)
 class XMLWellFormedCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid.xml", rpmfluff.SourceFile("valid.xml", valid_xml)
         )
@@ -89,7 +89,7 @@ class XMLWellFormedCompareKoji(TestCompareKoji):
 # XML file is malformed in RPM (VERIFY)
 class XMLMalformedRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.add_installed_file(
             "/usr/share/data/invalid.xml",
             rpmfluff.SourceFile("invalid.xml", invalid_xml),
@@ -102,7 +102,7 @@ class XMLMalformedRPM(TestRPMs):
 # XML file is malformed in Koji build (VERIFY)
 class XMLMalformedKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_installed_file(
             "/usr/share/data/invalid.xml",
             rpmfluff.SourceFile("invalid.xml", invalid_xml),
@@ -115,7 +115,7 @@ class XMLMalformedKoji(TestKoji):
 # XML file is malformed in compare RPMs (VERIFY)
 class XMLMalformedCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid.xml",
             rpmfluff.SourceFile("invalid.xml", invalid_xml),
@@ -132,7 +132,7 @@ class XMLMalformedCompareRPMs(TestCompareRPMs):
 # XML file is malformed in compare Koji builds (VERIFY)
 class XMLMalformedCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid.xml",
             rpmfluff.SourceFile("invalid.xml", invalid_xml),

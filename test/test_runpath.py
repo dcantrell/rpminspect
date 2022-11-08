@@ -28,7 +28,7 @@ datadir = os.environ["RPMINSPECT_TEST_DATA_PATH"]
 #####################################################################
 class ValidRPATH1RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '$ORIGIN' a.out\n"
@@ -39,7 +39,7 @@ class ValidRPATH1RPMs(TestRPMs):
 
 class ValidRPATH1Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '$ORIGIN' a.out\n"
@@ -50,7 +50,7 @@ class ValidRPATH1Koji(TestKoji):
 
 class ValidRPATH1CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '$ORIGIN' a.out\n"
@@ -61,7 +61,7 @@ class ValidRPATH1CompareRPMs(TestCompareRPMs):
 
 class ValidRPATH1CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '$ORIGIN' a.out\n"
@@ -75,7 +75,7 @@ class ValidRPATH1CompareKoji(TestCompareKoji):
 ######################################################################
 class ValidRPATH2RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '$ORIGIN/' a.out\n"
@@ -86,7 +86,7 @@ class ValidRPATH2RPMs(TestRPMs):
 
 class ValidRPATH2Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '$ORIGIN/' a.out\n"
@@ -97,7 +97,7 @@ class ValidRPATH2Koji(TestKoji):
 
 class ValidRPATH2CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '$ORIGIN/' a.out\n"
@@ -108,7 +108,7 @@ class ValidRPATH2CompareRPMs(TestCompareRPMs):
 
 class ValidRPATH2CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '$ORIGIN/' a.out\n"
@@ -122,7 +122,7 @@ class ValidRPATH2CompareKoji(TestCompareKoji):
 ###############################################################################################
 class ValidRPATH3RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += (
@@ -136,7 +136,7 @@ class ValidRPATH3RPMs(TestRPMs):
 
 class ValidRPATH3Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += (
@@ -150,7 +150,7 @@ class ValidRPATH3Koji(TestKoji):
 
 class ValidRPATH3CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '$ORIGIN/../lib/jli:$ORIGIN/../lib' a.out\n"  # noqa: E501
@@ -162,7 +162,7 @@ class ValidRPATH3CompareRPMs(TestCompareRPMs):
 
 class ValidRPATH3CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '$ORIGIN/../lib/jli:$ORIGIN/../lib' a.out\n"  # noqa: E501
@@ -177,7 +177,7 @@ class ValidRPATH3CompareKoji(TestCompareKoji):
 ##############################################################################
 class ValidRPATH4RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '$ORIGIN/../lib64' a.out\n"
@@ -188,7 +188,7 @@ class ValidRPATH4RPMs(TestRPMs):
 
 class ValidRPATH4Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '$ORIGIN/../lib64' a.out\n"
@@ -199,7 +199,7 @@ class ValidRPATH4Koji(TestKoji):
 
 class ValidRPATH4CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += (
@@ -212,7 +212,7 @@ class ValidRPATH4CompareRPMs(TestCompareRPMs):
 
 class ValidRPATH4CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += (
@@ -228,7 +228,7 @@ class ValidRPATH4CompareKoji(TestCompareKoji):
 ####################################################################################
 class ValidRPATH5RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += (
@@ -241,7 +241,7 @@ class ValidRPATH5RPMs(TestRPMs):
 
 class ValidRPATH5Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += (
@@ -254,7 +254,7 @@ class ValidRPATH5Koji(TestKoji):
 
 class ValidRPATH5CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += (
@@ -267,7 +267,7 @@ class ValidRPATH5CompareRPMs(TestCompareRPMs):
 
 class ValidRPATH5CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += (
@@ -283,7 +283,7 @@ class ValidRPATH5CompareKoji(TestCompareKoji):
 ################################################################################################
 class InvalidRPATH1RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/builddir/build/BUILD/jq-1.6/.libs' a.out\n"  # noqa: E501
@@ -295,7 +295,7 @@ class InvalidRPATH1RPMs(TestRPMs):
 
 class InvalidRPATH1Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/builddir/build/BUILD/jq-1.6/.libs' a.out\n"  # noqa: E501
@@ -307,7 +307,7 @@ class InvalidRPATH1Koji(TestKoji):
 
 class InvalidRPATH1CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '/builddir/build/BUILD/jq-1.6/.libs' a.out\n"  # noqa: E501
@@ -319,7 +319,7 @@ class InvalidRPATH1CompareRPMs(TestCompareRPMs):
 
 class InvalidRPATH1CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '/builddir/build/BUILD/jq-1.6/.libs' a.out\n"  # noqa: E501
@@ -334,7 +334,7 @@ class InvalidRPATH1CompareKoji(TestCompareKoji):
 #########################################################################################################################  # noqa: E266,E501
 class InvalidRPATH2RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/builddir/build/BUILD/texlive-base-20200327/source/inst/lib' a.out\n"  # noqa: E501
@@ -346,7 +346,7 @@ class InvalidRPATH2RPMs(TestRPMs):
 
 class InvalidRPATH2Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/builddir/build/BUILD/texlive-base-20200327/source/inst/lib' a.out\n"  # noqa: E501
@@ -358,7 +358,7 @@ class InvalidRPATH2Koji(TestKoji):
 
 class InvalidRPATH2CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '/builddir/build/BUILD/texlive-base-20200327/source/inst/lib' a.out\n"  # noqa: E501
@@ -370,7 +370,7 @@ class InvalidRPATH2CompareRPMs(TestCompareRPMs):
 
 class InvalidRPATH2CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '/builddir/build/BUILD/texlive-base-20200327/source/inst/lib' a.out\n"  # noqa: E501
@@ -385,7 +385,7 @@ class InvalidRPATH2CompareKoji(TestCompareKoji):
 ##############################################################################
 class ValidRPATH6RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/usr/lib/systemd' a.out\n"
@@ -397,7 +397,7 @@ class ValidRPATH6RPMs(TestRPMs):
 
 class ValidRPATH6Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/usr/lib/systemd' a.out\n"
@@ -409,7 +409,7 @@ class ValidRPATH6Koji(TestKoji):
 
 class ValidRPATH6CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += (
@@ -423,7 +423,7 @@ class ValidRPATH6CompareRPMs(TestCompareRPMs):
 
 class ValidRPATH6CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += (
@@ -440,7 +440,7 @@ class ValidRPATH6CompareKoji(TestCompareKoji):
 ########################################################################
 class ValidRPATH7RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/usr/lib64' a.out\n"
@@ -452,7 +452,7 @@ class ValidRPATH7RPMs(TestRPMs):
 
 class ValidRPATH7Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/usr/lib64' a.out\n"
@@ -464,7 +464,7 @@ class ValidRPATH7Koji(TestKoji):
 
 class ValidRPATH7CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '/usr/lib64' a.out\n"
@@ -476,7 +476,7 @@ class ValidRPATH7CompareRPMs(TestCompareRPMs):
 
 class ValidRPATH7CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '/usr/lib64' a.out\n"
@@ -491,7 +491,7 @@ class ValidRPATH7CompareKoji(TestCompareKoji):
 #############################################################################
 class ValidRPATH8RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/usr/lib64/sssd' a.out\n"
@@ -503,7 +503,7 @@ class ValidRPATH8RPMs(TestRPMs):
 
 class ValidRPATH8Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/usr/lib64/sssd' a.out\n"
@@ -515,7 +515,7 @@ class ValidRPATH8Koji(TestKoji):
 
 class ValidRPATH8CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '/usr/lib64/sssd' a.out\n"
@@ -527,7 +527,7 @@ class ValidRPATH8CompareRPMs(TestCompareRPMs):
 
 class ValidRPATH8CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '/usr/lib64/sssd' a.out\n"
@@ -542,7 +542,7 @@ class ValidRPATH8CompareKoji(TestCompareKoji):
 #################################################################################################
 class ValidRPATH9RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/usr/lib64:/usr/lib64/firebird/intl' a.out\n"  # noqa: E501
@@ -554,7 +554,7 @@ class ValidRPATH9RPMs(TestRPMs):
 
 class ValidRPATH9Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/usr/lib64:/usr/lib64/firebird/intl' a.out\n"  # noqa: E501
@@ -566,7 +566,7 @@ class ValidRPATH9Koji(TestKoji):
 
 class ValidRPATH9CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '/usr/lib64:/usr/lib64/firebird/intl' a.out\n"  # noqa: E501
@@ -578,7 +578,7 @@ class ValidRPATH9CompareRPMs(TestCompareRPMs):
 
 class ValidRPATH9CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '/usr/lib64:/usr/lib64/firebird/intl' a.out\n"  # noqa: E501
@@ -593,7 +593,7 @@ class ValidRPATH9CompareKoji(TestCompareKoji):
 ###############################################################################
 class ValidRPATH10RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/usr/libexec/sudo' a.out\n"
@@ -605,7 +605,7 @@ class ValidRPATH10RPMs(TestRPMs):
 
 class ValidRPATH10Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/usr/libexec/sudo' a.out\n"
@@ -617,7 +617,7 @@ class ValidRPATH10Koji(TestKoji):
 
 class ValidRPATH10CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += (
@@ -631,7 +631,7 @@ class ValidRPATH10CompareRPMs(TestCompareRPMs):
 
 class ValidRPATH10CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += (
@@ -648,7 +648,7 @@ class ValidRPATH10CompareKoji(TestCompareKoji):
 ##################################################################################################################################  # noqa: E266, E501
 class InvalidRPATH3RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/lib64:$ORIGIN/../etc:$ORIGIN/usr/lib64/:/builddir/build/BUILD/lib64' a.out\n"  # noqa: E501
@@ -660,7 +660,7 @@ class InvalidRPATH3RPMs(TestRPMs):
 
 class InvalidRPATH3Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/lib64:$ORIGIN/../etc:$ORIGIN/usr/lib64/:/builddir/build/BUILD/lib64' a.out\n"  # noqa: E501
@@ -672,7 +672,7 @@ class InvalidRPATH3Koji(TestKoji):
 
 class InvalidRPATH3CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '/lib64:$ORIGIN/../etc:$ORIGIN/usr/lib64/:/builddir/build/BUILD/lib64' a.out\n"  # noqa: E501
@@ -684,7 +684,7 @@ class InvalidRPATH3CompareRPMs(TestCompareRPMs):
 
 class InvalidRPATH3CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += "patchelf --set-rpath '/lib64:$ORIGIN/../etc:$ORIGIN/usr/lib64/:/builddir/build/BUILD/lib64' a.out\n"  # noqa: E501
@@ -699,7 +699,7 @@ class InvalidRPATH3CompareKoji(TestCompareKoji):
 ##############################################################################
 class ValidRPATH11RPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/usr/src/kernels/' a.out\n"
@@ -711,7 +711,7 @@ class ValidRPATH11RPMs(TestRPMs):
 
 class ValidRPATH11Koji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_simple_compilation()
         self.rpm.section_build += "patchelf --set-rpath '/usr/src/kernels/' a.out\n"
@@ -723,7 +723,7 @@ class ValidRPATH11Koji(TestKoji):
 
 class ValidRPATH11CompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += (
@@ -737,7 +737,7 @@ class ValidRPATH11CompareRPMs(TestCompareRPMs):
 
 class ValidRPATH11CompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.after_rpm.add_simple_compilation()
         self.after_rpm.section_build += (

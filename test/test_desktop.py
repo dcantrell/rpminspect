@@ -98,7 +98,7 @@ MimeType=application/x-extension-fcstd;
 # Valid desktop file passes in RPM (OK)
 class ValidDesktopFileRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -122,7 +122,7 @@ class ValidDesktopFileRPM(TestRPMs):
 # Valid desktop file passes in Koji build (OK)
 class ValidDesktopFileKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -146,7 +146,7 @@ class ValidDesktopFileKoji(TestKoji):
 # Valid desktop file passes in RPM compare (OK)
 class ValidDesktopFileCompareRPM(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()
@@ -179,7 +179,7 @@ class ValidDesktopFileCompareRPM(TestCompareRPMs):
 # Valid desktop file passes in Koji build compare (OK)
 class ValidDesktopFileCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()
@@ -212,7 +212,7 @@ class ValidDesktopFileCompareKoji(TestCompareKoji):
 # Desktop file with missing icon in RPM (VERIFY)
 class DesktopFileMissingIconRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -231,7 +231,7 @@ class DesktopFileMissingIconRPM(TestRPMs):
 # Desktop file with missing icon in RPM compare (VERIFY)
 class DesktopFileMissingIconCompareRPM(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()
@@ -255,7 +255,7 @@ class DesktopFileMissingIconCompareRPM(TestCompareRPMs):
 # Desktop file with missing icon in Koji build (VERIFY)
 class DesktopFileMissingIconKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -274,7 +274,7 @@ class DesktopFileMissingIconKoji(TestKoji):
 # Desktop file with missing icon in Koji build compare (VERIFY)
 class DesktopFileMissingIconCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()
@@ -298,7 +298,7 @@ class DesktopFileMissingIconCompareKoji(TestCompareKoji):
 # Invalid desktop file fails desktop-file-validate in RPM (BAD)
 class DesktopFileValidateFailsRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -323,7 +323,7 @@ class DesktopFileValidateFailsRPM(TestRPMs):
 # Invalid desktop file fails desktop-file-validate in Koji build (BAD)
 class DesktopFileValidateFailsKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -348,7 +348,7 @@ class DesktopFileValidateFailsKoji(TestKoji):
 # Invalid desktop file fails desktop-file-validate in RPM compare (BAD)
 class DesktopFileValidateFailsCompareRPM(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()
@@ -382,7 +382,7 @@ class DesktopFileValidateFailsCompareRPM(TestCompareRPMs):
 # Invalid desktop file fails desktop-file-validate in Koji build compare (BAD)
 class DesktopFileValidateFailsCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()
@@ -416,7 +416,7 @@ class DesktopFileValidateFailsCompareKoji(TestCompareKoji):
 # Desktop file with Exec with arguments in RPM (OK)
 class DesktopFileExecArgsRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -440,7 +440,7 @@ class DesktopFileExecArgsRPM(TestRPMs):
 # Desktop file with Exec with arguments in Koji build (OK)
 class DesktopFileExecArgsKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -464,7 +464,7 @@ class DesktopFileExecArgsKoji(TestKoji):
 # Desktop file with Exec with arguments in RPM compare (OK)
 class DesktopFileExecArgsCompareRPM(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()
@@ -497,7 +497,7 @@ class DesktopFileExecArgsCompareRPM(TestCompareRPMs):
 # Desktop file with Exec with arguments in Koji build compare (OK)
 class DesktopFileExecArgsCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()
@@ -530,7 +530,7 @@ class DesktopFileExecArgsCompareKoji(TestCompareKoji):
 # Desktop file without world readable Icon in RPM (VERIFY)
 class DesktopFileNotWorldReadableIconRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -556,7 +556,7 @@ class DesktopFileNotWorldReadableIconRPM(TestRPMs):
 # Desktop file without world readable Icon in Koji build (VERIFY)
 class DesktopFileNotWorldReadableIconKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -582,7 +582,7 @@ class DesktopFileNotWorldReadableIconKoji(TestKoji):
 # Desktop file without world readable Icon in RPM compare (VERIFY)
 class DesktopFileNotWorldReadableIconCompareRPM(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()
@@ -618,7 +618,7 @@ class DesktopFileNotWorldReadableIconCompareRPM(TestCompareRPMs):
 # Desktop file without world readable Icon in Koji build compare (VERIFY)
 class DesktopFileNotWorldReadableIconCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()
@@ -654,7 +654,7 @@ class DesktopFileNotWorldReadableIconCompareKoji(TestCompareKoji):
 # Desktop file with invalid Exec file in RPM (VERIFY)
 class DesktopFileInvalidExecRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/share/icons/hello-world.png
         self.rpm.add_installed_file(
@@ -676,7 +676,7 @@ class DesktopFileInvalidExecRPM(TestRPMs):
 # Desktop file with invalid Exec file in Koji build (VERIFY)
 class DesktopFileInvalidExecRPMs(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/share/icons/hello-world.png
         self.rpm.add_installed_file(
@@ -698,7 +698,7 @@ class DesktopFileInvalidExecRPMs(TestKoji):
 # Desktop file with invalid Exec file in RPM compare (VERIFY)
 class DesktopFileInvalidExecCompareRPM(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/share/icons/hello-world.png
         self.before_rpm.add_installed_file(
@@ -728,7 +728,7 @@ class DesktopFileInvalidExecCompareRPM(TestCompareRPMs):
 # Desktop file with invalid Exec file in Koji compare (VERIFY)
 class DesktopFileInvalidExecCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/share/icons/hello-world.png
         self.before_rpm.add_installed_file(
@@ -758,7 +758,7 @@ class DesktopFileInvalidExecCompareKoji(TestCompareKoji):
 # Desktop file without world executable Exec file in RPM (VERIFY)
 class DesktopFileWithoutWorldExecutableExecRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -784,7 +784,7 @@ class DesktopFileWithoutWorldExecutableExecRPM(TestRPMs):
 # Desktop file without world executable Exec file in Koji build (VERIFY)
 class DesktopFileWithoutWorldExecutableExecKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -810,7 +810,7 @@ class DesktopFileWithoutWorldExecutableExecKoji(TestKoji):
 # Desktop file without world executable Exec file in RPM compare (VERIFY)
 class DesktopFileWithoutWorldExecutableExecCompareRPM(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()
@@ -846,7 +846,7 @@ class DesktopFileWithoutWorldExecutableExecCompareRPM(TestCompareRPMs):
 # Desktop file without world executable Exec file in Koji build compare (VERIFY)
 class DesktopFileWithoutWorldExecutableExecCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()
@@ -882,7 +882,7 @@ class DesktopFileWithoutWorldExecutableExecCompareKoji(TestCompareKoji):
 # Desktop file with invalid Exec file in RPM (VERIFY)
 class DesktopFileMissingExecWithTryExecRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/share/icons/hello-world.png
         self.rpm.add_installed_file(
@@ -905,7 +905,7 @@ class DesktopFileMissingExecWithTryExecRPM(TestRPMs):
 # Desktop file with invalid Exec file in Koji build (VERIFY)
 class DesktopFileMissingExecWithTryExecRPMs(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/share/icons/hello-world.png
         self.rpm.add_installed_file(
@@ -928,7 +928,7 @@ class DesktopFileMissingExecWithTryExecRPMs(TestKoji):
 # Desktop file with invalid Exec file in RPM compare (VERIFY)
 class DesktopFileMissingExecWithTryExecCompareRPM(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Adds /usr/share/icons/hello-world.png
         self.before_rpm.add_installed_file(
@@ -959,7 +959,7 @@ class DesktopFileMissingExecWithTryExecCompareRPM(TestCompareRPMs):
 # Desktop file with invalid Exec file in Koji compare (VERIFY)
 class DesktopFileMissingExecWithTryExecCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/share/icons/hello-world.png
         self.before_rpm.add_installed_file(
@@ -990,7 +990,7 @@ class DesktopFileMissingExecWithTryExecCompareKoji(TestCompareKoji):
 # Valid desktop file passes in Koji build using subpackage (OK)
 class ValidDesktopFileIconInSubpackageKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.rpm.add_simple_compilation()
@@ -1015,7 +1015,7 @@ class ValidDesktopFileIconInSubpackageKoji(TestKoji):
 
 class ValidDesktopFileIconInSubpackageCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /usr/bin/hello-world
         self.before_rpm.add_simple_compilation()

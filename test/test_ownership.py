@@ -56,7 +56,7 @@ class SlashBinOwnedByRootRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -77,7 +77,7 @@ class SlashSbinOwnedByRootRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -98,7 +98,7 @@ class SlashUsrSlashBinOwnedByRootRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -119,7 +119,7 @@ class SlashUsrSlashSbinOwnedByRootRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -140,7 +140,7 @@ class SlashBinOwnedByBinRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -162,7 +162,7 @@ class SlashSbinOwnedByBinRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -184,7 +184,7 @@ class SlashUsrSlashBinOwnedByBinRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -206,7 +206,7 @@ class SlashUsrSlashSbinOwnedByBinRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -228,7 +228,7 @@ class SlashBinOwnedByRootKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -249,7 +249,7 @@ class SlashSbinOwnedByRootKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -270,7 +270,7 @@ class SlashUsrSlashBinOwnedByRootKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -291,7 +291,7 @@ class SlashUsrSlashSbinOwnedByRootKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -312,7 +312,7 @@ class SlashBinOwnedByBinKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by bin
         self.rpm.add_installed_file(
@@ -334,7 +334,7 @@ class SlashSbinOwnedByBinKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by bin
         self.rpm.add_installed_file(
@@ -356,7 +356,7 @@ class SlashUsrSlashBinOwnedByBinKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by bin
         self.rpm.add_installed_file(
@@ -378,7 +378,7 @@ class SlashUsrSlashSbinOwnedByBinKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by bin
         self.rpm.add_installed_file(
@@ -400,7 +400,7 @@ class SlashBinOwnedByRootCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -421,7 +421,7 @@ class SlashSbinOwnedByRootCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -442,7 +442,7 @@ class SlashUsrSlashBinOwnedByRootCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -463,7 +463,7 @@ class SlashUsrSlashSbinOwnedByRootCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -484,7 +484,7 @@ class SlashBinOwnedByBinCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -506,7 +506,7 @@ class SlashSbinOwnedByBinCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -528,7 +528,7 @@ class SlashUsrSlashBinOwnedByBinCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -550,7 +550,7 @@ class SlashUsrSlashSbinOwnedByBinCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -572,7 +572,7 @@ class SlashBinOwnedByRootCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -593,7 +593,7 @@ class SlashSbinOwnedByRootCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -614,7 +614,7 @@ class SlashUsrSlashBinOwnedByRootCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -635,7 +635,7 @@ class SlashUsrSlashSbinOwnedByRootCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -656,7 +656,7 @@ class SlashBinOwnedByBinCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -678,7 +678,7 @@ class SlashSbinOwnedByBinCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -700,7 +700,7 @@ class SlashUsrSlashBinOwnedByBinCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -722,7 +722,7 @@ class SlashUsrSlashSbinOwnedByBinCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -749,7 +749,7 @@ class SlashBinOwnedByGroupRootRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -770,7 +770,7 @@ class SlashSbinOwnedByGroupRootRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -791,7 +791,7 @@ class SlashUsrSlashBinOwnedByGroupRootRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -812,7 +812,7 @@ class SlashUsrSlashSbinOwnedByGroupRootRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -833,7 +833,7 @@ class SlashBinOwnedByGroupBinRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -855,7 +855,7 @@ class SlashSbinOwnedByGroupBinRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -877,7 +877,7 @@ class SlashiUsrSlashBinOwnedByGroupBinRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -899,7 +899,7 @@ class SlashUsrSlashSbinOwnedByGroupBinRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -921,7 +921,7 @@ class SlashBinOwnedByGroupRootKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -942,7 +942,7 @@ class SlashSbinOwnedByGroupRootKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -963,7 +963,7 @@ class SlashUsrSlashBinOwnedByGroupRootKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -984,7 +984,7 @@ class SlashUsrSlashSbinOwnedByGroupRootKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -1005,7 +1005,7 @@ class SlashBinOwnedByGroupBinKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -1027,7 +1027,7 @@ class SlashSbinOwnedByGroupBinKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -1049,7 +1049,7 @@ class SlashUsrSlashBinOwnedByGroupBinKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -1071,7 +1071,7 @@ class SlashUsrSlashSbinOwnedByGroupBinKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -1093,7 +1093,7 @@ class SlashBinOwnedByGroupRootCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1114,7 +1114,7 @@ class SlashSbinOwnedByGroupRootCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1135,7 +1135,7 @@ class SlashUsrSlashBinOwnedByGroupRootCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1156,7 +1156,7 @@ class SlashUsrSlashSbinOwnedByGroupRootCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1177,7 +1177,7 @@ class SlashBinOwnedByGroupBinCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1199,7 +1199,7 @@ class SlashSbinOwnedByGroupBinCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1221,7 +1221,7 @@ class SlashUsrSlashBinOwnedByGroupBinCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1243,7 +1243,7 @@ class SlashUsrSlashSbinOwnedByGroupBinCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1265,7 +1265,7 @@ class SlashBinOwnedByGroupRootCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1286,7 +1286,7 @@ class SlashSbinOwnedByGroupRootCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1307,7 +1307,7 @@ class SlashUsrSlashBinOwnedByGroupRootCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1328,7 +1328,7 @@ class SlashUsrSlashSbinOwnedByGroupRootCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1349,7 +1349,7 @@ class SlashBinOwnedByGroupBinCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1371,7 +1371,7 @@ class SlashSbinOwnedByGroupBinCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1393,7 +1393,7 @@ class SlashUsrSlashBinOwnedByGroupBinCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1415,7 +1415,7 @@ class SlashUsrSlashSbinOwnedByGroupBinCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1441,7 +1441,7 @@ class SlashBinOwnedByMockRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -1462,7 +1462,7 @@ class SlashBinOwnedByMockKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -1484,7 +1484,7 @@ class SlashBinOwnedByMockCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1506,7 +1506,7 @@ class SlashBinOwnedByMockCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1533,7 +1533,7 @@ class SlashBinOwnedByGroupMockRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -1555,7 +1555,7 @@ class SlashBinOwnedByGroupMockKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.rpm.add_installed_file(
@@ -1577,7 +1577,7 @@ class SlashBinOwnedByGroupMockCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1599,7 +1599,7 @@ class SlashBinOwnedByGroupMockCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root
         self.after_rpm.add_installed_file(
@@ -1627,7 +1627,7 @@ class CapSETUIDWithOtherExecRPMs(TestRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -1657,7 +1657,7 @@ class SecuritySKIPCapSETUIDWithOtherExecRPMs(TestRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -1686,7 +1686,7 @@ class SecurityINFORMCapSETUIDWithOtherExecRPMs(TestRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -1716,7 +1716,7 @@ class SecurityVERIFYCapSETUIDWithOtherExecRPMs(TestRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -1746,7 +1746,7 @@ class SecurityFAILCapSETUIDWithOtherExecRPMs(TestRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -1776,7 +1776,7 @@ class CapSETUIDWithOtherExecKoji(TestKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -1806,7 +1806,7 @@ class SecuritySKIPCapSETUIDWithOtherExecKoji(TestKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -1835,7 +1835,7 @@ class SecurityINFORMCapSETUIDWithOtherExecKoji(TestKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -1865,7 +1865,7 @@ class SecurityVERIFYCapSETUIDWithOtherExecKoji(TestKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -1895,7 +1895,7 @@ class SecurityFAILCapSETUIDWithOtherExecKoji(TestKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -1925,7 +1925,7 @@ class CapSETUIDWithOtherExecCompareRPMs(TestCompareRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and o+x mode
         # (basically duplicate add_installed_file() here because we
@@ -1957,7 +1957,7 @@ class SecuritySKIPCapSETUIDWithOtherExecCompareRPMs(TestCompareRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and o+x mode
         # (basically duplicate add_installed_file() here because we
@@ -1988,7 +1988,7 @@ class SecurityINFORMCapSETUIDWithOtherExecCompareRPMs(TestCompareRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and o+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2020,7 +2020,7 @@ class SecurityVERIFYCapSETUIDWithOtherExecCompareRPMs(TestCompareRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and o+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2052,7 +2052,7 @@ class SecurityFAILCapSETUIDWithOtherExecCompareRPMs(TestCompareRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and o+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2084,7 +2084,7 @@ class CapSETUIDWithOtherExecCompareKoji(TestCompareKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and o+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2116,7 +2116,7 @@ class SecuritySKIPCapSETUIDWithOtherExecCompareKoji(TestCompareKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and o+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2147,7 +2147,7 @@ class SecurityINFORMCapSETUIDWithOtherExecCompareKoji(TestCompareKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and o+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2179,7 +2179,7 @@ class SecurityVERIFYCapSETUIDWithOtherExecCompareKoji(TestCompareKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and o+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2211,7 +2211,7 @@ class SecurityFAILCapSETUIDWithOtherExecCompareKoji(TestCompareKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and o+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2248,7 +2248,7 @@ class CapSETUIDWithGroupExecRPMs(TestRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2278,7 +2278,7 @@ class SecuritySKIPCapSETUIDWithGroupExecRPMs(TestRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2307,7 +2307,7 @@ class SecurityINFORMCapSETUIDWithGroupExecRPMs(TestRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2337,7 +2337,7 @@ class SecurityVERIFYCapSETUIDWithGroupExecRPMs(TestRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2367,7 +2367,7 @@ class SecurityFAILCapSETUIDWithGroupExecRPMs(TestRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2397,7 +2397,7 @@ class CapSETUIDWithGroupExecKoji(TestKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2427,7 +2427,7 @@ class SecuritySKIPCapSETUIDWithGroupExecKoji(TestKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2456,7 +2456,7 @@ class SecurityINFORMCapSETUIDWithGroupExecKoji(TestKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2486,7 +2486,7 @@ class SecurityVERIFYCapSETUIDWithGroupExecKoji(TestKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2516,7 +2516,7 @@ class SecurityFAILCapSETUIDWithGroupExecKoji(TestKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2546,7 +2546,7 @@ class CapSETUIDWithGroupExecCompareRPMs(TestCompareRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2578,7 +2578,7 @@ class SecuritySKIPCapSETUIDWithGroupExecCompareRPMs(TestCompareRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2609,7 +2609,7 @@ class SecurityINFORMCapSETUIDWithGroupExecCompareRPMs(TestCompareRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2641,7 +2641,7 @@ class SecurityVERIFYCapSETUIDWithGroupExecCompareRPMs(TestCompareRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2673,7 +2673,7 @@ class SecurityFAILCapSETUIDWithGroupExecCompareRPMs(TestCompareRPMs):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2705,7 +2705,7 @@ class CapSETUIDWithGroupExecCompareKoji(TestCompareKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2737,7 +2737,7 @@ class SecuritySKIPCapSETUIDWithGroupExecCompareKoji(TestCompareKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2768,7 +2768,7 @@ class SecurityINFORMCapSETUIDWithGroupExecCompareKoji(TestCompareKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2800,7 +2800,7 @@ class SecurityVERIFYCapSETUIDWithGroupExecCompareKoji(TestCompareKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2832,7 +2832,7 @@ class SecurityFAILCapSETUIDWithGroupExecCompareKoji(TestCompareKoji):
 
     @unittest.skipUnless(have_caps_support, lack_caps_msg)
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file owned by root w/ setuid capability and g+x mode
         # (basically duplicate add_installed_file() here because we
@@ -2867,7 +2867,7 @@ class FileOwnerChangedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Start with root opwner
         self.before_rpm.add_installed_file(
@@ -2899,7 +2899,7 @@ class FileOwnerChangedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Start with root opwner
         self.before_rpm.add_installed_file(
@@ -2935,7 +2935,7 @@ class FileGroupChangedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Start with root group
         self.before_rpm.add_installed_file(
@@ -2967,7 +2967,7 @@ class FileGroupChangedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Start with root group
         self.before_rpm.add_installed_file(

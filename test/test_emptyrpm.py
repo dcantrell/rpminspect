@@ -22,7 +22,7 @@ from baseclass import TestKoji, TestRPMs, TestSRPM
 # Regular SRPM has payload (OK)
 class HasPayloadSRPM(TestSRPM):
     def setUp(self):
-        TestSRPM.setUp(self)
+        super().setUp()
         self.rpm.add_simple_payload_file()
         self.inspection = "emptyrpm"
         self.result = "OK"
@@ -31,7 +31,7 @@ class HasPayloadSRPM(TestSRPM):
 # Regular RPMs have payload (OK)
 class HasPayloadRPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.add_simple_payload_file()
         self.inspection = "emptyrpm"
         self.result = "OK"
@@ -40,7 +40,7 @@ class HasPayloadRPMs(TestRPMs):
 # Regular Koji build has payload (OK)
 class HasPayloadKojiBuild(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_simple_payload_file()
         self.inspection = "emptyrpm"
         self.result = "OK"
@@ -49,7 +49,7 @@ class HasPayloadKojiBuild(TestKoji):
 # Regular package has empty payload (VERIFY)
 class PkgHasEmptyPayload(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.inspection = "emptyrpm"
         self.result = "INFO"
         self.waiver_auth = "Not Waivable"
@@ -58,7 +58,7 @@ class PkgHasEmptyPayload(TestRPMs):
 # Packages in Koji build have empty payloads (VERIFY)
 class KojiBuildHaveEmptyPayloads(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.inspection = "emptyrpm"
         self.result = "INFO"
         self.waiver_auth = "Not Waivable"

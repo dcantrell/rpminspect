@@ -22,7 +22,7 @@ from baseclass import TestCompareKoji
 # New package has empty payload across Koji builds (VERIFY)
 class NewPkgHasEmptyPayload(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_payload_file()
         self.after_rpm.add_subpackage(self.after_rpm.name + "-newthing")
         self.inspection = "lostpayload"
@@ -33,7 +33,7 @@ class NewPkgHasEmptyPayload(TestCompareKoji):
 # Packages continue to be empty (INFO)
 class PkgStillHasEmptyPayload(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.inspection = "lostpayload"
         self.result = "INFO"
 
@@ -41,7 +41,7 @@ class PkgStillHasEmptyPayload(TestCompareKoji):
 # Package lost payload across Koji builds (VERIFY)
 class PkgLostPayload(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_payload_file()
         self.inspection = "lostpayload"
         self.result = "VERIFY"
@@ -51,7 +51,7 @@ class PkgLostPayload(TestCompareKoji):
 # Existing package is now missing across Koji builds (VERIFY)
 class ExistingPkgMissing(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_payload_file()
         self.before_rpm.add_subpackage(self.before_rpm.name + "-newthing")
         self.inspection = "lostpayload"

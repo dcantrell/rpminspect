@@ -30,7 +30,7 @@ class DefaultSRPM(TestSRPM):
     """
 
     def setUp(self):
-        TestSRPM.setUp(self)
+        super().setUp()
         self.result = "OK"
 
 
@@ -40,7 +40,7 @@ class DefaultRPMs(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.result = "OK"
 
 
@@ -50,7 +50,7 @@ class DefaultKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.result = "OK"
 
 
@@ -60,7 +60,7 @@ class DefaultCompareSRPM(TestCompareSRPM):
     """
 
     def setUp(self):
-        TestCompareSRPM.setUp(self)
+        super().setUp()
         self.result = "OK"
 
 
@@ -70,7 +70,7 @@ class DefaultCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.result = "OK"
 
 
@@ -80,5 +80,5 @@ class DefaultCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.result = "OK"

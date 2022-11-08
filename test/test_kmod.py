@@ -140,7 +140,7 @@ def get_derp_kmod_aliases(rpminspect):
 class GoodKmodParamsRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -160,7 +160,7 @@ class GoodKmodParamsRPMs(TestCompareRPMs):
 class LostKmodParmsRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -180,7 +180,7 @@ class LostKmodParmsRPMs(TestCompareRPMs):
 class GoodKmodParamsKoji(TestCompareKoji):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -200,7 +200,7 @@ class GoodKmodParamsKoji(TestCompareKoji):
 class LostKmodParamsKoji(TestCompareKoji):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -224,7 +224,7 @@ class LostKmodParamsKoji(TestCompareKoji):
 class GoodKmodDependsRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -244,7 +244,7 @@ class GoodKmodDependsRPMs(TestCompareRPMs):
 class LostKmodDependsRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -264,7 +264,7 @@ class LostKmodDependsRPMs(TestCompareRPMs):
 class GoodKmodDependsKoji(TestCompareKoji):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -284,7 +284,7 @@ class GoodKmodDependsKoji(TestCompareKoji):
 class LostKmodDependsKoji(TestCompareKoji):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -308,7 +308,7 @@ class LostKmodDependsKoji(TestCompareKoji):
 class GoodKmodAliasesRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -328,7 +328,7 @@ class GoodKmodAliasesRPMs(TestCompareRPMs):
 class LostKmodAliasesRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -348,7 +348,7 @@ class LostKmodAliasesRPMs(TestCompareRPMs):
 class GoodKmodAliasesKoji(TestCompareKoji):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -368,7 +368,7 @@ class GoodKmodAliasesKoji(TestCompareKoji):
 class LostKmodAliasesKoji(TestCompareKoji):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -388,7 +388,7 @@ class LostKmodAliasesKoji(TestCompareKoji):
 class KmodChangingPathCompareRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",
@@ -407,7 +407,7 @@ class KmodChangingPathCompareRPMs(TestCompareRPMs):
 class KmodChangingPathCompareKoji(TestCompareKoji):
     @unittest.skipUnless(have_kernel_devel, "Need kernel devel files")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         self.before_rpm.add_installed_file(
             "/usr/lib/modules/" + kver + "/extra/drivers/derp.ko",

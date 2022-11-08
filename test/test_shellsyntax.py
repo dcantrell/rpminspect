@@ -71,7 +71,7 @@ class ShWellFormedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_sh.sh", rpmfluff.SourceFile("valid_sh.sh", valid_sh)
@@ -86,7 +86,7 @@ class ShMalformedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_sh.sh",
@@ -103,7 +103,7 @@ class ShWellFormedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_sh.sh", rpmfluff.SourceFile("valid_sh.sh", valid_sh)
@@ -118,7 +118,7 @@ class ShMalformedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_sh.sh",
@@ -135,7 +135,7 @@ class ShWellFormedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_sh.sh", rpmfluff.SourceFile("valid_sh.sh", valid_sh)
         )
@@ -152,7 +152,7 @@ class ShMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_sh.sh",
             rpmfluff.SourceFile("invalid_sh.sh", invalid_sh),
@@ -172,7 +172,7 @@ class ShWellFormedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_sh.sh", rpmfluff.SourceFile("valid_sh.sh", valid_sh)
         )
@@ -189,7 +189,7 @@ class ShMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_sh.sh",
             rpmfluff.SourceFile("invalid_sh.sh", invalid_sh),
@@ -209,7 +209,7 @@ class ShWellMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_sh.sh", rpmfluff.SourceFile("valid_sh.sh", valid_sh)
         )
@@ -228,7 +228,7 @@ class ShWellMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_sh.sh", rpmfluff.SourceFile("valid_sh.sh", valid_sh)
         )
@@ -301,7 +301,7 @@ class KshWellFormedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_ksh.sh",
@@ -317,7 +317,7 @@ class KshMalformedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_ksh.sh",
@@ -334,7 +334,7 @@ class KshWellFormedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_ksh.sh",
@@ -350,7 +350,7 @@ class KshMalformedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_ksh.sh",
@@ -367,7 +367,7 @@ class KshWellFormedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_ksh.sh",
             rpmfluff.SourceFile("valid_ksh.sh", valid_ksh),
@@ -386,7 +386,7 @@ class KshMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_ksh.sh",
             rpmfluff.SourceFile("invalid_ksh.sh", invalid_ksh),
@@ -406,7 +406,7 @@ class KshWellFormedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_ksh.sh",
             rpmfluff.SourceFile("valid_ksh.sh", valid_ksh),
@@ -425,7 +425,7 @@ class KshMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_ksh.sh",
             rpmfluff.SourceFile("invalid_ksh.sh", invalid_ksh),
@@ -445,7 +445,7 @@ class KshWellMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_ksh.sh",
             rpmfluff.SourceFile("valid_ksh.sh", valid_ksh),
@@ -465,7 +465,7 @@ class KshWellMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_ksh.sh",
             rpmfluff.SourceFile("valid_ksh.sh", valid_ksh),
@@ -535,7 +535,7 @@ class ZshWellFormedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_zsh.sh",
@@ -551,7 +551,7 @@ class ZshMalformedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_zsh.sh",
@@ -568,7 +568,7 @@ class ZshWellFormedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_zsh.sh",
@@ -584,7 +584,7 @@ class ZshMalformedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_zsh.sh",
@@ -601,7 +601,7 @@ class ZshWellFormedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_zsh.sh",
             rpmfluff.SourceFile("valid_zsh.sh", valid_zsh),
@@ -620,7 +620,7 @@ class ZshMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_zsh.sh",
             rpmfluff.SourceFile("invalid_zsh.sh", invalid_zsh),
@@ -640,7 +640,7 @@ class ZshWellFormedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_zsh.sh",
             rpmfluff.SourceFile("valid_zsh.sh", valid_zsh),
@@ -659,7 +659,7 @@ class ZshMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_zsh.sh",
             rpmfluff.SourceFile("invalid_zsh.sh", invalid_zsh),
@@ -679,7 +679,7 @@ class ZshWellMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_zsh.sh",
             rpmfluff.SourceFile("valid_zsh.sh", valid_zsh),
@@ -699,7 +699,7 @@ class ZshWellMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_zsh.sh",
             rpmfluff.SourceFile("valid_zsh.sh", valid_zsh),
@@ -786,7 +786,7 @@ class CshWellFormedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_csh.sh",
@@ -802,7 +802,7 @@ class CshMalformedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_csh.sh",
@@ -819,7 +819,7 @@ class CshWellFormedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_csh.sh",
@@ -835,7 +835,7 @@ class CshMalformedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_csh.sh",
@@ -852,7 +852,7 @@ class CshWellFormedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_csh.sh",
             rpmfluff.SourceFile("valid_csh.sh", valid_csh),
@@ -871,7 +871,7 @@ class CshMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_csh.sh",
             rpmfluff.SourceFile("invalid_csh.sh", invalid_csh),
@@ -891,7 +891,7 @@ class CshWellFormedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_csh.sh",
             rpmfluff.SourceFile("valid_csh.sh", valid_csh),
@@ -910,7 +910,7 @@ class CshMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_csh.sh",
             rpmfluff.SourceFile("invalid_csh.sh", invalid_csh),
@@ -930,7 +930,7 @@ class CshWellMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_csh.sh",
             rpmfluff.SourceFile("valid_csh.sh", valid_csh),
@@ -950,7 +950,7 @@ class CshWellMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_csh.sh",
             rpmfluff.SourceFile("valid_csh.sh", valid_csh),
@@ -1009,7 +1009,7 @@ class TcshWellFormedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_tcsh.sh",
@@ -1025,7 +1025,7 @@ class TcshMalformedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_tcsh.sh",
@@ -1042,7 +1042,7 @@ class TcshWellFormedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_tcsh.sh",
@@ -1058,7 +1058,7 @@ class TcshMalformedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_tcsh.sh",
@@ -1075,7 +1075,7 @@ class TcshWellFormedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_tcsh.sh",
             rpmfluff.SourceFile("valid_tcsh.sh", valid_tcsh),
@@ -1094,7 +1094,7 @@ class TcshMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_tcsh.sh",
             rpmfluff.SourceFile("invalid_tcsh.sh", invalid_tcsh),
@@ -1114,7 +1114,7 @@ class TcshWellFormedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_tcsh.sh",
             rpmfluff.SourceFile("valid_tcsh.sh", valid_tcsh),
@@ -1133,7 +1133,7 @@ class TcshMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_tcsh.sh",
             rpmfluff.SourceFile("invalid_tcsh.sh", invalid_tcsh),
@@ -1153,7 +1153,7 @@ class TcshWellMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_tcsh.sh",
             rpmfluff.SourceFile("valid_tcsh.sh", valid_tcsh),
@@ -1173,7 +1173,7 @@ class TcshWellMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_tcsh.sh",
             rpmfluff.SourceFile("valid_tcsh.sh", valid_tcsh),
@@ -1254,7 +1254,7 @@ class RcWellFormedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_rc.sh", rpmfluff.SourceFile("valid_rc.sh", valid_rc)
@@ -1269,7 +1269,7 @@ class RcMalformedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_rc.sh",
@@ -1286,7 +1286,7 @@ class RcWellFormedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_rc.sh", rpmfluff.SourceFile("valid_rc.sh", valid_rc)
@@ -1301,7 +1301,7 @@ class RcMalformedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_rc.sh",
@@ -1318,7 +1318,7 @@ class RcWellFormedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_rc.sh", rpmfluff.SourceFile("valid_rc.sh", valid_rc)
         )
@@ -1335,7 +1335,7 @@ class RcMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_rc.sh",
             rpmfluff.SourceFile("invalid_rc.sh", invalid_rc),
@@ -1355,7 +1355,7 @@ class RcWellFormedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_rc.sh", rpmfluff.SourceFile("valid_rc.sh", valid_rc)
         )
@@ -1372,7 +1372,7 @@ class RcMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_rc.sh",
             rpmfluff.SourceFile("invalid_rc.sh", invalid_rc),
@@ -1392,7 +1392,7 @@ class RcWellMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_rc.sh", rpmfluff.SourceFile("valid_rc.sh", valid_rc)
         )
@@ -1411,7 +1411,7 @@ class RcWellMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_rc.sh", rpmfluff.SourceFile("valid_rc.sh", valid_rc)
         )
@@ -1494,7 +1494,7 @@ class BashWellFormedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_bash.sh",
@@ -1510,7 +1510,7 @@ class BashMalformedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_bash.sh",
@@ -1527,7 +1527,7 @@ class BashExtglobWellFormedRPM(TestRPMs):
     """
 
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_bash_extglob.sh",
@@ -1544,7 +1544,7 @@ class BashWellFormedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_bash.sh",
@@ -1560,7 +1560,7 @@ class BashMalformedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/invalid_bash.sh",
@@ -1577,7 +1577,7 @@ class BashExtglobWellFormedKoji(TestKoji):
     """
 
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         self.rpm.add_installed_file(
             "/usr/share/data/valid_bash_extglob.sh",
@@ -1594,7 +1594,7 @@ class BashWellFormedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_bash.sh",
             rpmfluff.SourceFile("valid_bash.sh", valid_bash),
@@ -1613,7 +1613,7 @@ class BashMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_bash.sh",
             rpmfluff.SourceFile("invalid_bash.sh", invalid_bash),
@@ -1633,7 +1633,7 @@ class BashExtglobWellFormedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_bash_extglob.sh",
             rpmfluff.SourceFile("valid_bash_extglob.sh", valid_bash_extglob),
@@ -1653,7 +1653,7 @@ class BashWellFormedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_bash.sh",
             rpmfluff.SourceFile("valid_bash.sh", valid_bash),
@@ -1672,7 +1672,7 @@ class BashMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/invalid_bash.sh",
             rpmfluff.SourceFile("invalid_bash.sh", invalid_bash),
@@ -1692,7 +1692,7 @@ class BashExtglobWellFormedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_bash_extglob.sh",
             rpmfluff.SourceFile("valid_bash_extglob.sh", valid_bash_extglob),
@@ -1712,7 +1712,7 @@ class BashWellMalformedCompareRPMs(TestCompareRPMs):
     """
 
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_bash.sh",
             rpmfluff.SourceFile("valid_bash.sh", valid_bash),
@@ -1732,7 +1732,7 @@ class BashWellMalformedCompareKoji(TestCompareKoji):
     """
 
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_installed_file(
             "/usr/share/data/valid_bash.sh",
             rpmfluff.SourceFile("valid_bash.sh", valid_bash),

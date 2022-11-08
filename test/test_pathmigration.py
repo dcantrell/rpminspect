@@ -29,7 +29,7 @@ from baseclass import TestRPMs, TestCompareRPMs, TestKoji, TestCompareKoji
 # File in /bin in RPM (VERIFY)
 class SlashBinFileRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # Adds /bin/hello-world
         self.rpm.add_simple_compilation(installPath="bin/hello-world")
@@ -42,7 +42,7 @@ class SlashBinFileRPM(TestRPMs):
 # File in /bin in compare RPM (VERIFY)
 class SlashBinFileCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Adds /bin/hello-world
         self.before_rpm.add_simple_compilation(installPath="bin/hello-world")
@@ -56,7 +56,7 @@ class SlashBinFileCompareRPMs(TestCompareRPMs):
 # File in /bin in Koji build (VERIFY)
 class SlashBinFileKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /bin/hello-world
         self.rpm.add_simple_compilation(installPath="bin/hello-world")
@@ -69,7 +69,7 @@ class SlashBinFileKoji(TestKoji):
 # File in /bin in compare Koji build (VERIFY)
 class SlashBinFileCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /bin/hello-world
         self.before_rpm.add_simple_compilation(installPath="bin/hello-world")
@@ -87,7 +87,7 @@ class SlashBinFileCompareKoji(TestCompareKoji):
 # File in /sbin in RPM (VERIFY)
 class SlashSbinFileRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # Adds /sbin/hello-world
         self.rpm.add_simple_compilation(installPath="sbin/hello-world")
@@ -100,7 +100,7 @@ class SlashSbinFileRPM(TestRPMs):
 # File in /sbin in compare RPM (VERIFY)
 class SlashSbinFileCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Adds /sbin/hello-world
         self.before_rpm.add_simple_compilation(installPath="sbin/hello-world")
@@ -114,7 +114,7 @@ class SlashSbinFileCompareRPMs(TestCompareRPMs):
 # File in /sbin in Koji build (VERIFY)
 class SlashSbinFileKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /sbin/hello-world
         self.rpm.add_simple_compilation(installPath="sbin/hello-world")
@@ -127,7 +127,7 @@ class SlashSbinFileKoji(TestKoji):
 # File in /sbin in compare Koji build (VERIFY)
 class SlashSbinFileCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /sbin/hello-world
         self.before_rpm.add_simple_compilation(installPath="sbin/hello-world")
@@ -145,7 +145,7 @@ class SlashSbinFileCompareKoji(TestCompareKoji):
 # File in /lib in RPM (VERIFY)
 class SlashLibFileRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # Adds /lib/libfoo.so
         self.rpm.add_simple_compilation(installPath="lib/libfoo.so")
@@ -158,7 +158,7 @@ class SlashLibFileRPM(TestRPMs):
 # File in /lib in compare RPM (VERIFY)
 class SlashLibFileCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Adds /lib/libfoo.so
         self.before_rpm.add_simple_compilation(installPath="lib/libfoo.so")
@@ -172,7 +172,7 @@ class SlashLibFileCompareRPMs(TestCompareRPMs):
 # File in /lib in Koji build (VERIFY)
 class SlashLibFileKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /lib/libfoo.so
         self.rpm.add_simple_compilation(installPath="lib/libfoo.so")
@@ -185,7 +185,7 @@ class SlashLibFileKoji(TestKoji):
 # File in /lib in compare Koji build (VERIFY)
 class SlashLibFileCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /lib/libfoo.so
         self.before_rpm.add_simple_compilation(installPath="lib/libfoo.so")
@@ -203,7 +203,7 @@ class SlashLibFileCompareKoji(TestCompareKoji):
 # File in /lib64 in RPM (VERIFY)
 class SlashLib64FileRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # Adds /lib64/libfoo.so
         self.rpm.add_simple_compilation(installPath="lib64/libfoo.so")
@@ -216,7 +216,7 @@ class SlashLib64FileRPM(TestRPMs):
 # File in /lib64 in compare RPM (VERIFY)
 class SlashLib64FileCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # Adds /lib64/libfoo.so
         self.before_rpm.add_simple_compilation(installPath="lib64/libfoo.so")
@@ -230,7 +230,7 @@ class SlashLib64FileCompareRPMs(TestCompareRPMs):
 # File in /lib64 in Koji build (VERIFY)
 class SlashLib64FileKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # Adds /lib64/libfoo.so
         self.rpm.add_simple_compilation(installPath="lib64/libfoo.so")
@@ -243,7 +243,7 @@ class SlashLib64FileKoji(TestKoji):
 # File in /lib64 in compare Koji build (VERIFY)
 class SlashLib64FileCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # Adds /lib64/libfoo.so
         self.before_rpm.add_simple_compilation(installPath="lib64/libfoo.so")

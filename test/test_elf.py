@@ -71,7 +71,7 @@ if proc.returncode == 0 and str(out).find("ld-musl") != -1:
 # Program built with noexecstack
 class WithoutExecStackRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(compileFlags="-Wl,-z,noexecstack")
         self.inspection = "elf"
         self.result = "OK"
@@ -79,7 +79,7 @@ class WithoutExecStackRPM(TestRPMs):
 
 class WithoutExecStackKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(compileFlags="-Wl,-z,noexecstack")
         self.inspection = "elf"
         self.result = "OK"
@@ -87,7 +87,7 @@ class WithoutExecStackKoji(TestKoji):
 
 class WithoutExecStackCompareRPM(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(compileFlags="-Wl,-z,noexecstack")
         self.after_rpm.add_simple_compilation(compileFlags="-Wl,-z,noexecstack")
         self.inspection = "elf"
@@ -96,7 +96,7 @@ class WithoutExecStackCompareRPM(TestCompareRPMs):
 
 class WithoutExecStackCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(compileFlags="-Wl,-z,noexecstack")
         self.after_rpm.add_simple_compilation(compileFlags="-Wl,-z,noexecstack")
         self.inspection = "elf"
@@ -106,7 +106,7 @@ class WithoutExecStackCompareKoji(TestCompareKoji):
 # Program built with execstack
 class WithExecStackRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             installPath="usr/bin/execstack", compileFlags="-Wl,-z,execstack"
         )
@@ -117,7 +117,7 @@ class WithExecStackRPM(TestRPMs):
 
 class SecuritySKIPWithExecStackRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             installPath="usr/sbin/skip", compileFlags="-Wl,-z,execstack"
         )
@@ -127,7 +127,7 @@ class SecuritySKIPWithExecStackRPM(TestRPMs):
 
 class SecurityINFORMWithExecStackRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             installPath="usr/sbin/inform", compileFlags="-Wl,-z,execstack"
         )
@@ -138,7 +138,7 @@ class SecurityINFORMWithExecStackRPM(TestRPMs):
 
 class SecurityVERIFYWithExecStackRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             installPath="usr/sbin/verify", compileFlags="-Wl,-z,execstack"
         )
@@ -149,7 +149,7 @@ class SecurityVERIFYWithExecStackRPM(TestRPMs):
 
 class SecurityFAILWithExecStackRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             installPath="usr/sbin/fail", compileFlags="-Wl,-z,execstack"
         )
@@ -160,7 +160,7 @@ class SecurityFAILWithExecStackRPM(TestRPMs):
 
 class WithExecStackKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             installPath="usr/bin/execstack", compileFlags="-Wl,-z,execstack"
         )
@@ -171,7 +171,7 @@ class WithExecStackKoji(TestKoji):
 
 class SecuritySKIPWithExecStackKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             installPath="usr/sbin/skip", compileFlags="-Wl,-z,execstack"
         )
@@ -181,7 +181,7 @@ class SecuritySKIPWithExecStackKoji(TestKoji):
 
 class SecurityINFORMWithExecStackKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             installPath="usr/sbin/inform", compileFlags="-Wl,-z,execstack"
         )
@@ -192,7 +192,7 @@ class SecurityINFORMWithExecStackKoji(TestKoji):
 
 class SecurityVERIFYWithExecStackKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             installPath="usr/sbin/verify", compileFlags="-Wl,-z,execstack"
         )
@@ -203,7 +203,7 @@ class SecurityVERIFYWithExecStackKoji(TestKoji):
 
 class SecurityFAILWithExecStackKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             installPath="usr/sbin/fail", compileFlags="-Wl,-z,execstack"
         )
@@ -214,7 +214,7 @@ class SecurityFAILWithExecStackKoji(TestKoji):
 
 class WithExecStackCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/bin/execstack", compileFlags="-Wl,-z,execstack"
         )
@@ -228,7 +228,7 @@ class WithExecStackCompareRPMs(TestCompareRPMs):
 
 class SecuritySKIPWithExecStackCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/skip", compileFlags="-Wl,-z,execstack"
         )
@@ -241,7 +241,7 @@ class SecuritySKIPWithExecStackCompareRPMs(TestCompareRPMs):
 
 class SecurityINFORMWithExecStackCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/inform", compileFlags="-Wl,-z,execstack"
         )
@@ -255,7 +255,7 @@ class SecurityINFORMWithExecStackCompareRPMs(TestCompareRPMs):
 
 class SecurityVERIFYWithExecStackCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/verify", compileFlags="-Wl,-z,execstack"
         )
@@ -269,7 +269,7 @@ class SecurityVERIFYWithExecStackCompareRPMs(TestCompareRPMs):
 
 class SecurityFAILWithExecStackCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/fail", compileFlags="-Wl,-z,execstack"
         )
@@ -283,7 +283,7 @@ class SecurityFAILWithExecStackCompareRPMs(TestCompareRPMs):
 
 class WithExecStackCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/bin/execstack", compileFlags="-Wl,-z,execstack"
         )
@@ -297,7 +297,7 @@ class WithExecStackCompareKoji(TestCompareKoji):
 
 class SecuritySKIPWithExecStackCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/skip", compileFlags="-Wl,-z,execstack"
         )
@@ -310,7 +310,7 @@ class SecuritySKIPWithExecStackCompareKoji(TestCompareKoji):
 
 class SecurityINFORMWithExecStackCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/inform", compileFlags="-Wl,-z,execstack"
         )
@@ -324,7 +324,7 @@ class SecurityINFORMWithExecStackCompareKoji(TestCompareKoji):
 
 class SecurityVERIFYWithExecStackCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/verify", compileFlags="-Wl,-z,execstack"
         )
@@ -338,7 +338,7 @@ class SecurityVERIFYWithExecStackCompareKoji(TestCompareKoji):
 
 class SecurityFAILWithExecStackCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/fail", compileFlags="-Wl,-z,execstack"
         )
@@ -353,7 +353,7 @@ class SecurityFAILWithExecStackCompareKoji(TestCompareKoji):
 # Program lost full RELRO
 class LostFullRELROCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(compileFlags="-Wl,-z,relro,-z,now")
         self.after_rpm.add_simple_compilation(compileFlags="-Wl,-z,norelro")
         self.inspection = "elf"
@@ -363,7 +363,7 @@ class LostFullRELROCompareRPMs(TestCompareRPMs):
 
 class SecuritySKIPLostFullRELROCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/skip", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -376,7 +376,7 @@ class SecuritySKIPLostFullRELROCompareRPMs(TestCompareRPMs):
 
 class SecurityINFORMLostFullRELROCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/inform", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -390,7 +390,7 @@ class SecurityINFORMLostFullRELROCompareRPMs(TestCompareRPMs):
 
 class SecurityVERIFYLostFullRELROCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/verify", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -404,7 +404,7 @@ class SecurityVERIFYLostFullRELROCompareRPMs(TestCompareRPMs):
 
 class SecurityFAILLostFullRELROCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/fail", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -418,7 +418,7 @@ class SecurityFAILLostFullRELROCompareRPMs(TestCompareRPMs):
 
 class LostFullRELROCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(compileFlags="-Wl,-z,relro,-z,now")
         self.after_rpm.add_simple_compilation(compileFlags="-Wl,-z,norelro")
         self.inspection = "elf"
@@ -428,7 +428,7 @@ class LostFullRELROCompareKoji(TestCompareKoji):
 
 class SecuritySKIPLostFullRELROCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/skip", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -441,7 +441,7 @@ class SecuritySKIPLostFullRELROCompareKoji(TestCompareKoji):
 
 class SecurityINFORMLostFullRELROCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/inform", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -455,7 +455,7 @@ class SecurityINFORMLostFullRELROCompareKoji(TestCompareKoji):
 
 class SecurityVERIFYLostFullRELROCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/verify", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -469,7 +469,7 @@ class SecurityVERIFYLostFullRELROCompareKoji(TestCompareKoji):
 
 class SecurityFAILLostFullRELROCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/fail", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -484,7 +484,7 @@ class SecurityFAILLostFullRELROCompareKoji(TestCompareKoji):
 # Program lost full RELRO but retained partial RELRO
 class FulltoPartialRELROCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(compileFlags="-Wl,-z,relro,-z,now")
         self.after_rpm.add_simple_compilation(compileFlags="-Wl,-z,relro,-z,lazy")
         self.inspection = "elf"
@@ -494,7 +494,7 @@ class FulltoPartialRELROCompareRPMs(TestCompareRPMs):
 
 class SecuritySKIPFulltoPartialRELROCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/skip", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -507,7 +507,7 @@ class SecuritySKIPFulltoPartialRELROCompareRPMs(TestCompareRPMs):
 
 class SecurityINFORMFulltoPartialRELROCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/inform", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -521,7 +521,7 @@ class SecurityINFORMFulltoPartialRELROCompareRPMs(TestCompareRPMs):
 
 class SecurityVERIFYFulltoPartialRELROCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/verify", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -535,7 +535,7 @@ class SecurityVERIFYFulltoPartialRELROCompareRPMs(TestCompareRPMs):
 
 class SecurityFAILFulltoPartialRELROCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/fail", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -549,7 +549,7 @@ class SecurityFAILFulltoPartialRELROCompareRPMs(TestCompareRPMs):
 
 class FulltoPartialRELROCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(compileFlags="-Wl,-z,relro,-z,now")
         self.after_rpm.add_simple_compilation(compileFlags="-Wl,-z,relro,-z,lazy")
         self.inspection = "elf"
@@ -559,7 +559,7 @@ class FulltoPartialRELROCompareKoji(TestCompareKoji):
 
 class SecuritySKIPFulltoPartialRELROCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/skip", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -572,7 +572,7 @@ class SecuritySKIPFulltoPartialRELROCompareKoji(TestCompareKoji):
 
 class SecurityINFORMFulltoPartialRELROCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/inform", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -586,7 +586,7 @@ class SecurityINFORMFulltoPartialRELROCompareKoji(TestCompareKoji):
 
 class SecurityVERIFYFulltoPartialRELROCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/verify", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -600,7 +600,7 @@ class SecurityVERIFYFulltoPartialRELROCompareKoji(TestCompareKoji):
 
 class SecurityFAILFulltoPartialRELROCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_simple_compilation(
             installPath="usr/sbin/fail", compileFlags="-Wl,-z,relro,-z,now"
         )
@@ -616,7 +616,7 @@ class SecurityFAILFulltoPartialRELROCompareKoji(TestCompareKoji):
 class LostPICCompareRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libsimple.a"
 
@@ -653,7 +653,7 @@ class LostPICCompareRPMs(TestCompareRPMs):
 class SecuritySKIPLostPICCompareRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libskip.a"
 
@@ -689,7 +689,7 @@ class SecuritySKIPLostPICCompareRPMs(TestCompareRPMs):
 class SecurityINFORMLostPICCompareRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libinform.a"
 
@@ -726,7 +726,7 @@ class SecurityINFORMLostPICCompareRPMs(TestCompareRPMs):
 class SecurityVERIFYLostPICCompareRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libverify.a"
 
@@ -763,7 +763,7 @@ class SecurityVERIFYLostPICCompareRPMs(TestCompareRPMs):
 class SecurityFAILLostPICCompareRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libfail.a"
 
@@ -800,7 +800,7 @@ class SecurityFAILLostPICCompareRPMs(TestCompareRPMs):
 class LostPICCompareKoji(TestCompareKoji):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libsimple.a"
 
@@ -838,7 +838,7 @@ class LostPICCompareKoji(TestCompareKoji):
 class HasTEXTRELRPMs(TestRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libfoo.so"
 
@@ -861,7 +861,7 @@ class HasTEXTRELRPMs(TestRPMs):
 class SecuritySKIPHasTEXTRELRPMs(TestRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libskip.so"
 
@@ -883,7 +883,7 @@ class SecuritySKIPHasTEXTRELRPMs(TestRPMs):
 class SecurityINFORMHasTEXTRELRPMs(TestRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libinform.so"
 
@@ -906,7 +906,7 @@ class SecurityINFORMHasTEXTRELRPMs(TestRPMs):
 class SecurityVERIFYHasTEXTRELRPMs(TestRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libverify.so"
 
@@ -929,7 +929,7 @@ class SecurityVERIFYHasTEXTRELRPMs(TestRPMs):
 class SecurityFAILHasTEXTRELRPMs(TestRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libfail.so"
 
@@ -952,7 +952,7 @@ class SecurityFAILHasTEXTRELRPMs(TestRPMs):
 class HasTEXTRELCompareRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libfoo.so"
 
@@ -993,7 +993,7 @@ class HasTEXTRELCompareRPMs(TestCompareRPMs):
 class SecuritySKIPHasTEXTRELCompareRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libskip.so"
 
@@ -1033,7 +1033,7 @@ class SecuritySKIPHasTEXTRELCompareRPMs(TestCompareRPMs):
 class SecurityINFORMHasTEXTRELCompareRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libinform.so"
 
@@ -1074,7 +1074,7 @@ class SecurityINFORMHasTEXTRELCompareRPMs(TestCompareRPMs):
 class SecurityVERIFYHasTEXTRELCompareRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libverify.so"
 
@@ -1115,7 +1115,7 @@ class SecurityVERIFYHasTEXTRELCompareRPMs(TestCompareRPMs):
 class SecurityFAILHasTEXTRELCompareRPMs(TestCompareRPMs):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libfail.so"
 
@@ -1156,7 +1156,7 @@ class SecurityFAILHasTEXTRELCompareRPMs(TestCompareRPMs):
 class HasTEXTRELCompareKoji(TestCompareKoji):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libfoo.so"
 
@@ -1197,7 +1197,7 @@ class HasTEXTRELCompareKoji(TestCompareKoji):
 class SecuritySKIPHasTEXTRELCompareKoji(TestCompareKoji):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libskip.so"
 
@@ -1237,7 +1237,7 @@ class SecuritySKIPHasTEXTRELCompareKoji(TestCompareKoji):
 class SecurityINFORMHasTEXTRELCompareKoji(TestCompareKoji):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libinform.so"
 
@@ -1278,7 +1278,7 @@ class SecurityINFORMHasTEXTRELCompareKoji(TestCompareKoji):
 class SecurityVERIFYHasTEXTRELCompareKoji(TestCompareKoji):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libverify.so"
 
@@ -1319,7 +1319,7 @@ class SecurityVERIFYHasTEXTRELCompareKoji(TestCompareKoji):
 class SecurityFAILHasTEXTRELCompareKoji(TestCompareKoji):
     @unittest.skipUnless(have_gcc_multilib, "gcc lacks multilib (-m32) support")
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         installPath = "usr/lib/libfail.so"
 

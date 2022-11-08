@@ -28,7 +28,7 @@ from baseclass import TestSRPM, TestKoji, TestCompareSRPM, TestCompareKoji
 
 class ValidFilesSectionSRPM(TestSRPM):
     def setUp(self):
-        TestSRPM.setUp(self)
+        super().setUp()
 
         # add a library and proper %files reference
         libraryName = "libfoo.so"
@@ -53,7 +53,7 @@ class ValidFilesSectionSRPM(TestSRPM):
 
 class ValidFilesSectionKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add a library and proper %files reference
         libraryName = "libfoo.so"
@@ -78,7 +78,7 @@ class ValidFilesSectionKoji(TestKoji):
 
 class ValidFilesSectionCompareSRPM(TestCompareSRPM):
     def setUp(self):
-        TestCompareSRPM.setUp(self)
+        super().setUp()
 
         # add a library and proper %files reference
         libraryName = "libfoo.so"
@@ -105,7 +105,7 @@ class ValidFilesSectionCompareSRPM(TestCompareSRPM):
 
 class ValidFilesSectionCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add a library and proper %files reference
         libraryName = "libfoo.so"
@@ -132,7 +132,7 @@ class ValidFilesSectionCompareKoji(TestCompareKoji):
 
 class InvalidFilesSectionSRPM(TestSRPM):
     def setUp(self):
-        TestSRPM.setUp(self)
+        super().setUp()
         self.rpm.add_simple_library()
 
         self.inspection = "files"
@@ -142,7 +142,7 @@ class InvalidFilesSectionSRPM(TestSRPM):
 
 class InvalidFilesSectionKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_simple_library()
 
         self.inspection = "files"
@@ -152,7 +152,7 @@ class InvalidFilesSectionKoji(TestKoji):
 
 class InvalidFilesSectionCompareSRPM(TestCompareSRPM):
     def setUp(self):
-        TestCompareSRPM.setUp(self)
+        super().setUp()
         self.after_rpm.add_simple_library()
 
         self.inspection = "files"
@@ -162,7 +162,7 @@ class InvalidFilesSectionCompareSRPM(TestCompareSRPM):
 
 class InvalidFilesSectionCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.after_rpm.add_simple_library()
 
         self.inspection = "files"

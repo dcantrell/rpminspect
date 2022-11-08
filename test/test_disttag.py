@@ -66,7 +66,7 @@ if os.path.isfile("/usr/lib/rpm/macros.d/macros.rpmautospec"):
 # Verify missing %{?dist} in Release fails on SRPM (BAD)
 class MissingDistTagSRPM(TestSRPM):
     def setUp(self):
-        TestSRPM.setUp(self)
+        super().setUp()
         self.inspection = "disttag"
         self.result = "BAD"
         self.waiver_auth = "Not Waivable"
@@ -75,7 +75,7 @@ class MissingDistTagSRPM(TestSRPM):
 # Verify missing %{?dist} in Release fails on Koji build (BAD)
 class MissingDistTagKojiBuild(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.inspection = "disttag"
         self.result = "BAD"
         self.waiver_auth = "Not Waivable"
@@ -84,7 +84,7 @@ class MissingDistTagKojiBuild(TestKoji):
 # Verify running on not an SRPM fails
 class DistTagOnNonSRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.release = "1%{?dist}"
         self.inspection = "disttag"
         self.result = "INFO"
@@ -94,7 +94,7 @@ class DistTagOnNonSRPM(TestRPMs):
 # Verify malformed %{?dist} tag in Release fails on SRPM (BAD)
 class MalformedDistTagSRPM(TestSRPM):
     def setUp(self):
-        TestSRPM.setUp(self)
+        super().setUp()
         self.rpm.release = "1dist"
         self.inspection = "disttag"
         self.result = "BAD"
@@ -104,7 +104,7 @@ class MalformedDistTagSRPM(TestSRPM):
 # Verify malformed %{?dist} tag in Release fails on Koji build (BAD)
 class MalformedDistTagKojiBuild(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.release = "1dist"
         self.inspection = "disttag"
         self.result = "BAD"
@@ -114,7 +114,7 @@ class MalformedDistTagKojiBuild(TestKoji):
 # Verify correct %{?dist} usage passes on SRPM (OK)
 class DistTagSRPM(TestSRPM):
     def setUp(self):
-        TestSRPM.setUp(self)
+        super().setUp()
         self.rpm.release = "1%{?dist}"
         self.inspection = "disttag"
 
@@ -122,7 +122,7 @@ class DistTagSRPM(TestSRPM):
 # Verify correct %{?dist} usage passes on Koji build (OK)
 class DistTagKojiBuild(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.release = "1%{?dist}"
         self.inspection = "disttag"
 
@@ -131,7 +131,7 @@ class DistTagKojiBuild(TestKoji):
 class AutoReleaseDistTagSRPM(TestSRPM):
     @unittest.skipIf(missing_rpmautospec, "test requires the rpmautospec macros")
     def setUp(self):
-        TestSRPM.setUp(self)
+        super().setUp()
         self.rpm.release = "%autorelease"
         self.inspection = "disttag"
 
@@ -140,7 +140,7 @@ class AutoReleaseDistTagSRPM(TestSRPM):
 class AutoReleaseDistTagKoji(TestKoji):
     @unittest.skipIf(missing_rpmautospec, "test requires the rpmautospec macros")
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.release = "%autorelease"
         self.inspection = "disttag"
 
@@ -158,7 +158,7 @@ class AutoReleaseDistTagKoji(TestKoji):
 # Macros in the Release value with macros expanding to %{?dist} (OK)
 class DistTagInMacroSRPM(RequiresRpminspect):
     def setUp(self):
-        RequiresRpminspect.setUp(self)
+        super().setUp()
 
         # create a temporary directory to build an SRPM
         self.tmpdir = tempfile.TemporaryDirectory()
@@ -250,13 +250,13 @@ class DistTagInMacroSRPM(RequiresRpminspect):
 
     def tearDown(self):
         self.tmpdir.cleanup()
-        RequiresRpminspect.tearDown(self)
+        super().tearDown()
 
 
 # Macros in the Release value with macros expanding to %{?dist}, tab field separator (OK)
 class TabbedDistTagInMacroSRPM(RequiresRpminspect):
     def setUp(self):
-        RequiresRpminspect.setUp(self)
+        super().setUp()
 
         # create a temporary directory to build an SRPM
         self.tmpdir = tempfile.TemporaryDirectory()
@@ -348,4 +348,4 @@ class TabbedDistTagInMacroSRPM(RequiresRpminspect):
 
     def tearDown(self):
         self.tmpdir.cleanup()
-        RequiresRpminspect.tearDown(self)
+        super().tearDown()

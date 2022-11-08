@@ -29,7 +29,7 @@ from baseclass import TestCompareSRPM, TestCompareRPMs, TestCompareKoji
 #    report that as VERIFY.
 class LostChangeLogCompareSRPM(TestCompareSRPM):
     def setUp(self):
-        TestCompareSRPM.setUp(self)
+        super().setUp()
 
         # create a simple changelog
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -49,7 +49,7 @@ class LostChangeLogCompareSRPM(TestCompareSRPM):
 
 class LostChangeLogCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # create a simple changelog
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -71,7 +71,7 @@ class LostChangeLogCompareRPMs(TestCompareRPMs):
 
 class LostChangeLogCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # create a simple changelog
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -93,7 +93,7 @@ class LostChangeLogCompareKoji(TestCompareKoji):
 #    build.  The test should report that as INFO.
 class GainedChangeLogCompareSRPM(TestCompareSRPM):
     def setUp(self):
-        TestCompareSRPM.setUp(self)
+        super().setUp()
 
         # create a simple changelog
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -113,7 +113,7 @@ class GainedChangeLogCompareSRPM(TestCompareSRPM):
 
 class GainedChangeLogCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # create a simple changelog
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -133,7 +133,7 @@ class GainedChangeLogCompareRPMs(TestCompareRPMs):
 
 class GainedChangeLogCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # create a simple changelog
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -155,7 +155,7 @@ class GainedChangeLogCompareKoji(TestCompareKoji):
 #    after build, the test should report it as BAD.
 class SameChangeLogCompareSRPM(TestCompareSRPM):
     def setUp(self):
-        TestCompareSRPM.setUp(self)
+        super().setUp()
 
         # create a simple changelog and duplicate it
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -175,7 +175,7 @@ class SameChangeLogCompareSRPM(TestCompareSRPM):
 
 class SameChangeLogCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # create a simple changelog and duplicate it
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -198,7 +198,7 @@ class SameChangeLogCompareKoji(TestCompareKoji):
 #    report that as INFO.
 class BalancedChangeLogEditCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # create a simple prefix that will result in a one line edit script
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -226,7 +226,7 @@ class BalancedChangeLogEditCompareKoji(TestCompareKoji):
 
 class UnbalancedChangeLogEditCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # create a simple prefix that will result in a multiline removal
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -256,7 +256,7 @@ class UnbalancedChangeLogEditCompareKoji(TestCompareKoji):
 #    should report as INFO.
 class AddChangeLogEntryCompareSRPM(TestCompareSRPM):
     def setUp(self):
-        TestCompareSRPM.setUp(self)
+        super().setUp()
 
         # create a simple prefix that will result in a new entry
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -285,7 +285,7 @@ class AddChangeLogEntryCompareSRPM(TestCompareSRPM):
 
 class AddChangeLogEntryCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # create a simple prefix that will result in a new entry
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -309,7 +309,7 @@ class AddChangeLogEntryCompareRPMs(TestCompareRPMs):
 
 class AddChangeLogEntryCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # create a simple prefix that will result in a new entry
         today = datetime.date.today().strftime("%a %b %d %Y")
@@ -335,7 +335,7 @@ class AddChangeLogEntryCompareKoji(TestCompareKoji):
 #    sure that is reported as BAD.
 class UnprofessinalChangeLogEntryCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # create a change with a bad word
         today = datetime.date.today().strftime("%a %b %d %Y")

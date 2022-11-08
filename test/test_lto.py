@@ -36,7 +36,7 @@ lto_src = open(datadir + "/mathlib.c").read()
 # No LTO symbols in .o files (OK)
 class NoLTOSymbolsRelocRPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             sourceContent=lto_src,
             compileFlags="-c -fno-lto -o a.out",
@@ -48,7 +48,7 @@ class NoLTOSymbolsRelocRPMs(TestRPMs):
 
 class NoLTOSymbolsRelocKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             sourceContent=lto_src,
             compileFlags="-c -fno-lto -o a.out",
@@ -60,7 +60,7 @@ class NoLTOSymbolsRelocKoji(TestKoji):
 
 class NoLTOSymbolsRelocCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.after_rpm.add_simple_compilation(
             sourceContent=lto_src,
             compileFlags="-c -fno-lto -o a.out",
@@ -72,7 +72,7 @@ class NoLTOSymbolsRelocCompareRPMs(TestCompareRPMs):
 
 class NoLTOSymbolsRelocCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.after_rpm.add_simple_compilation(
             sourceContent=lto_src,
             compileFlags="-c -fno-lto -o a.out",
@@ -85,7 +85,7 @@ class NoLTOSymbolsRelocCompareKoji(TestCompareKoji):
 # No LTO symbols in .a files (OK)
 class NoLTOSymbolsStaticLibRPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # first create an object file
         self.rpm.add_simple_compilation(
@@ -107,7 +107,7 @@ class NoLTOSymbolsStaticLibRPMs(TestRPMs):
 
 class NoLTOSymbolsStaticLibKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # first create an object file
         self.rpm.add_simple_compilation(
@@ -129,7 +129,7 @@ class NoLTOSymbolsStaticLibKoji(TestKoji):
 
 class NoLTOSymbolsStaticLibCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # first create an object file
         self.after_rpm.add_simple_compilation(
@@ -151,7 +151,7 @@ class NoLTOSymbolsStaticLibCompareRPMs(TestCompareRPMs):
 
 class NoLTOSymbolsStaticLibCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # first create an object file
         self.after_rpm.add_simple_compilation(
@@ -174,7 +174,7 @@ class NoLTOSymbolsStaticLibCompareKoji(TestCompareKoji):
 # LTO symbols present in .o files (BAD)
 class LTOSymbolsRelocRPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             sourceContent=lto_src,
             compileFlags="-c -flto -o a.out",
@@ -187,7 +187,7 @@ class LTOSymbolsRelocRPMs(TestRPMs):
 
 class LTOSymbolsRelocKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_simple_compilation(
             sourceContent=lto_src,
             compileFlags="-c -flto -o a.out",
@@ -200,7 +200,7 @@ class LTOSymbolsRelocKoji(TestKoji):
 
 class LTOSymbolsRelocCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.after_rpm.add_simple_compilation(
             sourceContent=lto_src,
             compileFlags="-c -flto -o a.out",
@@ -213,7 +213,7 @@ class LTOSymbolsRelocCompareRPMs(TestCompareRPMs):
 
 class LTOSymbolsRelocCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.after_rpm.add_simple_compilation(
             sourceContent=lto_src,
             compileFlags="-c -flto -o a.out",
@@ -227,7 +227,7 @@ class LTOSymbolsRelocCompareKoji(TestCompareKoji):
 # LTO symbols present in .a files (BAD)
 class LTOSymbolsStaticLibRPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # first create an object file
         self.rpm.add_simple_compilation(
@@ -250,7 +250,7 @@ class LTOSymbolsStaticLibRPMs(TestRPMs):
 
 class LTOSymbolsStaticLibKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # first create an object file
         self.rpm.add_simple_compilation(
@@ -273,7 +273,7 @@ class LTOSymbolsStaticLibKoji(TestKoji):
 
 class LTOSymbolsStaticLibCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # first create an object file
         self.after_rpm.add_simple_compilation(
@@ -296,7 +296,7 @@ class LTOSymbolsStaticLibCompareRPMs(TestCompareRPMs):
 
 class LTOSymbolsStaticLibCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # first create an object file
         self.after_rpm.add_simple_compilation(

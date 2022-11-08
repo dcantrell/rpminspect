@@ -49,7 +49,7 @@ with open(os.environ["RPMINSPECT"], mode="rb") as f:
 # Absolute symlink exists (OK)
 class AbsoluteSymlinkExistsRPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -65,7 +65,7 @@ class AbsoluteSymlinkExistsRPMs(TestRPMs):
 
 class AbsoluteSymlinkExistsKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -81,7 +81,7 @@ class AbsoluteSymlinkExistsKoji(TestKoji):
 
 class AbsoluteSymlinkExistsCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -99,7 +99,7 @@ class AbsoluteSymlinkExistsCompareRPMs(TestCompareRPMs):
 
 class AbsoluteSymlinkExistsCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -118,7 +118,7 @@ class AbsoluteSymlinkExistsCompareKoji(TestCompareKoji):
 # Relative symlink with ../ exists (OK)
 class RelativeSymlinkExistsParentDirRPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -134,7 +134,7 @@ class RelativeSymlinkExistsParentDirRPMs(TestRPMs):
 
 class RelativeSymlinkExistsParentDirKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -150,7 +150,7 @@ class RelativeSymlinkExistsParentDirKoji(TestKoji):
 
 class RelativeSymlinkExistsParentDirCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -166,7 +166,7 @@ class RelativeSymlinkExistsParentDirCompareRPMs(TestCompareRPMs):
 
 class RelativeSymlinkExistsParentDirCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -183,7 +183,7 @@ class RelativeSymlinkExistsParentDirCompareKoji(TestCompareKoji):
 # Relative symlink in current directory exists (OK)
 class RelativeSymlinkExistsCurrentDirRPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -199,7 +199,7 @@ class RelativeSymlinkExistsCurrentDirRPMs(TestRPMs):
 
 class RelativeSymlinkExistsCurrentDirKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -215,7 +215,7 @@ class RelativeSymlinkExistsCurrentDirKoji(TestKoji):
 
 class RelativeSymlinkExistsCurrentDirCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -231,7 +231,7 @@ class RelativeSymlinkExistsCurrentDirCompareRPMs(TestCompareRPMs):
 
 class RelativeSymlinkExistsCurrentDirCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -248,7 +248,7 @@ class RelativeSymlinkExistsCurrentDirCompareKoji(TestCompareKoji):
 # Symlink that exists spans subpackages (OK)
 class SymlinkExistsMultiplePackagesRPMS(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -267,7 +267,7 @@ class SymlinkExistsMultiplePackagesRPMS(TestRPMs):
 
 class SymlinkExistsMultiplePackagesKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -286,7 +286,7 @@ class SymlinkExistsMultiplePackagesKoji(TestKoji):
 
 class SymlinkExistsMultiplePackagesCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -305,7 +305,7 @@ class SymlinkExistsMultiplePackagesCompareRPMs(TestCompareRPMs):
 
 class SymlinkExistsMultiplePackagesCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -325,7 +325,7 @@ class SymlinkExistsMultiplePackagesCompareKoji(TestCompareKoji):
 # Absolute symlink is dangling (VERIFY)
 class AbsoluteSymlinkDanglingRPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -344,7 +344,7 @@ class AbsoluteSymlinkDanglingRPMs(TestRPMs):
 
 class AbsoluteSymlinkDanglingKoji(TestKoji):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -363,7 +363,7 @@ class AbsoluteSymlinkDanglingKoji(TestKoji):
 
 class AbsoluteSymlinkDanglingCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -382,7 +382,7 @@ class AbsoluteSymlinkDanglingCompareRPMs(TestCompareRPMs):
 
 class AbsoluteSymlinkDanglingCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -402,7 +402,7 @@ class AbsoluteSymlinkDanglingCompareKoji(TestCompareKoji):
 # Relative symlink with ../ is dangling (VERIFY)
 class RelativeSymlinkDanglingParentDirRPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -421,7 +421,7 @@ class RelativeSymlinkDanglingParentDirRPMs(TestRPMs):
 
 class RelativeSymlinkDanglingParentDirKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -440,7 +440,7 @@ class RelativeSymlinkDanglingParentDirKoji(TestKoji):
 
 class RelativeSymlinkDanglingParentDirAfterRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -459,7 +459,7 @@ class RelativeSymlinkDanglingParentDirAfterRPMs(TestCompareRPMs):
 
 class RelativeSymlinkDanglingParentDirAfterKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -479,7 +479,7 @@ class RelativeSymlinkDanglingParentDirAfterKoji(TestCompareKoji):
 # Relative symlink in current directory is dangling (VERIFY)
 class RelativeSymlinkDanglingCurrentDirRPMs(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -498,7 +498,7 @@ class RelativeSymlinkDanglingCurrentDirRPMs(TestRPMs):
 
 class RelativeSymlinkDanglingCurrentDirKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -517,7 +517,7 @@ class RelativeSymlinkDanglingCurrentDirKoji(TestKoji):
 
 class RelativeSymlinkDanglingCurrentDirCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -536,7 +536,7 @@ class RelativeSymlinkDanglingCurrentDirCompareRPMs(TestCompareRPMs):
 
 class RelativeSymlinkDanglingCurrentDirCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -564,7 +564,7 @@ class TooManySymlinkLevelsRPMs(TestRPMs):
         % (rpm_major, rpm_minor, rpm_update),
     )
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -592,7 +592,7 @@ class TooManySymlinkLevelsKoji(TestKoji):
         % (rpm_major, rpm_minor, rpm_update),
     )
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.rpm.add_installed_file(
@@ -620,7 +620,7 @@ class TooManySymlinkLevelsCompareRPMs(TestCompareRPMs):
         % (rpm_major, rpm_minor, rpm_update),
     )
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -652,7 +652,7 @@ class TooManySymlinkLevelsCompareKoji(TestCompareKoji):
         % (rpm_major, rpm_minor, rpm_update),
     )
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add file and symlink
         self.after_rpm.add_installed_file(
@@ -680,7 +680,7 @@ class TooManySymlinkLevelsCompareKoji(TestCompareKoji):
 # Directory becomes a symlink (VERIFY)
 class DirectoryBecomesSymlinkCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add directories and symlinks
         self.before_rpm.add_installed_directory("usr/share/testdirectory")
@@ -697,7 +697,7 @@ class DirectoryBecomesSymlinkCompareRPMs(TestCompareRPMs):
 
 class DirectoryBecomesSymlinkCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add directories and symlinks
         self.before_rpm.add_installed_directory("usr/share/testdirectory")
@@ -715,7 +715,7 @@ class DirectoryBecomesSymlinkCompareKoji(TestCompareKoji):
 # Non-directory becomes a symlink (VERIFY)
 class NonDirectoryBecomesSymlinkCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # add files and symlinks
         self.before_rpm.add_installed_file(
@@ -742,7 +742,7 @@ class NonDirectoryBecomesSymlinkCompareRPMs(TestCompareRPMs):
 
 class NonDirectoryBecomesSymlinkCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # add files and symlinks
         self.before_rpm.add_installed_file(

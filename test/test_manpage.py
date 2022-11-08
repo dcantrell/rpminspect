@@ -29,7 +29,7 @@ from baseclass import TestRPMs, TestKoji, TestCompareRPMs, TestCompareKoji
 # Man page in the correct section subdirectory in RPM (OK)
 class ManPageCorrectSectionRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.rpm.header += "%global __brp_compress /bin/true\n"
@@ -48,7 +48,7 @@ class ManPageCorrectSectionRPM(TestRPMs):
 # Man page in the correct section subdirectory in Koji build (OK)
 class ManPageCorrectSectionKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.rpm.header += "%global __brp_compress /bin/true\n"
@@ -67,7 +67,7 @@ class ManPageCorrectSectionKoji(TestKoji):
 # Man page in the correct section subdirectory in compare RPMs (OK)
 class ManPageCorrectSectionCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.before_rpm.header += "%global __brp_compress /bin/true\n"
@@ -91,7 +91,7 @@ class ManPageCorrectSectionCompareRPMs(TestCompareRPMs):
 # Man page in the correct section subdirectory in compare Koji (OK)
 class ManPageCorrectSectionCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.before_rpm.header += "%global __brp_compress /bin/true\n"
@@ -117,7 +117,7 @@ class ManPageNotGzippedRPM(TestRPMs):
     # Don't use add_manpage() here so we can disable automatic compression
     # of man pages and construct the correct %files section.
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.rpm.header += "%global __brp_compress /bin/true\n"
@@ -139,7 +139,7 @@ class ManPageNotGzippedKoji(TestKoji):
     # Don't use add_manpage() here so we can disable automatic compression
     # of man pages and construct the correct %files section.
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.rpm.header += "%global __brp_compress /bin/true\n"
@@ -161,7 +161,7 @@ class ManPageNotGzippedCompareRPMs(TestCompareRPMs):
     # Don't use add_manpage() here so we can disable automatic compression
     # of man pages and construct the correct %files section.
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.before_rpm.header += "%global __brp_compress /bin/true\n"
@@ -188,7 +188,7 @@ class ManPageNotGzippedCompareKoji(TestCompareKoji):
     # Don't use add_manpage() here so we can disable automatic compression
     # of man pages and construct the correct %files section.
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.before_rpm.header += "%global __brp_compress /bin/true\n"
@@ -213,7 +213,7 @@ class ManPageNotGzippedCompareKoji(TestCompareKoji):
 # Man page in wrong section subdirectory in RPM (VERIFY)
 class ManPageWrongSectionRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
         self.rpm.add_manpage(
             sourceFileName="foo.8", installPath="usr/share/man/man1/foo.8.gz"
         )
@@ -225,7 +225,7 @@ class ManPageWrongSectionRPM(TestRPMs):
 # Man page in wrong section subdirectory in Koji build (VERIFY)
 class ManPageWrongSectionKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
         self.rpm.add_manpage(
             sourceFileName="foo.8", installPath="usr/share/man/man1/foo.8.gz"
         )
@@ -237,7 +237,7 @@ class ManPageWrongSectionKoji(TestKoji):
 # Man page in wrong section subdirectory in compare RPMs (VERIFY)
 class ManPageWrongSectionCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
         self.before_rpm.add_manpage(
             sourceFileName="foo.8", installPath="usr/share/man/man1/foo.8.gz"
         )
@@ -252,7 +252,7 @@ class ManPageWrongSectionCompareRPMs(TestCompareRPMs):
 # Man page in wrong section subdirectory in compare Koji (VERIFY)
 class ManPageWrongSectionCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
         self.before_rpm.add_manpage(
             sourceFileName="foo.8", installPath="usr/share/man/man1/foo.8.gz"
         )
@@ -267,7 +267,7 @@ class ManPageWrongSectionCompareKoji(TestCompareKoji):
 # Invalid man page syntax in RPM (VERIFY)
 class InvalidManPageRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.rpm.header += "%global __brp_compress /bin/true\n"
@@ -287,7 +287,7 @@ class InvalidManPageRPM(TestRPMs):
 # Invalid man page syntax in Koji build (VERIFY)
 class InvalidManPageKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.rpm.header += "%global __brp_compress /bin/true\n"
@@ -307,7 +307,7 @@ class InvalidManPageKoji(TestKoji):
 # Invalid man page syntax in compare RPMs (VERIFY)
 class InvalidManPageCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.before_rpm.header += "%global __brp_compress /bin/true\n"
@@ -332,7 +332,7 @@ class InvalidManPageCompareRPMs(TestCompareRPMs):
 # Invalid man page syntax in compare Koji (VERIFY)
 class InvalidManPageCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.before_rpm.header += "%global __brp_compress /bin/true\n"
@@ -357,7 +357,7 @@ class InvalidManPageCompareKoji(TestCompareKoji):
 # Empty but compressed man page RPM build (VERIFY)
 class EmptyManPageRPM(TestRPMs):
     def setUp(self):
-        TestRPMs.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.rpm.header += "%global __brp_compress /bin/true\n"
@@ -380,7 +380,7 @@ class EmptyManPageRPM(TestRPMs):
 # Empty but compressed man page Koji build (VERIFY)
 class EmptyManPageKoji(TestKoji):
     def setUp(self):
-        TestKoji.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.rpm.header += "%global __brp_compress /bin/true\n"
@@ -403,7 +403,7 @@ class EmptyManPageKoji(TestKoji):
 # Empty but compressed man page compare RPM builds (VERIFY)
 class EmptyManPageCompareRPMs(TestCompareRPMs):
     def setUp(self):
-        TestCompareRPMs.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.after_rpm.header += "%global __brp_compress /bin/true\n"
@@ -426,7 +426,7 @@ class EmptyManPageCompareRPMs(TestCompareRPMs):
 # Empty but compressed man page compare Koji builds (VERIFY)
 class EmptyManPageCompareKoji(TestCompareKoji):
     def setUp(self):
-        TestCompareKoji.setUp(self)
+        super().setUp()
 
         # disable automatic man page compression in rpmbuild
         self.after_rpm.header += "%global __brp_compress /bin/true\n"
