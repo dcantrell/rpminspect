@@ -680,6 +680,10 @@ class TestCompareRPMs(RequiresRpminspect):
 
 # Base test case class that tests a fake Koji build
 class TestKoji(TestRPMs):
+    def setUp(self):
+        super().setUp()
+        self.kojidir = tempfile.mkdtemp()
+
     def runTest(self):
         self.configFile()
 
@@ -693,77 +697,83 @@ class TestKoji(TestRPMs):
         self.rpm.do_make()
 
         # copy everything in to place as if Koji built it
-        with tempfile.TemporaryDirectory() as kojidir:
-            # copy over the SRPM to the fake koji build
-            srcdir = os.path.join(kojidir, "src")
-            os.makedirs(srcdir, exist_ok=True)
-            shutil.copy(self.rpm.get_built_srpm(), srcdir)
+        # copy over the SRPM to the fake koji build
+        srcdir = os.path.join(self.kojidir, "src")
+        os.makedirs(srcdir, exist_ok=True)
+        shutil.copy(self.rpm.get_built_srpm(), srcdir)
 
-            # copy over the built RPMs to the fake koji build
-            for a in self.rpm.get_build_archs():
-                adir = os.path.join(kojidir, a)
-                os.makedirs(adir, exist_ok=True)
-                for sp in self.rpm.get_subpackage_names():
-                    src = self.rpm.get_built_rpm(a, sp)
-                    shutil.copy(src, adir)
+        # copy over the built RPMs to the fake koji build
+        for a in self.rpm.get_build_archs():
+            adir = os.path.join(self.kojidir, a)
+            os.makedirs(adir, exist_ok=True)
+            for sp in self.rpm.get_subpackage_names():
+                src = self.rpm.get_built_rpm(a, sp)
+                shutil.copy(src, adir)
 
-            args = [
-                self.rpminspect,
-                "-d",
-                "-c",
-                self.conffile,
-                "-b",
-                self.buildtype,
-                "-F",
-                "json",
-                "-r",
-                "GENERIC",
-                "-o",
-                self.outputfile,
-            ]
-            if self.inspection:
-                args.append("-T")
-                args.append(self.inspection)
+        args = [
+            self.rpminspect,
+            "-d",
+            "-c",
+            self.conffile,
+            "-b",
+            self.buildtype,
+            "-F",
+            "json",
+            "-r",
+            "GENERIC",
+            "-o",
+            self.outputfile,
+        ]
+        if self.inspection:
+            args.append("-T")
+            args.append(self.inspection)
 
-            if KEEP_RESULTS:
-                args.append("-k")
+        if KEEP_RESULTS:
+            args.append("-k")
 
-            args.append(kojidir)
+        args.append(self.kojidir)
 
-            self.p = subprocess.Popen(
-                args, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-            )
-            (self.out, self.err) = self.p.communicate()
+        self.p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        (self.out, self.err) = self.p.communicate()
 
-            try:
-                with open(self.outputfile) as f:
-                    self.results = json.loads(f.read().encode("utf-8"))
-            except json.decoder.JSONDecodeError:
-                self.dumpResults()
+        try:
+            with open(self.outputfile) as f:
+                self.results = json.loads(f.read().encode("utf-8"))
+        except json.decoder.JSONDecodeError:
+            self.dumpResults()
 
-            # anything not OK or INFO is a non-zero return
-            if self.result not in ["OK", "INFO", "DIAGNOSTICS"] and self.exitcode == 0:
-                self.exitcode = 1
+        # anything not OK or INFO is a non-zero return
+        if self.result not in ["OK", "INFO", "DIAGNOSTICS"] and self.exitcode == 0:
+            self.exitcode = 1
 
-            # dump stdout and stderr if these do not match
-            if self.p.returncode != self.exitcode:
-                self.dumpResults()
+        # dump stdout and stderr if these do not match
+        if self.p.returncode != self.exitcode:
+            self.dumpResults()
 
-            self.assertEqual(self.p.returncode, self.exitcode)
-            check_results(
-                self.results,
-                self.result_inspection,
-                self.result,
-                self.waiver_auth,
-                message=self.message,
-            )
+        self.assertEqual(self.p.returncode, self.exitcode)
+        check_results(
+            self.results,
+            self.result_inspection,
+            self.result,
+            self.waiver_auth,
+            message=self.message,
+        )
 
-            if KEEP_RESULTS:
-                print("Test builds: %s" % kojidir)
+        if KEEP_RESULTS:
+            print("Test builds: %s" % self.kojidir)
+
+    def tearDown(self):
+        if not KEEP_RESULTS:
+            super().tearDown()
+            shutil.rmtree(self.kojidir, ignore_errors=True)
 
 
 # Base test case class that compares before and after Koji builds
 class TestCompareKoji(TestCompareRPMs):
+    def setUp(self, rebase=False, same=False):
+        super().setUp(rebase=rebase, same=same)
+        self.kojidir = tempfile.mkdtemp()
+
     def runTest(self):
         self.configFile()
 
@@ -778,85 +788,87 @@ class TestCompareKoji(TestCompareRPMs):
         self.after_rpm.do_make()
 
         # copy everything in to place as if Koji built it
-        with tempfile.TemporaryDirectory() as kojidir:
-            # copy over the SRPM to the fake koji build
-            beforesrcdir = os.path.join(kojidir, "before", "src")
-            aftersrcdir = os.path.join(kojidir, "after", "src")
-            os.makedirs(beforesrcdir, exist_ok=True)
-            os.makedirs(aftersrcdir, exist_ok=True)
-            shutil.copy(self.before_rpm.get_built_srpm(), beforesrcdir)
-            shutil.copy(self.after_rpm.get_built_srpm(), aftersrcdir)
+        # copy over the SRPM to the fake koji build
+        beforesrcdir = os.path.join(self.kojidir, "before", "src")
+        aftersrcdir = os.path.join(self.kojidir, "after", "src")
+        os.makedirs(beforesrcdir, exist_ok=True)
+        os.makedirs(aftersrcdir, exist_ok=True)
+        shutil.copy(self.before_rpm.get_built_srpm(), beforesrcdir)
+        shutil.copy(self.after_rpm.get_built_srpm(), aftersrcdir)
 
-            # copy over the built RPMs to the fake koji build
-            for a in self.before_rpm.get_build_archs():
-                adir = os.path.join(kojidir, "before", a)
-                os.makedirs(adir, exist_ok=True)
-                for sp in self.before_rpm.get_subpackage_names():
-                    shutil.copy(self.before_rpm.get_built_rpm(a, sp), adir)
+        # copy over the built RPMs to the fake koji build
+        for a in self.before_rpm.get_build_archs():
+            adir = os.path.join(self.kojidir, "before", a)
+            os.makedirs(adir, exist_ok=True)
+            for sp in self.before_rpm.get_subpackage_names():
+                shutil.copy(self.before_rpm.get_built_rpm(a, sp), adir)
 
-            for a in self.after_rpm.get_build_archs():
-                adir = os.path.join(kojidir, "after", a)
-                os.makedirs(adir, exist_ok=True)
-                for sp in self.after_rpm.get_subpackage_names():
-                    shutil.copy(self.after_rpm.get_built_rpm(a, sp), adir)
+        for a in self.after_rpm.get_build_archs():
+            adir = os.path.join(self.kojidir, "after", a)
+            os.makedirs(adir, exist_ok=True)
+            for sp in self.after_rpm.get_subpackage_names():
+                shutil.copy(self.after_rpm.get_built_rpm(a, sp), adir)
 
-            args = [
-                self.rpminspect,
-                "-d",
-                "-c",
-                self.conffile,
-                "-b",
-                self.buildtype,
-                "-F",
-                "json",
-                "-r",
-                "GENERIC",
-                "-o",
-                self.outputfile,
-            ]
+        args = [
+            self.rpminspect,
+            "-d",
+            "-c",
+            self.conffile,
+            "-b",
+            self.buildtype,
+            "-F",
+            "json",
+            "-r",
+            "GENERIC",
+            "-o",
+            self.outputfile,
+        ]
 
-            if self.inspection:
-                args.append("-T")
-                args.append(self.inspection)
+        if self.inspection:
+            args.append("-T")
+            args.append(self.inspection)
 
-            if KEEP_RESULTS:
-                args.append("-k")
+        if KEEP_RESULTS:
+            args.append("-k")
 
-            args.append(os.path.join(kojidir, "before"))
-            args.append(os.path.join(kojidir, "after"))
+        args.append(os.path.join(self.kojidir, "before"))
+        args.append(os.path.join(self.kojidir, "after"))
 
-            self.p = subprocess.Popen(
-                args, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        self.p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        (self.out, self.err) = self.p.communicate()
+        self.results = []
+
+        try:
+            with open(self.outputfile) as f:
+                self.results = json.loads(f.read().encode("utf-8"))
+        except json.decoder.JSONDecodeError:
+            self.dumpResults()
+
+        # anything not OK or INFO is a non-zero return
+        if self.result not in ["OK", "INFO", "DIAGNOSTICS"] and self.exitcode == 0:
+            self.exitcode = 1
+
+        # dump stdout and stderr if these do not match
+        if self.p.returncode != self.exitcode:
+            self.dumpResults()
+
+        self.assertEqual(self.p.returncode, self.exitcode)
+        try:
+            check_results(
+                self.results,
+                self.result_inspection,
+                self.result,
+                self.waiver_auth,
+                message=self.message,
             )
-            (self.out, self.err) = self.p.communicate()
-            self.results = []
+        except AssertionError:
+            self.dumpResults()
 
-            try:
-                with open(self.outputfile) as f:
-                    self.results = json.loads(f.read().encode("utf-8"))
-            except json.decoder.JSONDecodeError:
-                self.dumpResults()
+        # show where results are
+        if KEEP_RESULTS:
+            print("Test builds: %s" % self.kojidir)
 
-            # anything not OK or INFO is a non-zero return
-            if self.result not in ["OK", "INFO", "DIAGNOSTICS"] and self.exitcode == 0:
-                self.exitcode = 1
-
-            # dump stdout and stderr if these do not match
-            if self.p.returncode != self.exitcode:
-                self.dumpResults()
-
-            self.assertEqual(self.p.returncode, self.exitcode)
-            try:
-                check_results(
-                    self.results,
-                    self.result_inspection,
-                    self.result,
-                    self.waiver_auth,
-                    message=self.message,
-                )
-            except AssertionError:
-                self.dumpResults()
-
-            # show where results are
-            if KEEP_RESULTS:
-                print("Test builds: %s" % kojidir)
+    def tearDown(self):
+        if not KEEP_RESULTS:
+            super().tearDown()
+            shutil.rmtree(self.kojidir, ignore_errors=True)
