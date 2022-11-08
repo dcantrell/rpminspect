@@ -872,3 +872,56 @@ class TestCompareKoji(TestCompareRPMs):
         if not KEEP_RESULTS:
             super().tearDown()
             shutil.rmtree(self.kojidir, ignore_errors=True)
+
+
+# Base test case class that tests a fake module build
+class TestModule(TestKoji):
+    def setUp(self, modularitylabel=True, static_context=True):
+        super().setUp()
+
+        # add the modularitylabel to the built RPMs
+        if modularitylabel:
+            self.rpm.header += "\n%define modularitylabel TEST_LABEL\n"
+
+        # create the modulemd.txt file
+        filesdir = os.path.join(self.kojidir, "files")
+        os.makedirs(filesdir, exist_ok=True)
+        modulemd = os.path.join(filesdir, "modulemd.txt")
+
+        f = open(modulemd, "w")
+        f.write("---\n")
+        f.write("document: modulemd\n")
+        f.write("version: 2\n")
+        f.write("data:\n")
+        if static_context:
+            f.write("   static_context: true\n")
+        f.close()
+
+
+# Base test case class that compares before and after module builds
+class TestCompareModules(TestCompareKoji):
+    def setUp(self, rebase=False, same=False, modularitylabel=True, static_context=True):
+        super().setUp(rebase=rebase, same=same)
+
+        # add the modularitylabel to the built RPMs
+        if modularitylabel:
+            self.before_rpm.header += "\n%define modularitylabel TEST_LABEL\n"
+            self.after_rpm.header += "\n%define modularitylabel TEST_LABEL\n"
+
+        # create the modulemd.txt file
+        beforefilesdir = os.path.join(self.kojidir, "before", "files")
+        afterfilesdir = os.path.join(self.kojidir, "after", "files")
+        os.makedirs(beforefilesdir, exist_ok=True)
+        os.makedirs(afterfilesdir, exist_ok=True)
+        modulemd = os.path.join(beforefilesdir, "modulemd.txt")
+
+        f = open(modulemd, "w")
+        f.write("---\n")
+        f.write("document: modulemd\n")
+        f.write("version: 2\n")
+        f.write("data:\n")
+        if static_context:
+            f.write("   static_context: true\n")
+        f.close()
+
+        shutil.copy(modulemd, afterfilesdir)
