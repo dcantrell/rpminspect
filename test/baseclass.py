@@ -386,10 +386,7 @@ class TestSRPM(RequiresRpminspect):
     def tearDown(self):
         super().tearDown()
 
-        if KEEP_RESULTS and self.kojidir:
-            print(">>> Test builds: %s" % self.kojidir)
-            self.kojidir = None
-        elif self.kojidir:
+        if not KEEP_RESULTS:
             self.rpm.clean()
 
 
@@ -491,10 +488,7 @@ class TestCompareSRPM(RequiresRpminspect):
     def tearDown(self):
         super().tearDown()
 
-        if KEEP_RESULTS and self.kojidir:
-            print(">>> Test builds: %s" % self.kojidir)
-            self.kojidir = None
-        elif self.kojidir:
+        if not KEEP_RESULTS:
             self.before_rpm.clean()
             self.after_rpm.clean()
 
@@ -585,10 +579,7 @@ class TestRPMs(RequiresRpminspect):
     def tearDown(self):
         super().tearDown()
 
-        if KEEP_RESULTS and self.kojidir:
-            print(">>> Test builds: %s" % self.kojidir)
-            self.kojidir = None
-        elif self.kojidir:
+        if not KEEP_RESULTS:
             self.rpm.clean()
 
 
@@ -693,10 +684,7 @@ class TestCompareRPMs(RequiresRpminspect):
     def tearDown(self):
         super().tearDown()
 
-        if KEEP_RESULTS and self.kojidir:
-            print(">>> Test builds: %s" % self.kojidir)
-            self.kojidir = None
-        elif self.kojidir:
+        if not KEEP_RESULTS:
             self.before_rpm.clean()
             self.after_rpm.clean()
 
