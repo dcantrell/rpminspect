@@ -228,7 +228,7 @@ static bool check_static_context(struct rpminspect *ri)
     }
 
     /* report */
-    if (params.msg != NULL) {
+    if (params.msg) {
         add_result(ri, &params);
         free(params.msg);
     }
