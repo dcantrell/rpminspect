@@ -1,5 +1,6 @@
 include/compat/queue.h
 include/constants.h
+include/init.h
 include/inspect.h
 include/output.h
 include/queue.h
@@ -40,6 +41,7 @@ lib/inspect_capabilities.c
 lib/inspect_changedfiles.c
 lib/inspect_changelog.c
 lib/inspect_config.c
+lib/inspect_debuginfo.c
 lib/inspect_desktop.c
 lib/inspect_disttag.c
 lib/inspect_doc.c
