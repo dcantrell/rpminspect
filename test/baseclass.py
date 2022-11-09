@@ -198,6 +198,9 @@ class RequiresRpminspect(unittest.TestCase):
     def setUp(self):
         super().setUp()
 
+        # did we show kept files and dirs?
+        self.keep_shown = False
+
         # make sure we have the program
         self.rpminspect = os.environ["RPMINSPECT"]
 
@@ -298,7 +301,11 @@ class RequiresRpminspect(unittest.TestCase):
         outstream.close()
 
     def tearDown(self):
-        if not KEEP_RESULTS:
+        if KEEP_RESULTS and not self.keep_shown:
+            print("\n>>> Configuration file: %s" % self.conffile)
+            print(">>> Output file: %s" % self.outputfile)
+            self.keep_shown = True
+        else:
             os.unlink(self.conffile)
             os.unlink(self.outputfile)
 
@@ -377,8 +384,12 @@ class TestSRPM(RequiresRpminspect):
         )
 
     def tearDown(self):
-        if not KEEP_RESULTS:
-            super().tearDown()
+        super().tearDown()
+
+        if KEEP_RESULTS and self.kojidir:
+            print(">>> Test builds: %s" % self.kojidir)
+            self.kojidir = None
+        elif self.kojidir:
             self.rpm.clean()
 
 
@@ -478,8 +489,12 @@ class TestCompareSRPM(RequiresRpminspect):
         )
 
     def tearDown(self):
-        if not KEEP_RESULTS:
-            super().tearDown()
+        super().tearDown()
+
+        if KEEP_RESULTS and self.kojidir:
+            print(">>> Test builds: %s" % self.kojidir)
+            self.kojidir = None
+        elif self.kojidir:
             self.before_rpm.clean()
             self.after_rpm.clean()
 
@@ -568,8 +583,12 @@ class TestRPMs(RequiresRpminspect):
                 )
 
     def tearDown(self):
-        if not KEEP_RESULTS:
-            super().tearDown()
+        super().tearDown()
+
+        if KEEP_RESULTS and self.kojidir:
+            print(">>> Test builds: %s" % self.kojidir)
+            self.kojidir = None
+        elif self.kojidir:
             self.rpm.clean()
 
 
@@ -672,8 +691,12 @@ class TestCompareRPMs(RequiresRpminspect):
             )
 
     def tearDown(self):
-        if not KEEP_RESULTS:
-            super().tearDown()
+        super().tearDown()
+
+        if KEEP_RESULTS and self.kojidir:
+            print(">>> Test builds: %s" % self.kojidir)
+            self.kojidir = None
+        elif self.kojidir:
             self.before_rpm.clean()
             self.after_rpm.clean()
 
@@ -759,12 +782,13 @@ class TestKoji(TestRPMs):
             message=self.message,
         )
 
-        if KEEP_RESULTS:
-            print("Test builds: %s" % self.kojidir)
-
     def tearDown(self):
-        if not KEEP_RESULTS:
-            super().tearDown()
+        super().tearDown()
+
+        if KEEP_RESULTS and self.kojidir:
+            print(">>> Test builds: %s" % self.kojidir)
+            self.kojidir = None
+        elif self.kojidir:
             shutil.rmtree(self.kojidir, ignore_errors=True)
 
 
@@ -864,13 +888,13 @@ class TestCompareKoji(TestCompareRPMs):
         except AssertionError:
             self.dumpResults()
 
-        # show where results are
-        if KEEP_RESULTS:
-            print("Test builds: %s" % self.kojidir)
-
     def tearDown(self):
-        if not KEEP_RESULTS:
-            super().tearDown()
+        super().tearDown()
+
+        if KEEP_RESULTS and self.kojidir:
+            print(">>> Test builds: %s" % self.kojidir)
+            self.kojidir = None
+        elif self.kojidir:
             shutil.rmtree(self.kojidir, ignore_errors=True)
 
 
@@ -878,6 +902,7 @@ class TestCompareKoji(TestCompareRPMs):
 class TestModule(TestKoji):
     def setUp(self, modularitylabel=True, static_context=True):
         super().setUp()
+        self.buildtype = "module"
 
         # add the modularitylabel to the built RPMs
         if modularitylabel:
@@ -900,8 +925,11 @@ class TestModule(TestKoji):
 
 # Base test case class that compares before and after module builds
 class TestCompareModules(TestCompareKoji):
-    def setUp(self, rebase=False, same=False, modularitylabel=True, static_context=True):
+    def setUp(
+        self, rebase=False, same=False, modularitylabel=True, static_context=True
+    ):
         super().setUp(rebase=rebase, same=same)
+        self.buildtype = "module"
 
         # add the modularitylabel to the built RPMs
         if modularitylabel:
