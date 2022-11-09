@@ -139,6 +139,7 @@ if python.found()
         'test_lto.py',
         'test_manpage.py',
         'test_metadata.py',
+        'test_modularity.py',
         'test_ownership.py',
         'test_patches.py',
         'test_pathmigration.py',
