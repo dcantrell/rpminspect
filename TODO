@@ -118,6 +118,8 @@ that you can build on for the different integration tests.  They are:
     * Two binary RPMs to compare     --> TestCompareRPMs
     * A single Koji build            --> TestKoji
     * Two Koji builds to compare     --> TestCompareKoji
+    * A single module build          --> TestModule
+    * Two module build to compare    --> TestCompareModules
 
 The TestRPMs and TestCompareRPMs in practice are used to test single
 binary RPMs and not multiple RPMs, but I chose the name a long time
@@ -161,7 +163,6 @@ cases you will need.
 
 The following inspections lack integration tests:
 
-    modularity
     javabytecode
     changedfiles (compare only...these do not apply to single package inputs)
     removedfiles (compare only...these do not apply to single package inputs)
