@@ -162,6 +162,9 @@ authors:
 	head -n $$(($$(wc -l < AUTHORS.md) - 1)) AUTHORS.md > AUTHORS.md.new
 	mv AUTHORS.md.new AUTHORS.md
 
+update-uthash:
+	$(topdir)/utils/update-uthash.sh $(topdir)/include
+
 help:
 	@echo "rpminspect helper Makefile"
 	@echo "The source tree uses meson(1) for building and testing, but this Makefile"
@@ -179,6 +182,7 @@ help:
 	@echo "    clean             Run 'rm -rf $(MESON_BUILD_DIR)'"
 	@echo "    instreqs          Install required build and runtime packages"
 	@echo "    authors           Generate a new AUTHORS.md file"
+	@echo "    update-uthash     Update include/uthash.h from upstream"
 	@echo
 	@echo "To build:"
 	@echo "    make"
