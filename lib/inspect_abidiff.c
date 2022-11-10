@@ -155,23 +155,33 @@ static bool abidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     /* report the results */
     init_result_params(&params);
     params.header = NAME_ABIDIFF;
-    params.waiverauth = WAIVABLE_BY_ANYONE;
+    params.severity = RESULT_INFO;
+    params.waiverauth = NOT_WAIVABLE;
     params.remedy = REMEDY_ABIDIFF;
     params.arch = arch;
     params.file = file->localpath;
 
     if ((exitcode & ABIDIFF_ERROR) || (exitcode & ABIDIFF_USAGE_ERROR)) {
         params.severity = RESULT_VERIFY;
+        params.waiverauth = WAIVABLE_BY_ANYONE;
         params.verb = VERB_FAILED;
         params.noun = _("abidiff usage error");;
         report = true;
-    } else if (!rebase && (exitcode & ABIDIFF_ABI_CHANGE)) {
-        params.severity = RESULT_VERIFY;
+    } else if (exitcode & ABIDIFF_ABI_CHANGE) {
+        if (!rebase) {
+            params.severity = RESULT_VERIFY;
+            params.waiverauth = WAIVABLE_BY_ANYONE;
+        }
+
         params.verb = VERB_CHANGED;
         params.noun = _("ABI change in ${FILE} on ${ARCH}");
         report = true;
-    } else if (!rebase && (exitcode & ABIDIFF_ABI_INCOMPATIBLE_CHANGE)) {
-        params.severity = RESULT_BAD;
+    } else if (exitcode & ABIDIFF_ABI_INCOMPATIBLE_CHANGE) {
+        if (!rebase) {
+            params.severity = RESULT_BAD;
+            params.waiverauth = WAIVABLE_BY_ANYONE;
+        }
+
         params.verb = VERB_CHANGED;
         params.noun = _("ABI incompatible change in ${FILE} on ${ARCH}");
         report = true;
@@ -195,16 +205,6 @@ static bool abidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
             } else {
                 xasprintf(&params.msg, _("Comparing from %s to %s in package %s on %s revealed ABI differences."), file->peer_file->localpath, file->localpath, name, arch);
             }
-        }
-    }
-
-    if (report || (exitcode && output)) {
-        if (exitcode && output) {
-            params.severity = RESULT_VERIFY;
-            params.waiverauth = WAIVABLE_BY_ANYONE;
-            params.msg = strdup(_("ABI comparison ended unexpectedly."));
-            params.verb = VERB_FAILED;
-            params.noun = _("abidff unexpected exit");
         }
 
         params.file = file->localpath;
