@@ -462,7 +462,7 @@ static bool patches_driver(struct rpminspect *ri, rpmfile_entry_t *file)
             reported = true;
         }
     } else if (comparison && file->peer_file == NULL) {
-        xasprintf(&params.msg, _("New patch file `%s` appeared"), params.file);
+        xasprintf(&params.msg, _("New patch file `%s` appeared"), file->localpath);
         params.severity = RESULT_INFO;
         params.waiverauth = NOT_WAIVABLE;
         params.verb = VERB_ADDED;
