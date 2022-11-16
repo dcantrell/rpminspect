@@ -123,10 +123,14 @@ enum {
     BLOCK_RPMDEPS = 60,
     BLOCK_MOVEDFILES = 61,
     BLOCK_POLITICS = 62,
+#ifdef _WITH_LIBCAP
     BLOCK_CAPABILITIES = 63,
+#endif
     BLOCK_CONFIG = 64,
     BLOCK_DOC = 65,
+#ifdef _WITH_LIBKMOD
     BLOCK_KMOD = 66,
+#endif
     BLOCK_PERMISSIONS = 67,
     BLOCK_REMOVEDFILES = 68,
     BLOCK_SYMLINKS = 69,
@@ -303,14 +307,18 @@ static void add_ignore(string_list_map_t **table, int i, char *s)
         inspection = NAME_MOVEDFILES;
     } else if (i == BLOCK_POLITICS) {
         inspection = NAME_POLITICS;
+#ifdef _WITH_LIBCAP
     } else if (i == BLOCK_CAPABILITIES) {
         inspection = NAME_CAPABILITIES;
+#endif
     } else if (i == BLOCK_CONFIG) {
         inspection = NAME_CONFIG;
     } else if (i == BLOCK_DOC) {
         inspection = NAME_DOC;
+#ifdef _WITH_LIBKMOD
     } else if (i == BLOCK_KMOD) {
         inspection = NAME_KMOD;
+#endif
     } else if (i == BLOCK_PERMISSIONS) {
         inspection = NAME_PERMISSIONS;
     } else if (i == BLOCK_REMOVEDFILES) {
@@ -692,7 +700,9 @@ static int read_cfgfile(struct rpminspect *ri, const char *filename)
                                                                 group != BLOCK_ADDEDFILES &&
                                                                 group != BLOCK_ANNOCHECK &&
                                                                 group != BLOCK_BADFUNCS &&
+#ifdef _WITH_LIBCAP
                                                                 group != BLOCK_CAPABILITIES &&
+#endif
                                                                 group != BLOCK_CHANGEDFILES &&
                                                                 group != BLOCK_CONFIG &&
                                                                 group != BLOCK_DESKTOP &&
@@ -703,7 +713,9 @@ static int read_cfgfile(struct rpminspect *ri, const char *filename)
                                                                 group != BLOCK_FILESIZE &&
                                                                 group != BLOCK_JAVABYTECODE &&
                                                                 group != BLOCK_KMIDIFF &&
+#ifdef _WITH_LIBKMOD
                                                                 group != BLOCK_KMOD &&
+#endif
                                                                 group != BLOCK_LTO &&
                                                                 group != BLOCK_MANPAGE &&
                                                                 group != BLOCK_METADATA &&
@@ -832,18 +844,22 @@ static int read_cfgfile(struct rpminspect *ri, const char *filename)
                     } else if (!strcmp(key, NAME_POLITICS)) {
                         block = BLOCK_NULL;
                         group = BLOCK_POLITICS;
+#ifdef _WITH_LIBCAP
                     } else if (!strcmp(key, NAME_CAPABILITIES)) {
                         block = BLOCK_NULL;
                         group = BLOCK_CAPABILITIES;
+#endif
                     } else if (!strcmp(key, NAME_CONFIG)) {
                         block = BLOCK_NULL;
                         group = BLOCK_CONFIG;
                     } else if (!strcmp(key, NAME_DOC)) {
                         block = BLOCK_NULL;
                         group = BLOCK_DOC;
+#ifdef _WITH_LIBKMOD
                     } else if (!strcmp(key, NAME_KMOD)) {
                         block = BLOCK_NULL;
                         group = BLOCK_KMOD;
+#endif
                     } else if (!strcmp(key, NAME_PERMISSIONS)) {
                         block = BLOCK_NULL;
                         group = BLOCK_PERMISSIONS;
@@ -1027,10 +1043,12 @@ static int read_cfgfile(struct rpminspect *ri, const char *filename)
                         if (!strcmp(key, SECTION_IGNORE)) {
                             block = BLOCK_IGNORE;
                         }
+#ifdef _WITH_LIBCAP
                     } else if (group == BLOCK_CAPABILITIES) {
                         if (!strcmp(key, SECTION_IGNORE)) {
                             block = BLOCK_IGNORE;
                         }
+#endif
                     } else if (group == BLOCK_CONFIG) {
                         if (!strcmp(key, SECTION_IGNORE)) {
                             block = BLOCK_IGNORE;
@@ -1039,10 +1057,12 @@ static int read_cfgfile(struct rpminspect *ri, const char *filename)
                         if (!strcmp(key, SECTION_IGNORE)) {
                             block = BLOCK_IGNORE;
                         }
+#ifdef _WITH_LIBKMOD
                     } else if (group == BLOCK_KMOD) {
                         if (!strcmp(key, SECTION_IGNORE)) {
                             block = BLOCK_IGNORE;
                         }
+#endif
                     } else if (group == BLOCK_PERMISSIONS) {
                         if (!strcmp(key, SECTION_IGNORE)) {
                             block = BLOCK_IGNORE;
@@ -1624,6 +1644,7 @@ bool init_fileinfo(struct rpminspect *ri)
  * Initialize the caps list for the given product release.  If the
  * file cannot be found, return false.
  */
+#ifdef _WITH_LIBCAP
 bool init_caps(struct rpminspect *ri)
 {
     char *line = NULL;
@@ -1742,6 +1763,7 @@ bool init_caps(struct rpminspect *ri)
 
     return true;
 }
+#endif
 
 /*
  * Initialize the rebaseable list for the given product release and

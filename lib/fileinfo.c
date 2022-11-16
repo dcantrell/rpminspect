@@ -241,6 +241,7 @@ bool match_fileinfo_group(struct rpminspect *ri, const rpmfile_entry_t *file, co
  * If it doesn't exist on the list, return NULL.  This function will
  * take care of initializing the caps list if necessary.
  */
+#ifdef _WITH_LIBCAP
 caps_filelist_entry_t *get_caps_entry(struct rpminspect *ri, const char *pkg, const char *filepath)
 {
     bool found = false;
@@ -283,3 +284,4 @@ caps_filelist_entry_t *get_caps_entry(struct rpminspect *ri, const char *pkg, co
 
     return flentry;
 }
+#endif

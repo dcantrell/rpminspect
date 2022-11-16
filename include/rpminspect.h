@@ -111,7 +111,9 @@ extern volatile sig_atomic_t terminal_resized;
 
 /* init.c */
 bool init_fileinfo(struct rpminspect *);
+#ifdef _WITH_LIBCAP
 bool init_caps(struct rpminspect *);
+#endif
 bool init_rebaseable(struct rpminspect *);
 bool init_politics(struct rpminspect *ri);
 bool init_security(struct rpminspect *ri);
@@ -307,7 +309,9 @@ void free_argv(char **argv);
 bool match_fileinfo_mode(struct rpminspect *, const rpmfile_entry_t *, const char *, const char *);
 bool match_fileinfo_owner(struct rpminspect *, const rpmfile_entry_t *, const char *, const char *, const char *, const char *);
 bool match_fileinfo_group(struct rpminspect *, const rpmfile_entry_t *, const char *, const char *, const char *, const char *);
+#ifdef _WITH_LIBCAP
 caps_filelist_entry_t *get_caps_entry(struct rpminspect *, const char *, const char *);
+#endif
 
 /* flags.c */
 bool process_inspection_flag(const char *, const bool, uint64_t *);
