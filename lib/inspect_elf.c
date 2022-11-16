@@ -475,10 +475,14 @@ static bool inspect_elf_execstack(struct rpminspect *ri, Elf *after_elf, Elf *be
                 add_execstack_flag_str(flaglist, "SHF_MASKOS");
             } else if (execstack_flags & SHF_MASKPROC) {
                 add_execstack_flag_str(flaglist, "SHF_MASKPROC");
+#ifdef SHF_ORDERED
             } else if (execstack_flags & SHF_ORDERED) {
                 add_execstack_flag_str(flaglist, "SHF_ORDERED");
+#endif
+#ifdef SHF_EXCLUDE
             } else if (execstack_flags & SHF_EXCLUDE) {
                 add_execstack_flag_str(flaglist, "SHF_EXCLUDE");
+#endif
             }
 
             fs = list_to_string(flaglist, ", ");
