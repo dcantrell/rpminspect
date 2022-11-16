@@ -1,2 +1,3 @@
 cpp-coveralls
+gcovr
 rpmfluff

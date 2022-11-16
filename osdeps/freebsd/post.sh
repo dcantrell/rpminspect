@@ -1,6 +1,11 @@
 #!/bin/sh
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 
+# Install Python modules from ports, but we have to determine the
+# package prefix based on the version of Python installed.
+PKG_PREFIX="py$(python3 --version | cut -d ' ' -f 2 | cut -d '.' -f 1,2 | sed -e 's|\.||g')"
+pkg install -y ${PKG_PREFIX}-pip ${PKG_PREFIX}-pyaml ${PKG_PREFIX}-timeout-decorator
+
 # libmandoc is missing on FreeBSD
 curl -O https://mandoc.bsd.lv/snapshots/mandoc.tar.gz
 SUBDIR="$(tar -tvf mandoc.tar.gz | head -n 1 | rev | cut -d ' ' -f 1 | rev)"

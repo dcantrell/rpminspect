@@ -1,2 +1,2 @@
 PKG_CMD = pkg install -y
-PIP_CMD = pip-3 install
+PIP_CMD = pip install
