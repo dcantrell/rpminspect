@@ -74,7 +74,7 @@ class AnnocheckNotHardenedCompareRPMs(TestCompareRPMs):
 
         self.inspection = "annocheck"
         self.result = "VERIFY"
-        self.waiver_auth = "Not Waivable"
+        self.waiver_auth = "Anyone"
 
 
 @unittest.skipUnless(have_annocheck, "annocheck not available")
@@ -87,7 +87,7 @@ class AnnocheckNotHardenedCompareKoji(TestCompareKoji):
 
         self.inspection = "annocheck"
         self.result = "VERIFY"
-        self.waiver_auth = "Not Waivable"
+        self.waiver_auth = "Anyone"
 
 
 @unittest.skipUnless(have_annocheck, "annocheck not available")
@@ -143,7 +143,7 @@ class AnnocheckNotHardenedRPMs(TestRPMs):
 
         self.inspection = "annocheck"
         self.result = "VERIFY"
-        self.waiver_auth = "Not Waivable"
+        self.waiver_auth = "Anyone"
 
 
 @unittest.skipUnless(have_annocheck, "annocheck not available")
@@ -155,4 +155,4 @@ class AnnocheckNotHardenedKoji(TestKoji):
 
         self.inspection = "annocheck"
         self.result = "VERIFY"
-        self.waiver_auth = "Not Waivable"
+        self.waiver_auth = "Anyone"
