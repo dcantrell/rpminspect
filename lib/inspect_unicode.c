@@ -17,6 +17,21 @@
 #include <rpm/rpmlog.h>
 #include <unicode/ustdio.h>
 #include <unicode/ustring.h>
+
+#ifdef __linux__
+#include <byteswap.h>
+#define BSWAPFUNC bswap_32
+#endif
+
+#ifdef __freebsd__
+#include <sys/endian.h>
+#define BSWAPFUNC bswap32
+#endif
+
+#ifndef BSWAPFUNC
+#define BSWAPFUNC bswap32
+#endif
+
 #include "rpminspect.h"
 
 /* subdirectories to create or link for the rpmbuild structure */
@@ -37,7 +52,7 @@ static char *build = NULL;
 static bool uses_unpack_base = false;
 static struct rpminspect *globalri = NULL;
 static bool globalresult = true;
-static UChar32_list_t *forbidden = NULL;
+static UChar_list_t *forbidden = NULL;
 static const char *globalspec = NULL;
 static const char *globalarch = NULL;
 static rpmfile_entry_t *globalfile = NULL;
@@ -49,6 +64,11 @@ static rpmfile_entry_t *globalfile = NULL;
  */
 #define UNPACK_BASE     "unpack-"
 #define UNPACK_TEMPLATE UNPACK_BASE"XXXXXX"
+
+/*
+ * Maximum number of UTF-16 code points per loop iteration
+ */
+#define MAX_CODE_POINTS 16
 
 /*
  * Helper function to create a ~/rpmbuild tree in the working directory.
@@ -393,15 +413,22 @@ static int validate_file(const char *fpath, __attribute__((unused)) const struct
     const char *localpath = fpath;
     string_entry_t *sentry = NULL;
     UFILE *src = NULL;
-    UChar32 c;
+    UChar c;
     UChar *line = NULL;
     UChar *line_new = NULL;
-    size_t i = 0;
-    size_t sz = BUFSIZ;
+//    char *conv = NULL;
+//    UErrorCode uerr = 0;
+    bool found = false;
+//    bool utf16 = false;
+    int32_t i = 0;
+//    int32_t j = 0;
+    int32_t sz = BUFSIZ;
     UChar *needle = NULL;
+//    int32_t len = 0;
     long int linenum = 0;
     long int colnum = 0;
-    UChar32_entry_t *uentry = NULL;
+//    long int colnum_utf16 = 0;
+    UChar_entry_t *uentry = NULL;
     struct result_params params;
 
     assert(globalri != NULL);
@@ -529,10 +556,95 @@ static int validate_file(const char *fpath, __attribute__((unused)) const struct
 
         /* check this line for any prohibited characters */
         TAILQ_FOREACH(uentry, forbidden, items) {
-            needle = u_strchr32(line, uentry->data);
+            /* start by resetting the found marker */
+            found = false;
 
-            /* forbidden code point found */
-            if (needle != NULL) {
+            /* check for a forbidden code point using u_strchr */
+            needle = u_strchr(line, uentry->data);
+
+            if (needle) {
+//DEBUG_PRINT("found uentry->data=|%x|, utf16=%s, needle\n", uentry->data, utf16 ? "true" : "false");
+                found = true;
+                colnum = u_strlen(line) - u_strlen(needle);
+            }
+
+            /* found a forbidden code point?  see if we're well-formed UTF-16 */
+//            if (found) {
+//                conv = calloc(sz, sizeof(*conv));
+//                assert(conv != NULL);
+//                conv = u_strToUTF8(conv, sz, &len, line, i, &uerr);
+//                free(conv);
+//
+//                if (U_SUCCESS(uerr)) {
+//DEBUG_PRINT("is well-formed utf-16\n");
+//                    j = 0;
+//                    colnum_utf16 = 0;
+//
+//                    U16_NEXT_OR_FFFD(line, j, -1, c);
+//                    colnum_utf16++;
+//
+//                    if (U16_IS_SINGLE(c) && uentry->data == c) {
+//DEBUG_PRINT("found forbidden code point in utf-16: |%x|\n", c);
+//                        found = true;
+//                    }
+//
+//                    if (!found) {
+//                        while (U16_IS_LEAD(line[j + 1])) {
+///*
+//                            if (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) {
+//                                c = BSWAPFUNC(c);
+//                            }
+//*/
+//
+//                            if (U16_IS_SINGLE(c) && uentry->data == c) {
+//DEBUG_PRINT("found forbidden code point in utf-16\n");
+//                                found = true;
+//                                break;
+//                            }
+//
+//                            U16_NEXT_OR_FFFD(line, j, -1, c);
+//                            colnum_utf16++;
+//                        }
+//                    }
+//                }
+//            }
+
+/*
+
+after u_memchr32(), check to see if it's UTF-16
+if it's UTF-16, see if the code point is present
+   --> this is the part that keeps failing
+
+*/
+
+
+
+
+
+//            /* first, check for forbidden code points in UTF-16 encoding */
+//            if (utf16) {
+//            }
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+            /* forbidden code point found? */
+            if (found) {
                 /* build a pretend rpmfile_entry_t to look up the secrule */
                 globalfile->localpath = strdup(localpath);
                 assert(globalfile->localpath != NULL);
@@ -555,8 +667,7 @@ static int validate_file(const char *fpath, __attribute__((unused)) const struct
                         globalresult = false;
                     }
 
-                    colnum = u_strlen(line) - u_strlen(needle);
-                    xasprintf(&params.msg, _("A forbidden code point, 0x%04X, was found in the %s source file on line %ld at column %ld.  This source file is used by %s."), *needle, localpath, linenum, colnum, globalspec);
+                    xasprintf(&params.msg, _("A forbidden code point, 0x%04X, was found in the %s source file on line %ld at column %ld.  This source file is used by %s."), uentry->data, localpath, linenum, colnum, globalspec);
                     add_result(globalri, &params);
                     free(params.msg);
                 }
@@ -679,7 +790,7 @@ static bool unicode_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 bool inspect_unicode(struct rpminspect *ri)
 {
     bool result = true;
-    UChar32_entry_t *entry = NULL;
+    UChar_entry_t *uentry = NULL;
     string_entry_t *sentry = NULL;
     rpmpeer_entry_t *peer = NULL;
     rpmfile_entry_t *file = NULL;
@@ -695,18 +806,18 @@ bool inspect_unicode(struct rpminspect *ri)
         TAILQ_INIT(forbidden);
 
         TAILQ_FOREACH(sentry, ri->unicode_forbidden_codepoints, items) {
-            entry = calloc(1, sizeof(*entry));
-            assert(entry != NULL);
+            uentry = calloc(1, sizeof(*uentry));
+            assert(uentry != NULL);
             errno = 0;
-            entry->data = strtol(sentry->data, NULL, 16);
+            uentry->data = strtoul(sentry->data, NULL, 16);
 
             if (errno == ERANGE || errno == EINVAL) {
-                warn("strtol");
-                free(entry);
+                warn("strtoul");
+                free(uentry);
                 continue;
             }
 
-            TAILQ_INSERT_TAIL(forbidden, entry, items);
+            TAILQ_INSERT_TAIL(forbidden, uentry, items);
         }
 
         /* so the nftw() helper can report results */
@@ -730,9 +841,9 @@ bool inspect_unicode(struct rpminspect *ri)
 
         /* free the forbidden list memory */
         while (!TAILQ_EMPTY(forbidden)) {
-            entry = TAILQ_FIRST(forbidden);
-            TAILQ_REMOVE(forbidden, entry, items);
-            free(entry);
+            uentry = TAILQ_FIRST(forbidden);
+            TAILQ_REMOVE(forbidden, uentry, items);
+            free(uentry);
         }
 
         free(forbidden);

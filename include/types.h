@@ -45,14 +45,14 @@ typedef struct _string_entry_t {
 typedef TAILQ_HEAD(string_entry_s, _string_entry_t) string_list_t;
 
 /*
- * List of UChar32s.  Used by at least the unicode inspection.
+ * List of UChars.  Used by at least the unicode inspection.
  */
-typedef struct _UChar32_entry_t {
-    UChar32 data;
-    TAILQ_ENTRY(_UChar32_entry_t) items;
-} UChar32_entry_t;
+typedef struct _UChar_entry_t {
+    UChar data;
+    TAILQ_ENTRY(_UChar_entry_t) items;
+} UChar_entry_t;
 
-typedef TAILQ_HEAD(UChar32_entry_s, _UChar32_entry_t) UChar32_list_t;
+typedef TAILQ_HEAD(UChar_entry_s, _UChar_entry_t) UChar_list_t;
 
 /*
  * List of string pairs. Used to later convert in to a newly allocated hash table.
