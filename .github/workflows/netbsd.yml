@@ -1,0 +1,108 @@
+name: NetBSD
+
+on:
+    push:
+        branches: [ main ]
+        paths-ignore:
+            - AUTHORS.md
+            - CC-BY-4.0.txt
+            - CHANGES.md
+            - CODE_OF_CONDUCT.md
+            - CONTRIBUTING.md
+            - COPYING
+            - COPYING.LIB
+            - HISTORY
+            - LICENSE-2.0.txt
+            - MISSING
+            - MIT.txt
+            - README.md
+            - RELEASE
+            - TODO
+            - 'contrib/**'
+            - 'data/**'
+            - 'doc/**'
+            - 'po/**'
+            - 'regress/**'
+
+jobs:
+    netbsd:
+        # Use containers on this specific macos image
+        # https://github.com/marketplace/actions/netbsd-vm
+        runs-on: macos-12
+
+        # Environment variables for the job
+        env:
+            PATH: /usr/pkg/sbin:/usr/pkg/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/sbin
+            PKG_PATH: https://cdn.netbsd.org/pub/pkgsrc/packages/OPSYS/ARCH/VERSIONS/All/
+
+        # All of these steps run from within the main source
+        # directory, so think of that as your $PWD
+        steps:
+            # This means clone the git repo
+            - uses: actions/checkout@v3
+
+            # Within the container, install the dependencies, build,
+            # and run the test suite
+            - name: Build and run the test suite
+              uses: vmactions/netbsd-vm@v0
+
+              with:
+                  envs: 'PATH'
+                  usesh: true
+
+                  # Requirements before the git clone can happen
+                  prepare: |
+                      # get pkgsrc installed
+                      ftp ftp://ftp.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.xz
+                      tar -xf pkgsrc.tar.xz -C /usr
+
+                      # install pkgin
+                      PKG_PATH="ftp://ftp.netbsd.org/pub/pkgsrc/packages/$(uname)/$(uname -m)/$(uname -r)/All/"
+                      export PKG_PATH
+                      pkg_add pkgin
+
+                      # install git and the root certs
+                      pkgin -y install git mozilla-rootcerts-openssl
+
+                      # configure git
+                      git config --global --add safe.directory /__w/rpminspect/rpminspect
+
+                  # Run the build and test
+                  run: |
+                      # set PKG_PATH
+                      PKG_PATH="ftp://ftp.netbsd.org/pub/pkgsrc/packages/$(uname)/$(uname -m)/$(uname -r)/All/"
+                      export PKG_PATH
+
+                      # Install GNU make(1) so we can use the instreqs target
+                      # and GNU coreutils for 'grealpath'
+                      pkgin -y install gmake coreutils
+
+                      # set REALPATH to GNU coreutils' realpath
+                      REALPATH=/usr/pkg/bin/grealpath
+                      export REALPATH
+
+                      # Store exit codes for each step here for use in the next step
+                      mkdir -p exitcodes
+
+                      # Install build dependencies and set up the target
+                      gmake instreqs
+                      echo $? > exitcodes/instreqs
+
+                      # Build the software
+                      gmake debug
+                      echo $? > exitcodes/build
+
+                      # Run the test suite...except the virus tests
+                      for t in $(/bin/ls -1 test/test_*.py | grep -v test_virus | cut -c11- | cut -d '.' -f 1 | awk 'NF' ORS=' ') ; do
+                          gmake check ${t}
+                          echo $? > exitcodes/test_${t}
+                      done
+
+            # Process the exit codes outside the VM
+            - name: Check exit codes
+              run: |
+                  for ec in exitcodes/* ; do
+                      code="$(cat "${ec}" 2>/dev/null)"
+                      [ -z "${code}" ] && code=0
+                      [ ${code} -eq 0 ] || exit ${code}
+                  done
