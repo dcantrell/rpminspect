@@ -482,6 +482,7 @@ unsigned long int get_available_space(const char *path);
  * @param dst Full path to the local destination (including filename)
  */
 void curl_get_file(const bool verbose, const char *src, const char *dst);
+void curl_get_files(const bool verbose, const char *msg, const pair_list_t *urls);
 
 /**
  * @brief Get the size of the file at the URL specified

@@ -47,8 +47,12 @@ static void setup_progress_bar(const char *src)
     /* generate the verbose message string */
     if (src != NULL) {
         /* the basename of the source URL, which is the file name */
-        archive = rindex(src, '/') + 1;
-        assert(archive != NULL);
+        if (strchr(src, '/')) {
+            archive = rindex(src, '/') + 1;
+            assert(archive != NULL);
+        } else {
+            archive = (char *) src;
+        }
 
         /* we need to shorten the package basename if too wide */
         if ((strlen(archive) + 5) > bar_width) {
@@ -168,13 +172,11 @@ void curl_get_file(const bool verbose, const char *src, const char *dst)
     assert(src != NULL);
     assert(dst != NULL);
 
-    DEBUG_PRINT("src=|%s|\ndst=|%s|\n", src, dst);
-
     /* initialize curl */
     c = curl_easy_init();
 
-    if (!c) {
-        warn("*** curl_easy_init");
+    if (c == NULL) {
+        warnx("*** curl_easy_init");
         return;
     }
 
@@ -234,6 +236,181 @@ void curl_get_file(const bool verbose, const char *src, const char *dst)
     return;
 }
 
+/*
+ * Download helper for libcurl - multi files edition
+ */
+void curl_get_files(const bool verbose, const char *msg, const pair_list_t *urls)
+{
+    int i = 0;
+    int n = 0;
+    int running = 1;
+    int numfds = 0;
+    int repeats = 0;
+    char *archive = NULL;
+    CURL **c = NULL;
+    CURLM *multi_c = NULL;
+    CURLMcode mc;
+    CURLMsg *cmsg = NULL;
+    FILE **fp = NULL;
+    char **dst = NULL;
+    pair_entry_t *url = NULL;
+
+    if (urls == NULL || TAILQ_EMPTY(urls)) {
+        return;
+    }
+
+    /* create as many handles as we have urls */
+    TAILQ_FOREACH(url, urls, items) {
+        n++;
+    }
+
+    c = calloc(n, sizeof(*c));
+    assert(c != NULL);
+
+    fp = calloc(n, sizeof(*fp));
+    assert(fp != NULL);
+
+    dst = calloc(n, sizeof(*dst));
+    assert(dst != NULL);
+
+    i = 0;
+
+    /* initialize the multi handle */
+    multi_c = curl_multi_init();
+    assert(multi_c != NULL);
+
+    /* add all of the urls to the multi handle */
+    TAILQ_FOREACH(url, urls, items) {
+        /* create a new handle for this url */
+        c[i] = curl_easy_init();
+
+        if (c[i] == NULL) {
+            warnx("*** curl_easy_init");
+            return;
+        }
+
+        /* where to write the downloaded file */
+        fp[i] = fopen(url->value, "wb");
+
+        if (fp[i] == NULL) {
+            err(RI_PROGRAM_ERROR, "*** fopen");
+        }
+
+        /* save a copy of the destination file for later */
+        dst[i] = url->value;
+
+        /* set options for this url */
+        curl_easy_setopt(c[i], CURLOPT_WRITEFUNCTION, NULL);
+        curl_easy_setopt(c[i], CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(c[i], CURLOPT_MAXREDIRS, 10L);
+        curl_easy_setopt(c[i], CURLOPT_URL, url->key);
+        curl_easy_setopt(c[i], CURLOPT_WRITEDATA, fp[i]);
+        curl_easy_setopt(c[i], CURLOPT_FAILONERROR, true);
+#ifdef CURLOPT_TCP_FASTOPEN /* not available on all versions of libcurl (e.g., <= 7.29) */
+        curl_easy_setopt(c[i], CURLOPT_TCP_FASTOPEN, 1);
+#endif
+
+        if (verbose) {
+            if (isatty(STDOUT_FILENO) == 1) {
+#if LIBCURL_VERSION_NUM >= 0x072000
+                curl_easy_setopt(c[i], CURLOPT_XFERINFOFUNCTION, download_progress);
+#else
+                curl_easy_setopt(c[i], CURLOPT_PROGRESSFUNCTION, legacy_download_progress);
+#endif
+                curl_easy_setopt(c, CURLOPT_NOPROGRESS, 0L);
+            } else {
+                archive = rindex(url->key, '/') + 1;
+                assert(archive != NULL);
+                printf(">>> %s\n", archive);
+            }
+        }
+
+        curl_multi_add_handle(multi_c, c[i]);
+        i++;
+    }
+
+    if (msg == NULL) {
+        setup_progress_bar(_("Downloading"));
+    } else {
+        setup_progress_bar(msg);
+    }
+
+    /* run the downloads */
+    while (running) {
+        mc = curl_multi_perform(multi_c, &running);
+
+        if (mc == CURLM_OK && running) {
+            /* wait for activity, timeout or "nothing" */
+            mc = curl_multi_wait(multi_c, NULL, 0, 1000, &numfds);
+
+            if (mc != CURLM_OK) {
+                warnx("*** curl_multi_wait: %s", curl_multi_strerror(mc));
+                break;
+            }
+        } else if (mc != CURLM_OK) {
+            warnx("*** curl_multi_wait: %s", curl_multi_strerror(mc));
+            break;
+        }
+
+        /*
+         * numfds at zero means a timeout or no file descriptors to
+         * wait for.  Try timeout on first occurrence, then assume no
+         * file descriptors and no file descriptors to wait for means
+         * wait for 100 ms.
+         */
+        if (numfds == 0) {
+            /* count the number of repeated zero numfds */
+            repeats++;
+
+            if (repeats > 1) {
+                /* sleep 100 ms */
+                usleep(100000);
+            }
+        } else {
+            repeats = 0;
+        }
+    }
+
+    /* remove output file if there was a download error (e.g., 404) */
+    while ((cmsg = curl_multi_info_read(multi_c, &running))) {
+        if (cmsg->msg == CURLMSG_DONE && cmsg->data.result != CURLE_OK) {
+            for (i = 0; i < n; i++) {
+                if (cmsg->easy_handle == c[i]) {
+                    /* close and unlink the file */
+                    if (fclose(fp[i]) != 0) {
+                        warn("*** fclose");
+                    }
+
+                    if (unlink(dst[i]) != 0) {
+                        warn("*** unlink");
+                    }
+
+                    fp[i] = NULL;
+                    dst[i] = NULL;
+                    break;
+                }
+            }
+        }
+    }
+
+    /* clean up */
+    for (i = 0; i < n; i++) {
+        curl_multi_remove_handle(multi_c, c[i]);
+        curl_easy_cleanup(c[i]);
+
+        if (fp[i] != NULL && fclose(fp[i]) != 0) {
+            warn("*** fclose");
+        }
+    }
+
+    curl_multi_cleanup(multi_c);
+    free(c);
+    free(fp);
+    free(dst);
+
+    return;
+}
+
 curl_off_t curl_get_size(const char *src)
 {
     curl_off_t r = 0;
@@ -246,8 +423,10 @@ curl_off_t curl_get_size(const char *src)
     assert(src != NULL);
 
     /* initialize curl */
-    if (!(c = curl_easy_init())) {
-        warn("*** curl_easy_init");
+    c = curl_easy_init();
+
+    if (c == NULL) {
+        warnx("*** curl_easy_init");
         return 0;
     }
 
@@ -264,7 +443,7 @@ curl_off_t curl_get_size(const char *src)
     cc = curl_easy_perform(c);
 
     if (cc != CURLE_OK) {
-        warnx(_("*** unable to read %s"), src);
+        warnx("*** curl_easy_perform: %s", curl_easy_strerror(cc));
         return 0;
     }
 

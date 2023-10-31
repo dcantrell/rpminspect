@@ -275,6 +275,8 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
     parser_plugin *p = &yaml_parser;
     parser_context *ctx = NULL;
     string_list_t *filter = NULL;
+    pair_list_t *urls = NULL;
+    pair_entry_t *url = NULL;
 
     assert(build != NULL);
     assert(build->builds != NULL);
@@ -342,10 +344,6 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
 
                 *mend = '\0';
             }
-
-            /* display the message */
-            printf("%s\n", verbose_msg);
-            free(verbose_msg);
         }
 
         /* Download module metadata at the top level */
@@ -392,6 +390,11 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
             free(dst);
         }
 
+        /* Create a data structure for the URLs */
+        urls = calloc(1, sizeof(*urls));
+        assert(urls != NULL);
+        TAILQ_INIT(urls);
+
         /* Iterate over the list of packages for this build */
         TAILQ_FOREACH(rpm, buildentry->rpms, items) {
             /* skip arches the user wishes to exclude */
@@ -399,35 +402,44 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
                 continue;
             }
 
+            /* create a url entry */
+            url = calloc(1, sizeof(*url));
+            assert(url != NULL);
+
             /* create the destination directory */
             if (fetch_only) {
-                xasprintf(&dst, "%s/%s", workri->worksubdir, rpm->arch);
+                xasprintf(&url->value, "%s/%s", workri->worksubdir, rpm->arch);
             } else {
-                xasprintf(&dst, "%s/%s/%s", workri->worksubdir, build_desc[whichbuild], rpm->arch);
+                xasprintf(&url->value, "%s/%s/%s", workri->worksubdir, build_desc[whichbuild], rpm->arch);
             }
 
-            if (mkdirp(dst, mode)) {
+            if (mkdirp(url->value, mode)) {
+                free(url->value);
+                free(url);
                 return -1;
             }
 
-            free(dst);
+            free(url->value);
 
             /* for modules, get the per-arch module metadata */
             if (workri->buildtype == KOJI_BUILD_MODULE) {
                 if (fetch_only) {
-                    xasprintf(&dst, "%s/%s/"MODULEMD_ARCH_FILENAME, workri->worksubdir, rpm->arch, rpm->arch);
+                    xasprintf(&url->value, "%s/%s/"MODULEMD_ARCH_FILENAME, workri->worksubdir, rpm->arch, rpm->arch);
                 } else {
-                    xasprintf(&dst, "%s/%s/%s/"MODULEMD_ARCH_FILENAME, workri->worksubdir, build_desc[whichbuild], rpm->arch, rpm->arch);
+                    xasprintf(&url->value, "%s/%s/%s/"MODULEMD_ARCH_FILENAME, workri->worksubdir, build_desc[whichbuild], rpm->arch, rpm->arch);
                 }
 
                 /* only download this file if we have not already gotten it */
-                if (access(dst, F_OK|R_OK)) {
-                    xasprintf(&src, "%s/packages/%s/%s/%s/files/module/"MODULEMD_ARCH_FILENAME, workri->kojimbs, build->package_name, build->version, build->release, rpm->arch);
-                    curl_get_file(workri->verbose, src, dst);
-                    free(src);
-                }
+                if (access(url->value, F_OK|R_OK)) {
+                    xasprintf(&url->key, "%s/packages/%s/%s/%s/files/module/"MODULEMD_ARCH_FILENAME, workri->kojimbs, build->package_name, build->version, build->release, rpm->arch);
+                    TAILQ_INSERT_TAIL(urls, url, items);
 
-                free(dst);
+                    /* we have used this url, so make a new one */
+                    url = calloc(1, sizeof(*url));
+                    assert(url != NULL);
+                } else {
+                    free(url->value);
+                }
             }
 
             /* for module builds, filter out packages */
@@ -441,9 +453,9 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
             xasprintf(&pkg, "%s-%s-%s.%s.rpm", rpm->name, rpm->version, rpm->release, rpm->arch);
 
             if (fetch_only) {
-                xasprintf(&dst, "%s/%s/%s", workri->worksubdir, rpm->arch, pkg);
+                xasprintf(&url->value, "%s/%s/%s", workri->worksubdir, rpm->arch, pkg);
             } else {
-                xasprintf(&dst, "%s/%s/%s/%s", workri->worksubdir, build_desc[whichbuild], rpm->arch, pkg);
+                xasprintf(&url->value, "%s/%s/%s/%s", workri->worksubdir, build_desc[whichbuild], rpm->arch, pkg);
             }
 
             if (build->volume_name == NULL || !strcmp(build->volume_name, "DEFAULT")) {
@@ -453,7 +465,7 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
             }
 
             /* construct the source download url */
-            xasprintf(&src, srcfmt,
+            xasprintf(&url->key, srcfmt,
                       (workri->buildtype == KOJI_BUILD_MODULE) ? workri->kojimbs : workri->kojiursine,
                       (build->volume_name == NULL || !strcmp(build->volume_name, "DEFAULT")) ? "packages" : build->volume_name,
                       (buildentry->package_name == NULL) ? build->name : buildentry->package_name,
@@ -462,11 +474,8 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
                       rpm->arch,
                       pkg);
 
-            /* download the package */
-            curl_get_file(workri->verbose, src, dst);
-
-            /* gather the RPM header */
-            get_rpm_info(dst);
+            /* add the url */
+            TAILQ_INSERT_TAIL(urls, url, items);
 
             /* start over */
             free(src);
@@ -477,6 +486,18 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
         list_free(filter, free);
         filter = NULL;
     }
+
+    /* now download all of the URLs */
+    curl_get_files(workri->verbose, verbose_msg, urls);
+
+    /* gather the RPM headers */
+    TAILQ_FOREACH(url, urls, items) {
+        get_rpm_info(url->value);
+    }
+
+    /* clean up */
+    free_pair(urls);
+    free(verbose_msg);
 
     return RI_SUCCESS;
 }
@@ -491,10 +512,11 @@ static int download_task(struct rpminspect *ri, struct koji_task *task)
     size_t len;
     char *pkg = NULL;
     char *src = NULL;
-    char *dst = NULL;
     char *tail = NULL;
     koji_task_entry_t *descendent = NULL;
     string_entry_t *entry = NULL;
+    pair_list_t *urls = NULL;
+    pair_entry_t *url = NULL;
 
     assert(ri != NULL);
     assert(task != NULL);
@@ -550,6 +572,11 @@ static int download_task(struct rpminspect *ri, struct koji_task *task)
     /* set working subdirectory */
     set_worksubdir(workri, TASK_WORKDIR, NULL, task);
 
+    /* Create a data structure for the URLs */
+    urls = calloc(1, sizeof(*urls));
+    assert(urls != NULL);
+    TAILQ_INIT(urls);
+
     /* download the task */
     TAILQ_FOREACH(descendent, task->descendents, items) {
         /* skip if we have nothing */
@@ -557,51 +584,54 @@ static int download_task(struct rpminspect *ri, struct koji_task *task)
             continue;
         }
 
+        url = calloc(1, sizeof(*url));
+        assert(url != NULL);
+
         /* create the destination directory */
         if (fetch_only) {
-            xasprintf(&dst, "%s/%s", workri->worksubdir, descendent->task->arch);
+            xasprintf(&url->value, "%s/%s", workri->worksubdir, descendent->task->arch);
         } else {
-            xasprintf(&dst, "%s/%s/%s", workri->worksubdir, build_desc[whichbuild], descendent->task->arch);
+            xasprintf(&url->value, "%s/%s/%s", workri->worksubdir, build_desc[whichbuild], descendent->task->arch);
         }
 
-        if (mkdirp(dst, mode)) {
-            free(dst);
+        if (mkdirp(url->value, mode)) {
+            free(url->value);
+            free(url);
             return -1;
         }
 
-        free(dst);
+        free(url->value);
+        free(url);
 
         /* download SRPMs */
-        if (allowed_arch(ri, "src")) {
+        if (allowed_arch(ri, SRPM_ARCH_NAME)) {
             TAILQ_FOREACH(entry, descendent->srpms, items) {
+                url = calloc(1, sizeof(*url));
+                assert(url != NULL);
                 pkg = basename(entry->data);
+                assert(pkg != NULL);
 
                 if (fetch_only) {
-                    xasprintf(&dst, "%s/src", workri->worksubdir);
+                    xasprintf(&url->value, "%s/src", workri->worksubdir);
                 } else {
-                    xasprintf(&dst, "%s/%s/src", workri->worksubdir, build_desc[whichbuild]);
+                    xasprintf(&url->value, "%s/%s/src", workri->worksubdir, build_desc[whichbuild]);
                 }
 
-                if (mkdirp(dst, mode)) {
-                    free(dst);
+                if (mkdirp(url->value, mode)) {
+                    free(url->value);
+                    free(url);
                     return -1;
                 }
 
-                len = strlen(dst);
-                dst = realloc(dst, len + strlen(pkg) + 2);
-                tail = dst + len;
+                len = strlen(url->value);
+                url->value = realloc(url->value, len + strlen(pkg) + 2);
+                tail = url->value + len;
                 tail = stpcpy(tail, "/");
                 (void) stpcpy(tail, pkg);
-                assert(dst != NULL);
+                assert(url->value != NULL);
 
-                xasprintf(&src, "%s/work/%s", workri->kojiursine, entry->data);
-                curl_get_file(workri->verbose, src, dst);
-
-                /* gather the RPM header */
-                get_rpm_info(dst);
-
-                free(dst);
-                free(src);
+                xasprintf(&url->key, "%s/work/%s", workri->kojiursine, entry->data);
+                TAILQ_INSERT_TAIL(urls, url, items);
             }
         }
 
@@ -611,24 +641,32 @@ static int download_task(struct rpminspect *ri, struct koji_task *task)
                 continue;
             }
 
+            url = calloc(1, sizeof(*url));
+            assert(url != NULL);
             pkg = basename(entry->data);
+            assert(pkg != NULL);
 
             if (fetch_only) {
-                xasprintf(&dst, "%s/%s/%s", workri->worksubdir, descendent->task->arch, pkg);
+                xasprintf(&url->value, "%s/%s/%s", workri->worksubdir, descendent->task->arch, pkg);
             } else {
-                xasprintf(&dst, "%s/%s/%s/%s", workri->worksubdir, build_desc[whichbuild], descendent->task->arch, pkg);
+                xasprintf(&url->value, "%s/%s/%s/%s", workri->worksubdir, build_desc[whichbuild], descendent->task->arch, pkg);
             }
 
-            xasprintf(&src, "%s/work/%s", workri->kojiursine, entry->data);
-            curl_get_file(workri->verbose, src, dst);
-
-            /* gather the RPM header */
-            get_rpm_info(dst);
-
-            free(dst);
-            free(src);
+            xasprintf(&url->key, "%s/work/%s", workri->kojiursine, entry->data);
+            TAILQ_INSERT_TAIL(urls, url, items);
         }
     }
+
+    /* now download all of the URLs */
+    curl_get_files(workri->verbose, NULL, urls);
+
+    /* gather the RPM headers */
+    TAILQ_FOREACH(url, urls, items) {
+        get_rpm_info(url->value);
+    }
+
+    /* clean up */
+    free_pair(urls);
 
     return RI_SUCCESS;
 }
