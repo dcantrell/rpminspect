@@ -352,3 +352,22 @@ void free_deprules(deprule_list_t *list)
     free(list);
     return;
 }
+
+/*
+ * Free a string array (char **) of length len.
+ */
+void free_str_array(char **array, uint32_t len)
+{
+    uint32_t i = 0;
+
+    if (array == NULL || len == 0) {
+        return;
+    }
+
+    for (i = 0; i < len; i++) {
+        free(array[i]);
+    }
+
+    free(array);
+    return;
+}

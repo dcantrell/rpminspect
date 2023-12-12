@@ -149,7 +149,6 @@ In addition to the libraries that will be linked in to librpminspect,
 there are a number of userspace programs used:
 
     /usr/bin/desktop-file-validate [optional]
-    /usr/bin/msgunfmt
     /usr/bin/abidiff [optional]
     /usr/bin/kmidiff [optional]
     /usr/bin/udevadm [optional]
@@ -163,7 +162,7 @@ packages.
 In Fedora, for example, you can run the following to install these
 programs:
 
-    yum install desktop-file-utils gettext libabigail /usr/bin/annocheck
+    yum install desktop-file-utils libabigail /usr/bin/annocheck
 
 The 'shellsyntax' inspection uses the actual shell programs listed in
 the shells setting in the rpminspect configuration file.  Since this

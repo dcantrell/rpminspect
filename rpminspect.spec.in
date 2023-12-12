@@ -62,7 +62,6 @@ against the defined parameters.
 Summary:        Library providing RPM test API and functionality
 Group:          Development/Tools
 Requires:       desktop-file-utils
-Requires:       gettext
 
 %if 0%{?rhel} >= 8 || 0%{?epel} >= 8 || 0%{?fedora}
 Recommends:     /usr/bin/annocheck

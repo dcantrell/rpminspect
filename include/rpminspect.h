@@ -25,6 +25,7 @@ extern "C"
 
 #include "constants.h"
 #include "types.h"
+#include "mofile.h"
 #include "inspect.h"
 #include "results.h"
 #include "output.h"
@@ -132,6 +133,7 @@ void free_string_map(string_map_t *table);
 void free_regex(regex_t *regex);
 void free_rpminspect(struct rpminspect *);
 void free_deprules(deprule_list_t *list);
+void free_str_array(char **array, uint32_t len);
 
 /* pairfuncs.c */
 bool pair_contains_key(const pair_list_t *list, const char *key);
@@ -546,6 +548,9 @@ char *joinpath(const char *path, ...);
 
 /* array.c */
 void array(parser_plugin *p, parser_context *ctx, const char *key1, const char *key2, string_list_t **list);
+
+/* mofile.c */
+mo_file_t *read_mofile(const char *filename);
 
 #endif
 

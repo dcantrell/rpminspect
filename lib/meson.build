@@ -85,6 +85,7 @@ librpminspect_sources = [
     'macros.c',
     'magic.c',
     'mkdirp.c',
+    'mofile.c',
     'output.c',
     'output_json.c',
     'output_summary.c',
