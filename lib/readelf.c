@@ -123,11 +123,59 @@ Elf * get_elf_archive(const char *fullpath, int *out_fd)
 }
 
 /*
+ * Do an initial guess of whether or not a file is an ELF file.
+ */
+elf_type_t guess_elf_type(const char *path)
+{
+    int fd = 0;
+    int flags = O_RDONLY | O_CLOEXEC;
+    char lead[7];
+
+    assert(path != NULL);
+
+#ifdef O_LARGEFILE
+    flags |= O_LARGEFILE;
+#endif
+    fd = open(path, flags);
+
+    if (fd == -1) {
+        return ELF_NULL;
+    }
+
+    if (read(fd, lead, sizeof(lead)) != sizeof(lead)) {
+        close(fd);
+        return ELF_NULL;
+    }
+
+    if (close(fd) == -1) {
+        return ELF_NULL;
+    }
+
+    /*
+     * ELF archives begin with '!<arch>'
+     * ELF shared objects begin with 0x7F'ELF'
+     */
+    if (lead[0] == '\x21' && lead[1] == '\x3C' && lead[2] == '\x61' && lead[3] == '\x72' && lead[4] == '\x63' && lead[5] == '\x68' && lead[6] == '\x3E') {
+        return ELF_ARCHIVE;
+    } else if (lead[0] == '\x7F' && lead[1] == '\x45' && lead[2] == '\x4C' && lead[3] == '\x46') {
+        return ELF_OBJECT;
+    }
+
+    return NOT_ELF;
+}
+
+/*
  * Return true if a specified file is ELF, false otherwise.
  */
-bool is_elf(const char *path)
+bool is_elf(rpmfile_entry_t *entry)
 {
-    return (is_elf_file(path) || is_elf_archive(path));
+    assert(entry != NULL);
+
+    if (entry->elftype == ELF_NULL || entry->elftype == NOT_ELF) {
+        return false;
+    }
+
+    return true;
 }
 
 static bool _is_elf_type(const char *path, int type)
@@ -153,38 +201,54 @@ static bool _is_elf_type(const char *path, int type)
  * Return true if a specified file is an ELF shared library file, that
  * is, of type ET_DYN.
  */
-bool is_elf_shared_library(const char *path)
+bool is_elf_shared_library(rpmfile_entry_t *entry)
 {
-    return _is_elf_type(path, ET_DYN);
+    assert(entry != NULL);
+
+    if (entry->elftype == ELF_SHARED_LIBRARY) {
+        return true;
+    } else if (entry->elftype == ELF_OBJECT) {
+        if (_is_elf_type(entry->fullpath, ET_DYN)) {
+            entry->elftype = ELF_SHARED_LIBRARY;
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
 }
 
 /*
  * Return true if a specified file is an ELF executable file, that
  * is, of type ET_EXEC.
  */
-bool is_elf_executable(const char *path)
+bool is_elf_executable(rpmfile_entry_t *entry)
 {
-    return _is_elf_type(path, ET_EXEC);
+    assert(entry != NULL);
+
+    if (entry->elftype == ELF_EXECUTABLE) {
+        return true;
+    } else if (entry->elftype == ELF_OBJECT) {
+        if (_is_elf_type(entry->fullpath, ET_EXEC)) {
+            entry->elftype = ELF_EXECUTABLE;
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
 }
 
 /*
- * Return true for any ELF file.
+ * Return true for any ELF non-archive file.
  */
-bool is_elf_file(const char *path)
+bool is_elf_file(rpmfile_entry_t *entry)
 {
-    int fd = 0;
-    Elf *elf = NULL;
+    assert(entry != NULL);
 
-    /* try it as a shared object */
-    elf = get_elf(path, &fd);
-
-    if (elf) {
-        elf_end(elf);
-
-        if (fd) {
-            close(fd);
-        }
-
+    if (entry->elftype == ELF_OBJECT || entry->elftype == ELF_SHARED_LIBRARY || entry->elftype == ELF_EXECUTABLE) {
         return true;
     }
 
@@ -194,21 +258,11 @@ bool is_elf_file(const char *path)
 /*
  * Return true for any ELF archive.
  */
-bool is_elf_archive(const char *path)
+bool is_elf_archive(rpmfile_entry_t *entry)
 {
-    int fd = 0;
-    Elf *elf = NULL;
+    assert(entry != NULL);
 
-    /* try it as a static library */
-    elf = get_elf_archive(path, &fd);
-
-    if (elf) {
-        elf_end(elf);
-
-        if (fd) {
-            close(fd);
-        }
-
+    if (entry->elftype == ELF_ARCHIVE) {
         return true;
     }
 

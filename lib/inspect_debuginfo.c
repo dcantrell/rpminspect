@@ -179,12 +179,12 @@ static bool debuginfo_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Only deal with ELF shared libraries or executables */
-    if (!is_elf_shared_library(file->fullpath) && !is_elf_executable(file->fullpath)) {
+    if (!is_elf_shared_library(file) && !is_elf_executable(file)) {
         return true;
     }
 
     if (file->peer_file) {
-        if (!is_elf_shared_library(file->peer_file->fullpath) && !is_elf_executable(file->peer_file->fullpath)) {
+        if (!is_elf_shared_library(file->peer_file) && !is_elf_executable(file->peer_file)) {
             return true;
         }
     }

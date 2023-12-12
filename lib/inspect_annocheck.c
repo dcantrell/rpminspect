@@ -334,7 +334,7 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Only run this check on ELF files */
-    if (!is_elf_file(file->fullpath) || (!is_elf_file(file->fullpath) && file->peer_file && !is_elf_file(file->peer_file->fullpath))) {
+    if (!is_elf_file(file) || (!is_elf_file(file) && file->peer_file && !is_elf_file(file->peer_file))) {
         return true;
     }
 

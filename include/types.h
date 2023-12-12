@@ -71,6 +71,16 @@ typedef struct _pair_entry_t {
 
 typedef TAILQ_HEAD(pair_entry_s, _pair_entry_t) pair_list_t;
 
+/* ELF types */
+typedef enum _elf_type_t {
+    ELF_NULL = 0,
+    NOT_ELF = 1,
+    ELF_OBJECT = 2,
+    ELF_ARCHIVE = 3,
+    ELF_SHARED_LIBRARY = 4,
+    ELF_EXECUTABLE = 5
+} elf_type_t;
+
 /*
  * A file is information about a file in an RPM payload.
  *
@@ -103,6 +113,9 @@ typedef TAILQ_HEAD(pair_entry_s, _pair_entry_t) pair_list_t;
  *
  * moved_subpackage is true if the file moved between subpackages
  * between the before and after build, false otherwise.
+ *
+ * elftype captures what type, if any, of ELF file this is so we don't
+ * have to keep calling libelf functions over and over.
  */
 typedef struct _rpmfile_entry_t {
     Header rpm_header;
@@ -119,6 +132,7 @@ typedef struct _rpmfile_entry_t {
     struct _rpmfile_entry_t *peer_file;
     bool moved_path;
     bool moved_subpackage;
+    elf_type_t elftype;
     TAILQ_ENTRY(_rpmfile_entry_t) items;
 } rpmfile_entry_t;
 

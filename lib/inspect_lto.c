@@ -125,7 +125,7 @@ static bool lto_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Only valid for ELF files */
-    if (!is_elf_file(file->fullpath)) {
+    if (!is_elf_file(file)) {
         return true;
     }
 

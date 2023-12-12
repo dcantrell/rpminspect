@@ -392,3 +392,12 @@ subdir('src')
 subdir('include')
 subdir('data')
 subdir('test')
+
+# Generate pkgconfig file
+pkg = import('pkgconfig')
+pkg.generate(
+    librpminspect,
+    description: 'RPM build deviation analysis library',
+    url: 'https://github.com/rpminspect/rpminspect',
+    subdirs: ['librpminspect']
+)

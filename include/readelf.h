@@ -122,16 +122,27 @@ GElf_Half get_elf_type(Elf *elf);
 GElf_Half get_elf_machine(Elf *elf);
 
 /**
+ * @brief Initial guess as to whether the file is ELF or not.
+ *
+ * Determine what type, if any, of ELF file this is.  Non-ELF files
+ * will be NOT_ELF.
+ *
+ * @param path The full path to the file to check.
+ * @return An elf_type_t representing what the file is.
+ */
+elf_type_t guess_elf_type(const char *path);
+
+/**
  * @brief Determine if the specified file is any ELF file type.
  *
  * Given a path to a file, this function returns true if the file is
  * either an ELF archive or an ELF file.  In all other cases, it
  * returns false.
  *
- * @param path The full path to the file in question.
+ * @param entry The rpmfile_entry_t of the file in question.
  * @return True if the file is ELF, false otherwise.
  */
-bool is_elf(const char *path);
+bool is_elf(rpmfile_entry_t *entry);
 
 /**
  * @brief Determine if the specified file is an ELF shared library.
@@ -139,10 +150,10 @@ bool is_elf(const char *path);
  * Given a path to a file, this function returns true if the file is
  * an ELF shared library.  That is, if it is ELF type ET_DYN.
  *
- * @param path The fullpath tothe file in question.
+ * @param entry The rpmfile_entry_t of the file in question.
  * @return True if the file is an ELF shared library, false otherwise.
  */
-bool is_elf_shared_library(const char *path);
+bool is_elf_shared_library(rpmfile_entry_t *entry);
 
 /**
  * @brief Determine if the specified file is an ELF executable.
@@ -150,10 +161,10 @@ bool is_elf_shared_library(const char *path);
  * Given a path to a file, this function returns true if the file is
  * an ELF executable.  That is, if it is ELF type ET_EXEC.
  *
- * @param path The fullpath tothe file in question.
+ * @param entry The rpmfile_entry_t of the file in question.
  * @return True if the file is an ELF executable, false otherwise.
  */
-bool is_elf_executable(const char *path);
+bool is_elf_executable(rpmfile_entry_t *entry);
 
 /**
  * @brief Determine if the specified file is an ELF file.
@@ -162,10 +173,10 @@ bool is_elf_executable(const char *path);
  * an ELF file.  That is, an ELF executable, shared library, or shared
  * object.
  *
- * @param path The fullpath tothe file in question.
+ * @param entry The rpmfile_entry_t of the file in question.
  * @return True if the file is an ELF file, false otherwise.
  */
-bool is_elf_file(const char *path);
+bool is_elf_file(rpmfile_entry_t *entry);
 
 /**
  * @brief Determine if the specified file is an ELF archive.
@@ -174,10 +185,10 @@ bool is_elf_file(const char *path);
  * an ELF archive.  That is, a '.a' file consisting of ELF object
  * files.
  *
- * @param path The fullpath tothe file in question.
+ * @param entry The rpmfile_entry_t of the file in question.
  * @return True if the file is an ELF archive, false otherwise.
  */
-bool is_elf_archive(const char *path);
+bool is_elf_archive(rpmfile_entry_t *entry);
 
 /**
  * @brief Determine if the specified Elf object contains the specified

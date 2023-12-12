@@ -128,7 +128,7 @@ static bool removedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
             params.verb = VERB_FAILED;
         }
 
-        if (is_elf_file(file->fullpath) && !strcmp(type, "application/x-pie-executable")) {
+        if (is_elf_file(file) && !strcmp(type, "application/x-pie-executable")) {
             soname = get_elf_soname(file->fullpath);
 
             if (soname) {

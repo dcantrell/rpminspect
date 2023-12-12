@@ -172,7 +172,7 @@ librpminspect = library(
     'rpminspect',
     librpminspect_sources,
     include_directories : [ inc, incxdiff ],
-    version : '0.5.0',
+    soversion : '1.0.0',
     install : true,
     link_with : [ libxdiff, ],
     dependencies : deps

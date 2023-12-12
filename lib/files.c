@@ -358,6 +358,9 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
             file_list = NULL;
             goto cleanup;
         }
+
+        /* Initialize ELF identifier */
+        file_entry->elftype = guess_elf_type(file_entry->fullpath);
     }
 
 cleanup:
@@ -740,7 +743,7 @@ static void find_one_peer(struct rpminspect *ri, rpmfile_entry_t *file, rpmfile_
                     return;
                 }
             } else if ((S_ISREG(file->st.st_mode) && S_ISREG(after_file->st.st_mode))
-                       || (is_elf(file->fullpath) && is_elf(after_file->fullpath))) {
+                       || (is_elf(file) && is_elf(after_file))) {
                 /*
                  * Try to match libraries that have changed versions.
                  * The idea is to look for ELF files that carry a

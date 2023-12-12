@@ -137,7 +137,7 @@ static bool changedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* ELF content changing is handled by other inspections */
-    if (is_elf(file->fullpath)) {
+    if (is_elf(file)) {
         return true;
     }
 
