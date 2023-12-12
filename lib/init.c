@@ -573,6 +573,9 @@ static void read_cfgfile(struct rpminspect *ri, const char *filename, const bool
     char *s = NULL;
     tabledict_cb_data annocheck_cb_data = { false, false, &ri->annocheck };
     string_list_t *slist = NULL;
+    string_entry_t *sentry = NULL;
+    char *tmp = NULL;
+    uid_entry_t *uentry = NULL;
 
     assert(ri != NULL);
     assert(filename != NULL);
@@ -592,8 +595,8 @@ static void read_cfgfile(struct rpminspect *ri, const char *filename, const bool
     strget(p, ctx, RI_KOJI, RI_DOWNLOAD_MBS, &ri->kojimbs);
     strget(p, ctx, RI_COMMANDS, RI_MSGUNFMT, &ri->commands.msgunfmt);
     strget(p, ctx, RI_COMMANDS, RI_DESKTOP_FILE_VALIDATE, &ri->commands.desktop_file_validate);
-    strget(p, ctx, RI_COMMANDS, RI_ABIDIFF, &ri->commands.abidiff);
-    strget(p, ctx, RI_COMMANDS, RI_KMIDIFF, &ri->commands.kmidiff);
+    strget(p, ctx, RI_COMMANDS, NAME_ABIDIFF, &ri->commands.abidiff);
+    strget(p, ctx, RI_COMMANDS, NAME_KMIDIFF, &ri->commands.kmidiff);
     strget(p, ctx, RI_COMMANDS, RI_UDEVADM, &ri->commands.udevadm);
     strget(p, ctx, RI_VENDOR, RI_VENDOR_DATA_DIR, &ri->vendor_data_dir);
     array(p, ctx, RI_VENDOR, RI_LICENSEDB, &ri->licensedb);
@@ -627,11 +630,11 @@ static void read_cfgfile(struct rpminspect *ri, const char *filename, const bool
     array(p, ctx, RI_IGNORE, NULL, &ri->ignores);
     array(p, ctx, RI_SECURITY_PATH_PREFIX, NULL, &ri->security_path_prefix);
     array(p, ctx, RI_BADWORDS, NULL, &ri->badwords);
-    strget(p, ctx, RI_METADATA, RI_VENDOR, &ri->vendor);
-    array(p, ctx, RI_METADATA, RI_BUILDHOST_SUBDOMAIN, &ri->buildhost_subdomain);
+    strget(p, ctx, NAME_METADATA, RI_VENDOR, &ri->vendor);
+    array(p, ctx, NAME_METADATA, RI_BUILDHOST_SUBDOMAIN, &ri->buildhost_subdomain);
 
 #ifdef _HAVE_MODULARITYLABEL
-    s = p->getstr(ctx, RI_MODULARITY, RI_STATIC_CONTEXT);
+    s = p->getstr(ctx, NAME_MODULARITY, RI_STATIC_CONTEXT);
 
     if (s != NULL) {
         if (!strcasecmp(s, RI_REQUIRED)) {
@@ -648,49 +651,49 @@ static void read_cfgfile(struct rpminspect *ri, const char *filename, const bool
         free(s);
     }
 
-    tabledict(p, ctx, RI_MODULARITY, RI_RELEASE_REGEXP, &ri->modularity_release, false, false);
+    tabledict(p, ctx, NAME_MODULARITY, RI_RELEASE_REGEXP, &ri->modularity_release, false, false);
 #endif
 
     ADD_INCL_EXCL(elf);
-    add_ignores(ri, p, ctx, RI_ELF);
-    array(p, ctx, RI_EMPTYRPM, RI_EXPECTED_EMPTY, &ri->expected_empty_rpms);
+    add_ignores(ri, p, ctx, NAME_ELF);
+    array(p, ctx, NAME_EMPTYRPM, RI_EXPECTED_EMPTY, &ri->expected_empty_rpms);
     ADD_INCL_EXCL(manpage);
-    add_ignores(ri, p, ctx, RI_MANPAGE);
+    add_ignores(ri, p, ctx, NAME_MANPAGE);
     ADD_INCL_EXCL(xml);
-    add_ignores(ri, p, ctx, RI_XML);
+    add_ignores(ri, p, ctx, NAME_XML);
 
-    strget(p, ctx, RI_DESKTOP, RI_DESKTOP_ENTRY_FILES_DIR, &ri->desktop_entry_files_dir);
+    strget(p, ctx, NAME_DESKTOP, RI_DESKTOP_ENTRY_FILES_DIR, &ri->desktop_entry_files_dir);
 
     /* handle the desktop skips as two arrays and then merge them in to desktop_skips */
-    array(p, ctx, RI_DESKTOP, RI_DESKTOP_SKIP_EXEC_CHECK, &slist);
+    array(p, ctx, NAME_DESKTOP, RI_DESKTOP_SKIP_EXEC_CHECK, &slist);
     process_desktop_skips(&ri->desktop_skips, slist, SKIP_EXEC);
     list_free(slist, free);
     slist = NULL;
 
-    array(p, ctx, RI_DESKTOP, RI_DESKTOP_SKIP_ICON_CHECK, &slist);
+    array(p, ctx, NAME_DESKTOP, RI_DESKTOP_SKIP_ICON_CHECK, &slist);
     process_desktop_skips(&ri->desktop_skips, slist, SKIP_ICON);
     list_free(slist, free);
     slist = NULL;
 
-    add_ignores(ri, p, ctx, RI_DESKTOP);
-    array(p, ctx, RI_CHANGEDFILES, RI_HEADER_FILE_EXTENSIONS, &ri->header_file_extensions);
-    add_ignores(ri, p, ctx, RI_CHANGEDFILES);
-    array(p, ctx, RI_ADDEDFILES, RI_FORBIDDEN_PATH_PREFIXES, &ri->forbidden_path_prefixes);
-    array(p, ctx, RI_ADDEDFILES, RI_FORBIDDEN_PATH_SUFFIXES, &ri->forbidden_path_suffixes);
-    array(p, ctx, RI_ADDEDFILES, RI_FORBIDDEN_DIRECTORIES, &ri->forbidden_directories);
-    add_ignores(ri, p, ctx, RI_ADDEDFILES);
-    add_ignores(ri, p, ctx, RI_MOVEDFILES);
-    add_ignores(ri, p, ctx, RI_REMOVEDFILES);
-    array(p, ctx, RI_OWNERSHIP, RI_BIN_PATHS, &ri->bin_paths);
-    strget(p, ctx, RI_OWNERSHIP, RI_BIN_OWNER, &ri->bin_owner);
-    strget(p, ctx, RI_OWNERSHIP, RI_BIN_GROUP, &ri->bin_group);
-    array(p, ctx, RI_OWNERSHIP, RI_FORBIDDEN_OWNERS, &ri->forbidden_owners);
-    array(p, ctx, RI_OWNERSHIP, RI_FORBIDDEN_GROUPS, &ri->forbidden_groups);
-    add_ignores(ri, p, ctx, RI_OWNERSHIP);
-    array(p, ctx, RI_SHELLSYNTAX, RI_SHELLS, &ri->shells);
-    add_ignores(ri, p, ctx, RI_SHELLSYNTAX);
+    add_ignores(ri, p, ctx, NAME_DESKTOP);
+    array(p, ctx, NAME_CHANGEDFILES, RI_HEADER_FILE_EXTENSIONS, &ri->header_file_extensions);
+    add_ignores(ri, p, ctx, NAME_CHANGEDFILES);
+    array(p, ctx, NAME_ADDEDFILES, RI_FORBIDDEN_PATH_PREFIXES, &ri->forbidden_path_prefixes);
+    array(p, ctx, NAME_ADDEDFILES, RI_FORBIDDEN_PATH_SUFFIXES, &ri->forbidden_path_suffixes);
+    array(p, ctx, NAME_ADDEDFILES, RI_FORBIDDEN_DIRECTORIES, &ri->forbidden_directories);
+    add_ignores(ri, p, ctx, NAME_ADDEDFILES);
+    add_ignores(ri, p, ctx, NAME_MOVEDFILES);
+    add_ignores(ri, p, ctx, NAME_REMOVEDFILES);
+    array(p, ctx, NAME_OWNERSHIP, RI_BIN_PATHS, &ri->bin_paths);
+    strget(p, ctx, NAME_OWNERSHIP, RI_BIN_OWNER, &ri->bin_owner);
+    strget(p, ctx, NAME_OWNERSHIP, RI_BIN_GROUP, &ri->bin_group);
+    array(p, ctx, NAME_OWNERSHIP, RI_FORBIDDEN_OWNERS, &ri->forbidden_owners);
+    array(p, ctx, NAME_OWNERSHIP, RI_FORBIDDEN_GROUPS, &ri->forbidden_groups);
+    add_ignores(ri, p, ctx, NAME_OWNERSHIP);
+    array(p, ctx, NAME_SHELLSYNTAX, RI_SHELLS, &ri->shells);
+    add_ignores(ri, p, ctx, NAME_SHELLSYNTAX);
 
-    s = p->getstr(ctx, RI_FILESIZE, RI_SIZE_THRESHOLD);
+    s = p->getstr(ctx, NAME_FILESIZE, RI_SIZE_THRESHOLD);
 
     if (s != NULL) {
         if (!strcasecmp(s, RI_INFO) || !strcasecmp(s, RI_INFO_ONLY0) || !strcasecmp(s, RI_INFO_ONLY1)) {
@@ -708,11 +711,11 @@ static void read_cfgfile(struct rpminspect *ri, const char *filename, const bool
         free(s);
     }
 
-    add_ignores(ri, p, ctx, RI_FILESIZE);
-    array(p, ctx, RI_LTO, RI_LTO_SYMBOL_NAME_PREFIXES, &ri->lto_symbol_name_prefixes);
-    add_ignores(ri, p, ctx, RI_LTO);
+    add_ignores(ri, p, ctx, NAME_FILESIZE);
+    array(p, ctx, NAME_LTO, RI_LTO_SYMBOL_NAME_PREFIXES, &ri->lto_symbol_name_prefixes);
+    add_ignores(ri, p, ctx, NAME_LTO);
 
-    s = p->getstr(ctx, RI_SPECNAME, RI_MATCH);
+    s = p->getstr(ctx, NAME_SPECNAME, RI_MATCH);
 
     if (s != NULL) {
         if (!strcasecmp(s, RI_SUFFIX)) {
@@ -729,7 +732,7 @@ static void read_cfgfile(struct rpminspect *ri, const char *filename, const bool
         free(s);
     }
 
-    s = p->getstr(ctx, RI_SPECNAME, RI_PRIMARY);
+    s = p->getstr(ctx, NAME_SPECNAME, RI_PRIMARY);
 
     if (s != NULL) {
         if (!strcasecmp(s, RI_FILENAME)) {
@@ -744,9 +747,9 @@ static void read_cfgfile(struct rpminspect *ri, const char *filename, const bool
         free(s);
     }
 
-    add_ignores(ri, p, ctx, RI_SPECNAME);
+    add_ignores(ri, p, ctx, NAME_SPECNAME);
 
-    s = p->getstr(ctx, RI_ANNOCHECK, RI_FAILURE_SEVERITY);
+    s = p->getstr(ctx, NAME_ANNOCHECK, RI_FAILURE_SEVERITY);
 
     if (s != NULL) {
         ri->annocheck_failure_severity = getseverity(s, RESULT_NULL);
@@ -759,29 +762,29 @@ static void read_cfgfile(struct rpminspect *ri, const char *filename, const bool
         free(s);
     }
 
-    strget(p, ctx, RI_ANNOCHECK, RI_PROFILE, &ri->annocheck_profile);
-    tabledict(p, ctx, RI_ANNOCHECK, RI_JOBS, &ri->annocheck, false, false);
-    tabledict(p, ctx, RI_ANNOCHECK, RI_EXTRA_OPTS, &ri->annocheck, true, false);
-    add_ignores(ri, p, ctx, RI_ANNOCHECK);
+    strget(p, ctx, NAME_ANNOCHECK, RI_PROFILE, &ri->annocheck_profile);
+    tabledict(p, ctx, NAME_ANNOCHECK, RI_JOBS, &ri->annocheck, false, false);
+    tabledict(p, ctx, NAME_ANNOCHECK, RI_EXTRA_OPTS, &ri->annocheck, true, false);
+    add_ignores(ri, p, ctx, NAME_ANNOCHECK);
 
     /* Backward compatibility for annocheck jobs at top-level. */
     if (ri->annocheck == NULL) {
-        p->strdict_foreach(ctx, RI_ANNOCHECK, NULL, annocheck_cb, &annocheck_cb_data);
+        p->strdict_foreach(ctx, NAME_ANNOCHECK, NULL, annocheck_cb, &annocheck_cb_data);
     }
 
-    tabledict(p, ctx, RI_JAVABYTECODE, NULL, &ri->jvm, false, true);
-    add_ignores(ri, p, ctx, RI_JAVABYTECODE);
-    tabledict(p, ctx, RI_PATHMIGRATION, RI_MIGRATED_PATHS, &ri->pathmigration, false, false);
-    array(p, ctx, RI_PATHMIGRATION, RI_EXCLUDED_PATHS, &ri->pathmigration_excluded_paths);
-    add_ignores(ri, p, ctx, RI_PATHMIGRATION);
-    add_ignores(ri, p, ctx, RI_POLITICS);
-    array(p, ctx, RI_FILES, RI_FORBIDDEN_PATHS, &ri->forbidden_paths);
-    add_ignores(ri, p, ctx, RI_FILES);
-    strget(p, ctx, RI_ABIDIFF, RI_SUPPRESSION_FILE, &ri->abidiff_suppression_file);
-    strget(p, ctx, RI_ABIDIFF, RI_DEBUGINFO_PATH, &ri->abidiff_debuginfo_path);
-    strget(p, ctx, RI_ABIDIFF, RI_EXTRA_ARGS, &ri->abidiff_extra_args);
+    tabledict(p, ctx, NAME_JAVABYTECODE, NULL, &ri->jvm, false, true);
+    add_ignores(ri, p, ctx, NAME_JAVABYTECODE);
+    tabledict(p, ctx, NAME_PATHMIGRATION, RI_MIGRATED_PATHS, &ri->pathmigration, false, false);
+    array(p, ctx, NAME_PATHMIGRATION, RI_EXCLUDED_PATHS, &ri->pathmigration_excluded_paths);
+    add_ignores(ri, p, ctx, NAME_PATHMIGRATION);
+    add_ignores(ri, p, ctx, NAME_POLITICS);
+    array(p, ctx, NAME_FILES, RI_FORBIDDEN_PATHS, &ri->forbidden_paths);
+    add_ignores(ri, p, ctx, NAME_FILES);
+    strget(p, ctx, NAME_ABIDIFF, RI_SUPPRESSION_FILE, &ri->abidiff_suppression_file);
+    strget(p, ctx, NAME_ABIDIFF, RI_DEBUGINFO_PATH, &ri->abidiff_debuginfo_path);
+    strget(p, ctx, NAME_ABIDIFF, RI_EXTRA_ARGS, &ri->abidiff_extra_args);
 
-    s = p->getstr(ctx, RI_ABIDIFF, RI_SECURITY_LEVEL_THRESHOLD);
+    s = p->getstr(ctx, NAME_ABIDIFF, RI_SECURITY_LEVEL_THRESHOLD);
 
     if (s != NULL) {
         errno = 0;
@@ -796,39 +799,39 @@ static void read_cfgfile(struct rpminspect *ri, const char *filename, const bool
         free(s);
     }
 
-    add_ignores(ri, p, ctx, RI_ABIDIFF);
-    strget(p, ctx, RI_KMIDIFF, RI_SUPPRESSION_FILE, &ri->kmidiff_suppression_file);
-    strget(p, ctx, RI_KMIDIFF, RI_DEBUGINFO_PATH, &ri->kmidiff_debuginfo_path);
-    strget(p, ctx, RI_KMIDIFF, RI_EXTRA_ARGS, &ri->kmidiff_extra_args);
-    array(p, ctx, RI_KMIDIFF, RI_KERNEL_FILENAMES, &ri->kernel_filenames);
-    strget(p, ctx, RI_KMIDIFF, RI_KABI_DIR, &ri->kabi_dir);
-    strget(p, ctx, RI_KMIDIFF, RI_KABI_FILENAME, &ri->kabi_filename);
-    add_ignores(ri, p, ctx, RI_KMIDIFF);
-    array(p, ctx, RI_PATCHES, RI_AUTOMACROS, &ri->automacros);
-    array(p, ctx, RI_PATCHES, RI_IGNORE_LIST, &ri->patch_ignore_list);
-    array(p, ctx, RI_BADFUNCS, RI_FORBIDDEN, &ri->bad_functions);
+    add_ignores(ri, p, ctx, NAME_ABIDIFF);
+    strget(p, ctx, NAME_KMIDIFF, RI_SUPPRESSION_FILE, &ri->kmidiff_suppression_file);
+    strget(p, ctx, NAME_KMIDIFF, RI_DEBUGINFO_PATH, &ri->kmidiff_debuginfo_path);
+    strget(p, ctx, NAME_KMIDIFF, RI_EXTRA_ARGS, &ri->kmidiff_extra_args);
+    array(p, ctx, NAME_KMIDIFF, RI_KERNEL_FILENAMES, &ri->kernel_filenames);
+    strget(p, ctx, NAME_KMIDIFF, RI_KABI_DIR, &ri->kabi_dir);
+    strget(p, ctx, NAME_KMIDIFF, RI_KABI_FILENAME, &ri->kabi_filename);
+    add_ignores(ri, p, ctx, NAME_KMIDIFF);
+    array(p, ctx, NAME_PATCHES, RI_AUTOMACROS, &ri->automacros);
+    array(p, ctx, NAME_PATCHES, RI_IGNORE_LIST, &ri->patch_ignore_list);
+    array(p, ctx, NAME_BADFUNCS, RI_FORBIDDEN, &ri->bad_functions);
 
     /* ri->bad_functions_allowed is a string_list_map_t, not string_map_t. */
-    if (p->strdict_foreach(ctx, RI_BADFUNCS, RI_ALLOWED, badfuncs_allowed_cb, &ri->bad_functions_allowed)) {
+    if (p->strdict_foreach(ctx, NAME_BADFUNCS, RI_ALLOWED, badfuncs_allowed_cb, &ri->bad_functions_allowed)) {
         warnx(_("*** malformed badfuncs->allowed section"));
     }
 
     /* Backward compatibility for badfuncs prior to "forbidden". */
     if (ri->bad_functions == NULL && ri->bad_functions_allowed == NULL) {
-        array(p, ctx, RI_BADFUNCS, NULL, &ri->bad_functions);
+        array(p, ctx, NAME_BADFUNCS, NULL, &ri->bad_functions);
     }
 
-    add_ignores(ri, p, ctx, RI_BADFUNCS);
-    array(p, ctx, RI_RUNPATH, RI_ALLOWED_PATHS, &ri->runpath_allowed_paths);
-    array(p, ctx, RI_RUNPATH, RI_ALLOWED_ORIGIN_PATHS, &ri->runpath_allowed_origin_paths);
-    array(p, ctx, RI_RUNPATH, RI_ORIGIN_PREFIX_TRIM, &ri->runpath_origin_prefix_trim);
-    add_ignores(ri, p, ctx, RI_RUNPATH);
-    add_ignores(ri, p, ctx, RI_TYPES);
+    add_ignores(ri, p, ctx, NAME_BADFUNCS);
+    array(p, ctx, NAME_RUNPATH, RI_ALLOWED_PATHS, &ri->runpath_allowed_paths);
+    array(p, ctx, NAME_RUNPATH, RI_ALLOWED_ORIGIN_PATHS, &ri->runpath_allowed_origin_paths);
+    array(p, ctx, NAME_RUNPATH, RI_ORIGIN_PREFIX_TRIM, &ri->runpath_origin_prefix_trim);
+    add_ignores(ri, p, ctx, NAME_RUNPATH);
+    add_ignores(ri, p, ctx, NAME_TYPES);
 
-    if (p->havesection(ctx, RI_UNICODE) && local) {
+    if (p->havesection(ctx, NAME_UNICODE) && local) {
         warnx(_("*** ignoring 'unicode' section in %s; only allowed in system-wide configuration"), filename);
     } else {
-        s = p->getstr(ctx, RI_UNICODE, RI_EXCLUDE);
+        s = p->getstr(ctx, NAME_UNICODE, RI_EXCLUDE);
 
         if (s != NULL && add_regex(s, &ri->unicode_exclude) != 0) {
             warnx(_("*** error reading unicode exclude regular expression: %s"), s);
@@ -836,28 +839,70 @@ static void read_cfgfile(struct rpminspect *ri, const char *filename, const bool
 
         free(s);
 
-        array(p, ctx, RI_UNICODE, RI_EXCLUDED_MIME_TYPES, &ri->unicode_excluded_mime_types);
-        array(p, ctx, RI_UNICODE, RI_FORBIDDEN_CODEPOINTS, &ri->unicode_forbidden_codepoints);
-        add_ignores(ri, p, ctx, RI_UNICODE);
+        array(p, ctx, NAME_UNICODE, RI_EXCLUDED_MIME_TYPES, &ri->unicode_excluded_mime_types);
+        array(p, ctx, NAME_UNICODE, RI_FORBIDDEN_CODEPOINTS, &ri->unicode_forbidden_codepoints);
+        add_ignores(ri, p, ctx, NAME_UNICODE);
     }
 
-    if (p->strdict_foreach(ctx, RI_RPMDEPS, RI_IGNORE, rpmdeps_cb, &ri->deprules_ignore)) {
+    if (p->strdict_foreach(ctx, NAME_RPMDEPS, RI_IGNORE, rpmdeps_cb, &ri->deprules_ignore)) {
         warnx(_("*** malformed rpmdeps->ignore section; skipping"));
     }
 
-    add_ignores(ri, p, ctx, RI_VIRUS);
-    add_ignores(ri, p, ctx, RI_CAPABILITIES);
-    add_ignores(ri, p, ctx, RI_CONFIG);
-    add_ignores(ri, p, ctx, RI_DOC);
-    add_ignores(ri, p, ctx, RI_KMOD);
-    add_ignores(ri, p, ctx, RI_PERMISSIONS);
-    add_ignores(ri, p, ctx, RI_SYMLINKS);
-    add_ignores(ri, p, ctx, RI_UPSTREAM);
-    add_ignores(ri, p, ctx, RI_DEBUGINFO);
-    strget(p, ctx, RI_DEBUGINFO, RI_DEBUGINFO_SECTIONS, &ri->debuginfo_sections);
+    add_ignores(ri, p, ctx, NAME_VIRUS);
+    add_ignores(ri, p, ctx, NAME_CAPABILITIES);
+    add_ignores(ri, p, ctx, NAME_CONFIG);
+    add_ignores(ri, p, ctx, NAME_DOC);
+    add_ignores(ri, p, ctx, NAME_KMOD);
+    add_ignores(ri, p, ctx, NAME_PERMISSIONS);
+    add_ignores(ri, p, ctx, NAME_SYMLINKS);
+    add_ignores(ri, p, ctx, NAME_UPSTREAM);
+    add_ignores(ri, p, ctx, NAME_DEBUGINFO);
+    strget(p, ctx, NAME_DEBUGINFO, RI_DEBUGINFO_SECTIONS, &ri->debuginfo_sections);
 
-    array(p, ctx, RI_UDEVRULES, RI_UDEV_RULES_DIRS, &ri->udev_rules_dirs);
-    add_ignores(ri, p, ctx, RI_UDEVRULES);
+    array(p, ctx, NAME_UDEVRULES, RI_UDEV_RULES_DIRS, &ri->udev_rules_dirs);
+    add_ignores(ri, p, ctx, NAME_UDEVRULES);
+
+    array(p, ctx, NAME_SCRIPTLETS, RI_SECURITY_KEYWORDS, &ri->scriptlet_security_keywords);
+    strget(p, ctx, NAME_SCRIPTLETS, RI_UID_BOUNDARY, &tmp);
+
+    if (tmp) {
+        errno = 0;
+        ri->uid_boundary = strtol(tmp, NULL, 10);
+
+        if (errno == ERANGE || errno == EINVAL) {
+            ri->uid_boundary = UID_BOUNDARY_DEFAULT;
+        }
+
+        free(tmp);
+    } else {
+        ri->uid_boundary = UID_BOUNDARY_DEFAULT;
+    }
+
+    array(p, ctx, NAME_SCRIPTLETS, RI_ALLOWED_UIDS, &slist);
+
+    if (slist && !TAILQ_EMPTY(slist)) {
+        ri->allowed_uids = calloc(1, sizeof(*(ri->allowed_uids)));
+        assert(ri->allowed_uids != NULL);
+        TAILQ_INIT(ri->allowed_uids);
+
+        TAILQ_FOREACH(sentry, slist, items) {
+            uentry = calloc(1, sizeof(*uentry));
+            assert(uentry != NULL);
+
+            errno = 0;
+            uentry->uid = strtol(sentry->data, NULL, 10);
+
+            if (errno == ERANGE || errno == EINVAL) {
+                warn("*** strtol");
+                free(uentry);
+            } else {
+                TAILQ_INSERT_TAIL(ri->allowed_uids, uentry, items);
+            }
+        }
+
+        list_free(slist, free);
+        slist = NULL;
+    }
 
     p->fini(ctx);
     return;

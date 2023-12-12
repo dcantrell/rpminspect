@@ -67,6 +67,7 @@ librpminspect_sources = [
     'inspect_removedfiles.c',
     'inspect_rpmdeps.c',
     'inspect_runpath.c',
+    'inspect_scriptlets.c',
     'inspect_shellsyntax.c',
     'inspect_specname.c',
     'inspect_subpackages.c',

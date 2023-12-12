@@ -18,6 +18,7 @@ extern "C"
 #include <sys/stat.h>
 #include <rpm/rpmlib.h>
 #include <rpm/rpmfi.h>
+#include <rpm/rpmtag.h>
 #include <unicode/utypes.h>
 #include <magic.h>
 
@@ -480,6 +481,339 @@ typedef struct _desktop_skips_t {
 } desktop_skips_t;
 
 /*
+ * Definition for a build type.
+ */
+struct buildtype {
+    /* the build type that maps to koji_build_type_t */
+    koji_build_type_t type;
+
+    /* name of the build type */
+    char *name;
+
+    /* whether or not this type is supported */
+    bool supported;
+};
+
+/*
+ * Definition for an output format.
+ */
+struct format {
+    /* The output format type from output.h */
+    int type;
+
+    /* short name of the format */
+    char *name;
+
+    /* output driver function */
+    void (*driver)(const results_t *, const char *, const severity_t, const severity_t);
+};
+
+/*
+ * List of RPMs from a Koji build.  Only the information we need.
+ */
+typedef struct _koji_rpmlist_entry_t {
+    char *arch;
+    char *name;
+    char *version;
+    char *release;
+    int32_t epoch;
+    unsigned long int size;
+    TAILQ_ENTRY(_koji_rpmlist_entry_t) items;
+} koji_rpmlist_entry_t;
+
+typedef TAILQ_HEAD(koji_rpmlist_s, _koji_rpmlist_entry_t) koji_rpmlist_t;
+
+/*
+ * List of build IDs from a Koji build.
+ */
+typedef struct _koji_buildlist_entry_t {
+    int32_t build_id;
+    char *package_name;
+    char *owner_name;
+    int32_t task_id;
+    int32_t state;
+    char *nvr;
+    char *start_time;
+    int32_t create_event;
+    int32_t creation_event_id;
+    char *creation_time;
+    int32_t epoch;
+    int32_t tag_id;
+    char *completion_time;
+    char *tag_name;
+    char *version;
+    int32_t volume_id;
+    char *release;
+    int32_t package_id;
+    int32_t owner_id;
+    int32_t id;
+    char *volume_name;
+    char *name;
+
+    /* List of RPMs in this build */
+    koji_rpmlist_t *rpms;
+
+    TAILQ_ENTRY(_koji_buildlist_entry_t) builditems;
+} koji_buildlist_entry_t;
+
+typedef TAILQ_HEAD(koji_buildlist_s, _koji_buildlist_entry_t) koji_buildlist_t;
+
+/*
+ * Koji build structure.  This is determined by looking at the
+ * output of a getBuild XMLRPC call to a Koji hub.
+ *
+ * You can examine example values by running xmlrpc on the command
+ * line and giving it a build specification, e.g.:
+ *     xmlrpc KOJI_HUB_URL getBuild NVR
+ * Not all things returned are represented in this struct.
+ */
+struct koji_build {
+    /* These are all relevant to the name of the build */
+    char *package_name;
+    int32_t epoch;
+    char *name;
+    char *version;
+    char *release;
+    char *nvr;
+
+    /* The source used to drive this build (usually a VCS link) */
+    char *source;
+
+    /* Koji-specific information about the build */
+    char *creation_time;
+    char *completion_time;
+    int32_t package_id;
+    int32_t id;
+    int32_t state;
+    double completion_ts;
+    int32_t owner_id;
+    char *owner_name;
+    char *start_time;
+    int32_t creation_event_id;
+    double start_ts;
+    double creation_ts;
+    int32_t task_id;
+
+    /* Where to find the resulting build artifacts */
+    int32_t volume_id;
+    char *volume_name;
+
+    /*
+     * Original source URL, for some reason
+     * (not present for module builds)
+     */
+    char *original_url;
+
+    /* Content Generator information (currently not used in rpminspect) */
+    int32_t cg_id;
+    char *cg_name;
+
+    /* Module metadata -- only if this build is a module */
+    char *modulemd_str;
+    char *module_name;
+    char *module_stream;
+    int32_t module_build_service_id;
+    char *module_version;
+    char *module_context;
+    char *module_content_koji_tag;
+
+    /*
+     * Total size of all RPMs (restricted to specified architectures
+     * by user)
+     */
+    unsigned long int total_size;
+
+    /*
+     * Total size of all unpacked RPMs (restricted to specified
+     * architectures by user)
+     */
+    unsigned long int total_unpacked_size;
+
+    /* List of build IDs associated with this build */
+    koji_buildlist_t *builds;
+};
+
+/*
+ * Koji task structure.  This is determined by looking at the
+ * output of a getTaskInfo XMLRPC call to a Koji hub.
+ *
+ * You can examine example values by running xmlrpc on the command
+ * line and giving it a task ID, e.g.:
+ *     xmlrpc KOJI_HUB_URL getTaskInfo ID
+ * Not all things returned are represented in this struct.
+ */
+typedef TAILQ_HEAD(koji_task_list_s, _koji_task_entry_t) koji_task_list_t;
+
+struct koji_task {
+    /* members returned from getTaskInfo */
+    double weight;
+    int32_t parent;
+    char *completion_time;
+    char *start_time;
+    double start_ts;
+    bool waiting;
+    bool awaited;
+    char *label;
+    int32_t priority;
+    int32_t channel_id;
+    int32_t state;
+    char *create_time;
+    double create_ts;
+    int32_t owner;
+    int32_t host_id;
+    char *method;
+    double completion_ts;
+    char *arch;
+    int32_t id;
+
+    /*
+     * Total size of all RPMs (restricted to specified architectures
+     * by user)
+     */
+    unsigned long int total_size;
+
+    /*
+     * Total size of all unpacked RPMs (restricted to specified
+     * architectures by user)
+     */
+    unsigned long int total_unpacked_size;
+
+    /* Descendent tasks (where files are) */
+    koji_task_list_t *descendents;
+};
+
+/* A generic list of koji tasks */
+typedef struct _koji_task_entry_t {
+    /* main task information */
+    struct koji_task *task;
+
+    /* results from getTaskResult */
+    int32_t brootid;
+    string_list_t *srpms;
+    string_list_t *rpms;
+    string_list_t *logs;
+
+    TAILQ_ENTRY(_koji_task_entry_t) items;
+} koji_task_entry_t;
+
+/* Types of files -- used by internal nftw() callbacks */
+typedef enum _filetype_t {
+    FILETYPE_NULL = 0,
+    FILETYPE_EXECUTABLE = 1,
+    FILETYPE_ICON = 2
+} filetype_t;
+
+/* Kernel module handling */
+#ifdef _WITH_LIBKMOD
+
+typedef void (*modinfo_to_entries)(string_list_t *, const struct kmod_list *);
+typedef void (*module_alias_callback)(const char *, const string_list_t *, const string_list_t *, void *);
+
+/* mapping of an alias string to a module name */
+typedef struct _kernel_alias_data_t {
+    char *alias;
+    string_list_t *modules;
+    UT_hash_handle hh;
+} kernel_alias_data_t;
+
+#endif
+
+/* Types of workdirs */
+typedef enum _workdir_t {
+    NULL_WORKDIR = 0,          /* unused                    */
+    LOCAL_WORKDIR = 1,         /* locally cached koji build */
+    TASK_WORKDIR = 2,          /* like for scratch builds   */
+    BUILD_WORKDIR = 3          /* remote koji build spec    */
+} workdir_t;
+
+/* Types of ELF information we can return */
+typedef enum _elfinfo_t {
+    ELF_TYPE    = 0,
+    ELF_MACHINE = 1
+} elfinfo_t;
+
+/*
+ * Exit status for abidiff and abicompat tools.  It's actually a bit
+ * mask.  The value of each enumerator is a power of two.
+ *
+ * (This is lifted from abg-tools-utils.h in libabigail because it
+ * cannot be included directly because libabigail is C++.)
+ */
+
+/*
+ * This is for when the compared ABIs are equal.
+ * Its numerical value is 0.
+ */
+#define ABIDIFF_OK 0
+
+/*
+ * This bit is set if there an application error.
+ * Its numerical value is 1.
+ */
+#define ABIDIFF_ERROR 1
+
+/*
+ * This bit is set if the tool is invoked in an non appropriate
+ * manner.
+ * Its numerical value is 2.
+ */
+#define ABIDIFF_USAGE_ERROR (1 << 1)
+
+/*
+ * This bit is set if the ABIs being compared are different.
+ * Its numerical value is 4.
+ */
+#define ABIDIFF_ABI_CHANGE (1 << 2)
+
+/*
+ * This bit is set if the ABIs being compared are different *and*
+ * are incompatible.
+ *
+ * Its numerical value is 8.
+ */
+#define ABIDIFF_ABI_INCOMPATIBLE_CHANGE (1 << 3)
+
+/*
+ * ABI compatibility level types
+ */
+typedef struct _abi_t {
+    char *pkg;
+    int level;
+    bool all;
+    string_list_t *dsos;
+    UT_hash_handle hh;
+} abi_t;
+
+/*
+ * Patch stats for reporting in the patches inspection
+ */
+typedef struct _patchstat_t {
+    long int files;
+    long int lines;
+} patchstat_t;
+
+/*
+ * RPM package scriptlets
+ */
+typedef struct _scriptlet_type_t {
+    rpmTag type;
+    rpmTag prog;
+    char *name;
+} scriptlet_type_t;
+
+typedef struct _scriptlet_t {
+    char *script;
+    char *args;
+} scriptlet_t;
+
+typedef struct _uid_entry_t {
+    uid_t uid;
+    TAILQ_ENTRY(_uid_entry_t) items;
+} uid_entry_t;
+
+typedef TAILQ_HEAD(uid_entry_s, _uid_entry_t) uid_list_t;
+
+/*
  * Configuration and state instance for librpminspect run.
  * Applications using librpminspect should initialize the
  * library and retain this structure through the run of
@@ -720,6 +1054,15 @@ struct rpminspect {
     /* Directories where udev rules live */
     string_list_t *udev_rules_dirs;
 
+    /* Security keywords in RPM scriptlets */
+    string_list_t *scriptlet_security_keywords;
+
+    /* The upper UID boundary allowed for 'useradd' scriptlet commands */
+    uid_t uid_boundary;
+
+    /* Allowed UID values above the UID boundary. */
+    uid_list_t *allowed_uids;
+
     /* Options specified by the user */
     char *before;              /* before build ID arg given on cmdline */
     char *after;               /* after build ID arg given on cmdline */
@@ -773,34 +1116,6 @@ struct rpminspect {
 };
 
 /*
- * Definition for a build type.
- */
-struct buildtype {
-    /* the build type that maps to koji_build_type_t */
-    koji_build_type_t type;
-
-    /* name of the build type */
-    char *name;
-
-    /* whether or not this type is supported */
-    bool supported;
-};
-
-/*
- * Definition for an output format.
- */
-struct format {
-    /* The output format type from output.h */
-    int type;
-
-    /* short name of the format */
-    char *name;
-
-    /* output driver function */
-    void (*driver)(const results_t *, const char *, const severity_t, const severity_t);
-};
-
-/*
  * Definition for an inspection.  Inspections are assigned a flag (see
  * inspect.h), a short name, and a function pointer to the driver.  The
  * driver function needs to take a struct rpminspect pointer as the only
@@ -835,224 +1150,6 @@ struct inspect {
     bool (*driver)(struct rpminspect *);
 };
 
-/*
- * List of RPMs from a Koji build.  Only the information we need.
- */
-typedef struct _koji_rpmlist_entry_t {
-    char *arch;
-    char *name;
-    char *version;
-    char *release;
-    int32_t epoch;
-    unsigned long int size;
-    TAILQ_ENTRY(_koji_rpmlist_entry_t) items;
-} koji_rpmlist_entry_t;
-
-typedef TAILQ_HEAD(koji_rpmlist_s, _koji_rpmlist_entry_t) koji_rpmlist_t;
-
-/*
- * List of build IDs from a Koji build.
- */
-typedef struct _koji_buildlist_entry_t {
-    int32_t build_id;
-    char *package_name;
-    char *owner_name;
-    int32_t task_id;
-    int32_t state;
-    char *nvr;
-    char *start_time;
-    int32_t create_event;
-    int32_t creation_event_id;
-    char *creation_time;
-    int32_t epoch;
-    int32_t tag_id;
-    char *completion_time;
-    char *tag_name;
-    char *version;
-    int32_t volume_id;
-    char *release;
-    int32_t package_id;
-    int32_t owner_id;
-    int32_t id;
-    char *volume_name;
-    char *name;
-
-    /* List of RPMs in this build */
-    koji_rpmlist_t *rpms;
-
-    TAILQ_ENTRY(_koji_buildlist_entry_t) builditems;
-} koji_buildlist_entry_t;
-
-typedef TAILQ_HEAD(koji_buildlist_s, _koji_buildlist_entry_t) koji_buildlist_t;
-
-/*
- * Koji build structure.  This is determined by looking at the
- * output of a getBuild XMLRPC call to a Koji hub.
- *
- * You can examine example values by running xmlrpc on the command
- * line and giving it a build specification, e.g.:
- *     xmlrpc KOJI_HUB_URL getBuild NVR
- * Not all things returned are represented in this struct.
- */
-struct koji_build {
-    /* These are all relevant to the name of the build */
-    char *package_name;
-    int32_t epoch;
-    char *name;
-    char *version;
-    char *release;
-    char *nvr;
-
-    /* The source used to drive this build (usually a VCS link) */
-    char *source;
-
-    /* Koji-specific information about the build */
-    char *creation_time;
-    char *completion_time;
-    int32_t package_id;
-    int32_t id;
-    int32_t state;
-    double completion_ts;
-    int32_t owner_id;
-    char *owner_name;
-    char *start_time;
-    int32_t creation_event_id;
-    double start_ts;
-    double creation_ts;
-    int32_t task_id;
-
-    /* Where to find the resulting build artifacts */
-    int32_t volume_id;
-    char *volume_name;
-
-    /*
-     * Original source URL, for some reason
-     * (not present for module builds)
-     */
-    char *original_url;
-
-    /* Content Generator information (currently not used in rpminspect) */
-    int32_t cg_id;
-    char *cg_name;
-
-    /* Module metadata -- only if this build is a module */
-    char *modulemd_str;
-    char *module_name;
-    char *module_stream;
-    int32_t module_build_service_id;
-    char *module_version;
-    char *module_context;
-    char *module_content_koji_tag;
-
-    /*
-     * Total size of all RPMs (restricted to specified architectures
-     * by user)
-     */
-    unsigned long int total_size;
-
-    /*
-     * Total size of all unpacked RPMs (restricted to specified
-     * architectures by user)
-     */
-    unsigned long int total_unpacked_size;
-
-    /* List of build IDs associated with this build */
-    koji_buildlist_t *builds;
-};
-
-/*
- * Koji task structure.  This is determined by looking at the
- * output of a getTaskInfo XMLRPC call to a Koji hub.
- *
- * You can examine example values by running xmlrpc on the command
- * line and giving it a task ID, e.g.:
- *     xmlrpc KOJI_HUB_URL getTaskInfo ID
- * Not all things returned are represented in this struct.
- */
-typedef TAILQ_HEAD(koji_task_list_s, _koji_task_entry_t) koji_task_list_t;
-
-struct koji_task {
-    /* members returned from getTaskInfo */
-    double weight;
-    int32_t parent;
-    char *completion_time;
-    char *start_time;
-    double start_ts;
-    bool waiting;
-    bool awaited;
-    char *label;
-    int32_t priority;
-    int32_t channel_id;
-    int32_t state;
-    char *create_time;
-    double create_ts;
-    int32_t owner;
-    int32_t host_id;
-    char *method;
-    double completion_ts;
-    char *arch;
-    int32_t id;
-
-    /*
-     * Total size of all RPMs (restricted to specified architectures
-     * by user)
-     */
-    unsigned long int total_size;
-
-    /*
-     * Total size of all unpacked RPMs (restricted to specified
-     * architectures by user)
-     */
-    unsigned long int total_unpacked_size;
-
-    /* Descendent tasks (where files are) */
-    koji_task_list_t *descendents;
-};
-
-/* A generic list of koji tasks */
-typedef struct _koji_task_entry_t {
-    /* main task information */
-    struct koji_task *task;
-
-    /* results from getTaskResult */
-    int32_t brootid;
-    string_list_t *srpms;
-    string_list_t *rpms;
-    string_list_t *logs;
-
-    TAILQ_ENTRY(_koji_task_entry_t) items;
-} koji_task_entry_t;
-
-/* Types of files -- used by internal nftw() callbacks */
-typedef enum _filetype_t {
-    FILETYPE_NULL = 0,
-    FILETYPE_EXECUTABLE = 1,
-    FILETYPE_ICON = 2
-} filetype_t;
-
-/* Kernel module handling */
-#ifdef _WITH_LIBKMOD
-
-typedef void (*modinfo_to_entries)(string_list_t *, const struct kmod_list *);
-typedef void (*module_alias_callback)(const char *, const string_list_t *, const string_list_t *, void *);
-
-/* mapping of an alias string to a module name */
-typedef struct _kernel_alias_data_t {
-    char *alias;
-    string_list_t *modules;
-    UT_hash_handle hh;
-} kernel_alias_data_t;
-
-#endif
-
-/* Types of workdirs */
-typedef enum _workdir_t {
-    NULL_WORKDIR = 0,          /* unused                    */
-    LOCAL_WORKDIR = 1,         /* locally cached koji build */
-    TASK_WORKDIR = 2,          /* like for scratch builds   */
-    BUILD_WORKDIR = 3          /* remote koji build spec    */
-} workdir_t;
-
 /**
  * @brief Callback function to pass to foreach_peer_file.
  *
@@ -1066,72 +1163,6 @@ typedef enum _workdir_t {
  * program returns and not worry about losing inspection details.
  */
 typedef bool (*foreach_peer_file_func)(struct rpminspect *, rpmfile_entry_t *);
-
-/* Types of ELF information we can return */
-typedef enum _elfinfo_t {
-    ELF_TYPE    = 0,
-    ELF_MACHINE = 1
-} elfinfo_t;
-
-/*
- * Exit status for abidiff and abicompat tools.  It's actually a bit
- * mask.  The value of each enumerator is a power of two.
- *
- * (This is lifted from abg-tools-utils.h in libabigail because it
- * cannot be included directly because libabigail is C++.)
- */
-
-/*
- * This is for when the compared ABIs are equal.
- * Its numerical value is 0.
- */
-#define ABIDIFF_OK 0
-
-/*
- * This bit is set if there an application error.
- * Its numerical value is 1.
- */
-#define ABIDIFF_ERROR 1
-
-/*
- * This bit is set if the tool is invoked in an non appropriate
- * manner.
- * Its numerical value is 2.
- */
-#define ABIDIFF_USAGE_ERROR (1 << 1)
-
-/*
- * This bit is set if the ABIs being compared are different.
- * Its numerical value is 4.
- */
-#define ABIDIFF_ABI_CHANGE (1 << 2)
-
-/*
- * This bit is set if the ABIs being compared are different *and*
- * are incompatible.
- *
- * Its numerical value is 8.
- */
-#define ABIDIFF_ABI_INCOMPATIBLE_CHANGE (1 << 3)
-
-/*
- * ABI compatibility level types
- */
-typedef struct _abi_t {
-    char *pkg;
-    int level;
-    bool all;
-    string_list_t *dsos;
-    UT_hash_handle hh;
-} abi_t;
-
-/*
- * Patch stats for reporting in the patches inspection
- */
-typedef struct _patchstat_t {
-    long int files;
-    long int lines;
-} patchstat_t;
 
 #endif
 

@@ -66,6 +66,21 @@ extern "C"
  */
 #define DEFAULT_TTY_WIDTH 80
 
+/**
+ * @def USERADD_CMD
+ *
+ * The name of the 'useradd' command that RPM scriptlets can run.
+ */
+#define USERADD_CMD "useradd"
+
+/**
+ * @def UID_BOUNDARY_DEFAULT
+ *
+ * The upper boundary default for UID values specified by the useradd
+ * command in RPM scriptlets.
+ */
+#define UID_BOUNDARY_DEFAULT 200
+
 /** @} */
 
 /**

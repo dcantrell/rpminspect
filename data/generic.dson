@@ -138,4 +138,38 @@ such "common" is such "workdir" is "/var/tmp/rpminspect",
      "debuginfo" is such "ignore" is so "/lib/modules/*" and
                                         "/usr/lib/debug/.dwz/*" and
                                         "/usr/lib/grub/*" many,
-                         "debuginfo_sections" is ".symtab .debug_info" wow wow
+                         "debuginfo_sections" is ".symtab .debug_info" wow.
+     "scriptlets" is such "security_keywords" is so "adduser" and
+                                                    "useradd" and
+                                                    "certutil" and
+                                                    "cmsutil" and
+                                                    "crlutil" and
+                                                    "modutil" and
+                                                    "pk12util" and
+                                                    "signtool" and
+                                                    "signver" and
+                                                    "ssltap" and
+                                                    "openssl" and
+                                                    "certtool" and
+                                                    "crywrap" and
+                                                    "danetool" and
+                                                    "gnutls-cli" and
+                                                    "gnutls-cli-debug" and
+                                                    "gnutls-serv" and
+                                                    "ocsptool" and
+                                                    "p11tool" and
+                                                    "psktool" and
+                                                    "tpmtool" and
+                                                    "/dev/random" and
+                                                    "/dev/urandom" and
+                                                    "systemd-random-seed" and
+                                                    "gpasswd" and
+                                                    "htpasswd" and
+                                                    "ldappasswd" and
+                                                    "passwd" and
+                                                    "vncpasswd" and
+                                                    "grub2-mkpasswd-pbkdf2" and
+                                                    "kpasswd" and
+                                                    "lppasswd" and
+                                                    "smbpasswd" wow,
+                          "uid_boundary" is "200" wow wow.

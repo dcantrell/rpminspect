@@ -792,6 +792,41 @@ extern "C"
  */
 #define REMEDY_UDEVRULES _("Refer to the udev documentation at https://www.freedesktop.org/software/systemd/man/udev.html for help correcting the errors and warnings.")
 
+/**
+ * @def REMEDY_SCRIPTLETS
+ *
+ * How to address scriptlet issues.
+ */
+#define REMEDY_SCRIPTLETS _("Refer to the packaging guidelines.")
+
+/**
+ * @def REMEDY_REQUIRED_USERADD_OPTIONS
+ *
+ * The required options for the useradd command in RPM scriptlets.
+ */
+#define REMEDY_REQUIRED_USERADD_OPTIONS "The useradd(8) command requires either the -r or --system option to specify a system account with automatic UID selection or the -u or --uid option with an explicit UID value specified.  The UID value specified must be below the UID value boundary in the configuration file.  Lastly, the useradd(8) command requires the use of the -s or --shell option to specify the login shell, but the shell must either be `/usr/sbin/nologin' or `/sbin/nologin'."
+
+/**
+ * @def REMEDY_USERADD_OPTION_UID
+ *
+ * The required -u/--uid option.
+ */
+#define REMEDY_USERADD_OPTION_UID "The useradd(8) command requires either the -r or --system option to specify a system account with automatic UID selection or the -u or --uid option with an explicit UID value specified.  The UID value specified must be below the UID value boundary in the configuration file."
+
+/**
+ * @def REMEDY_USERADD_UID_BOUNDARY
+ *
+ * The upper UID boundary for the -u/--uid option.
+ */
+#define REMEDY_USERADD_UID_BOUNDARY "The UID value specified with the -u or --uid option of the useradd(8) command must be below the UID value boundary in the configuration file."
+
+/**
+ * @def REMEDY_USERADD_OPTION_SHELL
+ *
+ * The -s/--shell option for the useradd command.
+ */
+#define REMEDY_USERADD_OPTION_SHELL "The useradd(8) command requires the use of the -s or --shell option to specify the login shell, but the shell must either be `/usr/sbin/nologin' or `/sbin/nologin'."
+
 /** @} */
 
 /** @} */

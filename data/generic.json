@@ -253,5 +253,46 @@
       "/etc/udev/rules.d/",
       "/usr/lib/udev/rules.d/"
     ]
+  },
+  "scriptlets": {
+    "security_keywords": [
+      "adduser",
+      "useradd",
+      "certutil",
+      "cmsutil",
+      "crlutil",
+      "modutil",
+      "pk12util",
+      "signtool",
+      "signver",
+      "ssltap",
+      "openssl",
+      "certtool",
+      "crywrap",
+      "danetool",
+      "gnutls-cli",
+      "gnutls-cli-debug",
+      "gnutls-serv",
+      "ocsptool",
+      "p11tool",
+      "psktool",
+      "tpmtool",
+      "/dev/random",
+      "/dev/urandom",
+      "systemd-random-seed",
+      "gpasswd",
+      "htpasswd",
+      "ldappasswd",
+      "passwd",
+      "vncpasswd",
+      "grub2-mkpasswd-pbkdf2",
+      "kpasswd",
+      "lppasswd",
+      "smbpasswd"
+    ],
+    "uid_boundary": "200",
+    "allowed_uids": [
+      "65534"
+    ]
   }
 }

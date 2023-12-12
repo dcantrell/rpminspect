@@ -152,6 +152,7 @@ vendor:
     #politics: off
     #removedfiles: off
     #runpath: off
+    #scriptlets: off
     #shellsyntax: off
     #specname: off
     #subpackages: off
@@ -1076,3 +1077,58 @@ udevrules:
     #udev_rules_dirs:
     #    - /etc/udev/rules.d/
     #    - /usr/lib/udev/rules.d/
+
+scriptlets:
+    # The list of security keywords to scan for in scriptlets.  RPM
+    # scriptlets are package-defined programs that run either before
+    # or after a package is installed or uninstalled.  Because they
+    # are freeform scripts, rpminspect checks for any of the keywords
+    # below as they may indicate a package is performing a
+    # security-sensitive operation and it needs further evaluation.
+    # The term keywords is used as opposed to commands because not
+    # every item in this list is a command.
+    security_keywords:
+        - adduser
+        - useradd
+        - certutil
+        - cmsutil
+        - crlutil
+        - modutil
+        - pk12util
+        - signtool
+        - signver
+        - ssltap
+        - openssl
+        - certtool
+        - crywrap
+        - danetool
+        - gnutls-cli
+        - gnutls-cli-debug
+        - gnutls-serv
+        - ocsptool
+        - p11tool
+        - psktool
+        - tpmtool
+        - /dev/random
+        - /dev/urandom
+        - systemd-random-seed
+        - gpasswd
+        - htpasswd
+        - ldappasswd
+        - passwd
+        - vncpasswd
+        - grub2-mkpasswd-pbkdf2
+        - kpasswd
+        - lppasswd
+        - smbpasswd
+
+    # The upper boundary for UID values that a useradd command may
+    # specify in a package scriptlet.  The idea here is that packages
+    # should only create system-level accounts, which tend to be lower
+    # UID values.
+    uid_boundary: 200
+
+    # Allowed UID values for the useradd(8) command in scriptlets that
+    # are above the UID boundary.
+    allowed_uids:
+        - 65534

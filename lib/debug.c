@@ -976,6 +976,17 @@ void dump_cfg(const struct rpminspect *ri)
         dump_inspection_ignores(ri->inspection_ignores, NAME_UDEVRULES);
     }
 
+    /* scriptlets */
+
+    if (ri->scriptlet_security_keywords && !TAILQ_EMPTY(ri->scriptlet_security_keywords)) {
+        printf("scriptlets:\n");
+        printf("    security_keywords:\n");
+
+        TAILQ_FOREACH(entry, ri->scriptlet_security_keywords, items) {
+            printf("        - %s\n", entry->data);
+        }
+    }
+
     printf("\n\n");
     return;
 }

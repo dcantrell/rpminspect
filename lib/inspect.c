@@ -73,6 +73,7 @@ struct inspect inspections[] = {
     { INSPECT_REMOVEDFILES,  "removedfiles",  true,  false, &inspect_removedfiles },
     { INSPECT_RPMDEPS,       "rpmdeps",       false, true,  &inspect_rpmdeps },
     { INSPECT_RUNPATH,       "runpath",       false, true,  &inspect_runpath },
+    { INSPECT_SCRIPTLETS,    "scriptlets",    true,  true,  &inspect_scriptlets },
     { INSPECT_SHELLSYNTAX,   "shellsyntax",   false, true,  &inspect_shellsyntax },
     { INSPECT_SPECNAME,      "specname",      false, true,  &inspect_specname },
     { INSPECT_SUBPACKAGES,   "subpackages",   false, false, &inspect_subpackages },
@@ -255,6 +256,8 @@ uint64_t inspection_id(const char *name)
         return INSPECT_DEBUGINFO;
     } else if (!strcmp(name, NAME_UDEVRULES)) {
         return INSPECT_UDEVRULES;
+    } else if (!strcmp(name, NAME_SCRIPTLETS)) {
+        return INSPECT_SCRIPTLETS;
     } else {
         return INSPECT_NULL;
     }
@@ -366,6 +369,8 @@ const char *inspection_desc(const uint64_t inspection)
             return DESC_DEBUGINFO;
         case INSPECT_UDEVRULES:
             return DESC_UDEVRULES;
+        case INSPECT_SCRIPTLETS:
+            return DESC_SCRIPTLETS;
         default:
             return NULL;
     }
@@ -478,6 +483,8 @@ const char *inspection_header_to_desc(const char *header)
         i = INSPECT_DEBUGINFO;
     } else if (!strcmp(header, NAME_UDEVRULES)) {
         i = INSPECT_UDEVRULES;
+    } else if (!strcmp(header, NAME_SCRIPTLETS)) {
+        i = INSPECT_SCRIPTLETS;
     }
 
     return inspection_desc(i);

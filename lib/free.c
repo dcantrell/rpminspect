@@ -110,6 +110,7 @@ void free_rpminspect(struct rpminspect *ri)
     secrule_t *tmp_srentry = NULL;
     desktop_skips_t *dentry = NULL;
     desktop_skips_t *tmp_dentry = NULL;
+    uid_entry_t *uentry = NULL;
 
     if (ri == NULL) {
         return;
@@ -304,6 +305,17 @@ void free_rpminspect(struct rpminspect *ri)
     free_deprule_ignore_map(ri->deprules_ignore);
     free(ri->debuginfo_sections);
     list_free(ri->udev_rules_dirs, free);
+    list_free(ri->scriptlet_security_keywords, free);
+
+    if (ri->allowed_uids) {
+        while (!TAILQ_EMPTY(ri->allowed_uids)) {
+            uentry = TAILQ_FIRST(ri->allowed_uids);
+            TAILQ_REMOVE(ri->allowed_uids, uentry, items);
+            free(uentry);
+        }
+
+        free(ri->allowed_uids);
+    }
 
     free_peers(ri->peers);
 

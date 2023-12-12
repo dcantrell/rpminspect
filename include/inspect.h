@@ -727,6 +727,17 @@ bool inspect_debuginfo(struct rpminspect *ri);
  */
 bool inspect_udevrules(struct rpminspect *ri);
 
+/**
+ * @brief Perform the 'scriptlets' inspection.
+ *
+ * Perform checks on RPM scriptlets looking for security keywords,
+ * misuse of the useradd command, and unconditional service shutdowns.
+ *
+ * @param ri Pointer to the struct rpminspect for the program.
+ * @return True if the inspection passed, false otherwise.
+ */
+bool inspect_scriptlets(struct rpminspect *ri);
+
 /** @} */
 
 /**
@@ -1031,6 +1042,12 @@ bool inspect_udevrules(struct rpminspect *ri);
  */
 #define INSPECT_UDEVRULES                   (((uint64_t) 1) << 46)
 
+/**
+ * @def INSPECT_SCRIPTLETS
+ * 'scriptlets' inspection ID.
+ */
+#define INSPECT_SCRIPTLETS                  (((uint64_t) 1) << 47)
+
 /** @} */
 
 /**
@@ -1331,6 +1348,12 @@ bool inspect_udevrules(struct rpminspect *ri);
  */
 #define NAME_UDEVRULES                      "udevrules"
 
+/**
+ * @def NAME_SCRIPTLETS
+ * The string "scriptlets"
+ */
+#define NAME_SCRIPTLETS                     "scriptlets"
+
 /** @} */
 
 /**
@@ -1624,6 +1647,12 @@ bool inspect_udevrules(struct rpminspect *ri);
  * The description for the 'udevrules' inspection.
  */
 #define DESC_UDEVRULES _("Perform syntax check on udev rules files using udevadm verify.")
+
+/**
+ * @def DESC_SCRIPTLETS
+ * The description for the 'scriptlets' inspection.
+ */
+#define DESC_SCRIPTLETS _("Check RPM scriptlets for potential security problems, invocation of useradd without required options, and unconditional service stops.")
 
 /** @} */
 
