@@ -1,12 +1,12 @@
 # Build libxdiff
 libxdiff_sources = [
-    'xdiffi.c',
-    'xemit.c',
-    'xhistogram.c',
-    'xmerge.c',
-    'xpatience.c',
-    'xprepare.c',
-    'xutils.c',
+    'xdiffi.cxx',
+    'xemit.cxx',
+    'xhistogram.cxx',
+    'xmerge.cxx',
+    'xpatience.cxx',
+    'xprepare.cxx',
+    'xutils.cxx',
 ]
 
 libxdiff = static_library(

@@ -13,7 +13,7 @@ endif
 
 rpminspect_prog = executable(
     'rpminspect',
-    [ 'rpminspect.c' ],
+    [ 'rpminspect.cxx' ],
     include_directories : inc,
     install : true,
     link_with : [

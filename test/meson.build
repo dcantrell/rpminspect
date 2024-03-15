@@ -7,132 +7,118 @@ add_test_setup(
 if cunit.found()
     test_badwords = executable(
         'test-badwords',
-        ['lib/test-badwords.c',
-         'lib/test-main.c'],
+        ['lib/test-badwords.cxx',
+         'lib/test-main.cxx'],
         include_directories : inc,
         dependencies : [ cunit, libkmod ],
-        c_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
+        cpp_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
         link_with : [ librpminspect ],
     )
 
     test_koji = executable(
         'test-koji',
-        ['lib/test-koji.c',
-         'lib/test-main.c'],
+        ['lib/test-koji.cxx',
+         'lib/test-main.cxx'],
         include_directories : inc,
         dependencies : [ cunit, libkmod ],
-        c_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
+        cpp_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
         link_with : [ librpminspect ],
     )
 
     test_tty = executable(
         'test-tty',
-        ['lib/test-tty.c',
-         'lib/test-main.c'],
+        ['lib/test-tty.cxx',
+         'lib/test-main.cxx'],
         include_directories : inc,
         dependencies : [ cunit, libkmod ],
-        c_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
+        cpp_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
         link_with : [ librpminspect ],
     )
 
     test_strfuncs = executable(
         'test-strfuncs',
-        ['lib/test-strfuncs.c',
-         'lib/test-main.c'],
+        ['lib/test-strfuncs.cxx',
+         'lib/test-main.cxx'],
         include_directories : inc,
         dependencies : [ cunit, libkmod ],
-        c_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
+        cpp_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
         link_with : [ librpminspect ],
     )
 
     test_init = executable(
         'test-init',
-        ['lib/test-init.c',
-         'lib/test-main.c'],
+        ['lib/test-init.cxx',
+         'lib/test-main.cxx'],
         include_directories : inc,
         dependencies : [ cunit, libkmod ],
-        c_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
+        cpp_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
         link_with : [ librpminspect ],
     )
 
     test_inspect_elf = executable(
         'test-inspect_elf',
-        ['lib/test-inspect_elf.c',
-         'lib/test-main.c'],
+        ['lib/test-inspect_elf.cxx',
+         'lib/test-main.cxx'],
         include_directories : inc,
         dependencies : [
             cunit,
             libelf,
             libkmod,
         ],
-        c_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
+        cpp_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
         link_with : [ librpminspect ],
     )
 
     test_abspath = executable(
         'test-abspath',
-        ['lib/test-abspath.c',
-         'lib/test-main.c'],
+        ['lib/test-abspath.cxx',
+         'lib/test-main.cxx'],
         include_directories : inc,
         dependencies : [ cunit, libkmod ],
-        c_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
+        cpp_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
         link_with : [ librpminspect ],
     )
 
     test_humansize = executable(
         'test-humansize',
-        ['lib/test-humansize.c',
-         'lib/test-main.c'],
+        ['lib/test-humansize.cxx',
+         'lib/test-main.cxx'],
         include_directories : inc,
         dependencies : [ cunit, libkmod ],
-        c_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
+        cpp_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
         link_with : [ librpminspect ],
     )
 
     test_arches = executable(
         'test-arches',
-        ['lib/test-arches.c',
-         'lib/test-main.c'],
+        ['lib/test-arches.cxx',
+         'lib/test-main.cxx'],
         include_directories : inc,
         dependencies : [ cunit, libkmod ],
-        c_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
+        cpp_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
         link_with : [ librpminspect ],
     )
 
     test_results = executable(
         'test-results',
-        ['lib/test-results.c',
-         'lib/test-main.c'],
+        ['lib/test-results.cxx',
+         'lib/test-main.cxx'],
         include_directories : inc,
         dependencies : [ cunit, libkmod ],
-        c_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
+        cpp_args : '-D_BUILDDIR_="@0@"'.format(meson.current_build_dir()),
         link_with : [ librpminspect ],
     )
-
-    if add_languages('cpp', required : false)
-        test_cpp = executable(
-            'test_cpp',
-            ['lib/test-cpp.cpp',
-             'lib/test-main.c'],
-            include_directories : inc,
-            dependencies : [ cunit ],
-            cpp_args : '-std=c++17',
-            link_with : [ librpminspect ],
-        )
-
-        test('test-cpp', test_cpp)
-    endif
 
     # Support program used by test-inspect-elf
     execstack_prog = executable(
         'execstack',
-        ['lib/elftest.c'],
+        ['lib/elftest.cxx'],
         link_args : ['-Wl,-z,execstack', '-Wl,-z,relro,-z,lazy']
     )
 
     noexecstack_prog = executable(
         'noexecstack',
-        ['lib/elftest.c'],
+        ['lib/elftest.cxx'],
         link_args : ['-Wl,-z,noexecstack', '-Wl,-z,relro']
     )
 

@@ -28,7 +28,7 @@ Requires:       librpminspect%{?_isa} = %{version}-%{release}
 
 BuildRequires:  meson
 BuildRequires:  ninja-build
-BuildRequires:  gcc
+BuildRequires:  gcc-c++
 BuildRequires:  glibc-devel
 BuildRequires:  json-c-devel
 BuildRequires:  xmlrpc-c-devel >= 1.32.5
@@ -49,6 +49,7 @@ BuildRequires:  libmandoc-devel >= 1.14.5
 BuildRequires:  gnupg2
 BuildRequires:  libicu-devel
 BuildRequires:  libcdson-devel
+BuildRequires:  toml-devel
 
 
 %description
