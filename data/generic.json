@@ -244,7 +244,8 @@
     "ignore": [
       "/lib/modules/*",
       "/usr/lib/debug/.dwz/*",
-      "/usr/lib/grub/*"
+      "/usr/lib/grub/*",
+      "/usr/lib/debug/usr/lib*/libpython3.so*"
     ],
     "debuginfo_sections": ".symtab .debug_info"
   },

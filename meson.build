@@ -2,6 +2,7 @@ project('rpminspect',
         'cpp',
         version : '2.0',
         default_options : [
+            'c_std=gnu11',
             'warning_level=3',
             'werror=true',
             'cpp_std=c++17',
@@ -21,6 +22,12 @@ add_global_arguments('-D_GNU_SOURCE', language : ['cpp'])
 
 # Define this to get around a problematic json_object.h macro
 add_global_arguments('-D__STRICT_ANSI__', language : ['cpp'])
+
+# Relax the compiler warnings->errors a bit on FreeBSD
+if build_machine.system() == 'freebsd'
+    add_global_arguments('-Wno-language-extension-token', language : [ 'c', 'cpp' ])
+    add_global_arguments('-Wno-unused-but-set-variable', language : [ 'c', 'cpp' ])
+endif
 
 # On NetBSD we need to build without pedantic errors because of some
 # things in pkgsrc
@@ -382,12 +389,14 @@ if not cpp.has_header('sys/queue.h', include_directories : inc)
     add_project_arguments('-D_COMPAT_QUEUE', language : ['cpp'])
 endif
 
-# libtoml
-if not cpp.has_function('toml_init', args : ['-ltoml'])
-    error('*** unable to find toml_init() in libtoml')
+# Default to bundled libtoml, otherwise use the system one if we can.
+if get_option('with_system_libtoml') and cc.has_function('toml_init', args : ['-ltoml'])
+    inctoml = include_directories('libtoml')
+    toml = declare_dependency(link_args : ['-ltoml'])
+else
+    inctoml = include_directories('libtoml')
+    subdir('libtoml')
 endif
-
-toml = declare_dependency(link_args : ['-ltoml'])
 
 # Header files for builds
 inc = include_directories('include')

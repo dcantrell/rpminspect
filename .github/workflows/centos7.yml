@@ -70,10 +70,8 @@ jobs:
                   # Make sure to use the specific newer Python
                   PYTHON_PROG="$(cd /usr/local/bin ; ls -1 python*.* | grep -v config)"
 
-                  # rpminspect uses variadic macros, which
-                  # were introduced with C99.  CentOS 7's gcc
-                  # does not default to C99 as the standard.
-                  make debug PYTHON="${PYTHON_PROG}" CFLAGS="-std=c99"
+                  # Do a debug build and run the test suite
+                  make debug PYTHON="${PYTHON_PROG}"
                   env LANG=en_US.UTF-8 make check PYTHON="${PYTHON_PROG}"
 
                   # Report coverage

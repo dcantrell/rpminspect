@@ -80,4 +80,4 @@ jobs:
                   #
                   run: |
                       make instreqs SKIP_PIP=y
-                      make
+                      make MESON_OPTIONS="-D with_system_libtoml=true"

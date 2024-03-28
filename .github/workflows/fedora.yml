@@ -94,6 +94,6 @@ jobs:
                   fi
 
                   make instreqs
-                  make debug
+                  make debug MESON_OPTIONS="-D with_system_libtoml=true"
                   make check
                   ninja -C build coverage && ( curl -s https://codecov.io/bash | bash ) || :

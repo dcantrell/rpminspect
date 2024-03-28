@@ -1808,15 +1808,17 @@ struct rpminspect *init_rpminspect(struct rpminspect *ri, const char *cfgfile, c
     cf = find_cfgfile(cwd, COMMAND_NAME);
 
     if (cf) {
-        read_cfgfile(ri, cf, true);
-
         /* save a copy of the local rpminspect config file for diagnostics */
         bn = basename(cf);
         assert(bn != NULL);
         ri->localcfg = strdup(bn);
         assert(ri->localcfg != NULL);
         ri->locallines = read_file(cf);
-        assert(ri->locallines != NULL);
+
+        /* read the file only if it's not empty */
+        if (ri->locallines) {
+            read_cfgfile(ri, cf, true);
+        }
 
         free(cf);
     }

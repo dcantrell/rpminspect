@@ -60,11 +60,14 @@ elif [ ${IS_CRUX} -eq 0 ] && [ -f /etc/pkgadd.conf ] && [ -f /etc/pkgmk.conf ]; 
     echo "crux"
 elif [ -r /etc/oracle-release ] && [ "${ID}" = "ol" ]; then
     v="$(echo "${VERSION_ID}" | cut -d '.' -f 1)"
-    if [ "${v}" = "8" ]; then
-        echo "oraclelinux${v}"
-    else
-        echo "unknown OS: ${ID}:${VERSION_ID}" >&2
-    fi
+    case "${v}" in
+        8|9)
+            echo "oraclelinux${v}"
+            ;;
+        *)
+            echo "unknown OS: ${ID}:${VERSION_ID}" >&2
+            ;;
+    esac
 elif [ -r /etc/debian_version ] && [ "${ID}" = "debian" ]; then
     # map version codename to debian "stream" (stable, testing, ...)
     case "${VERSION_CODENAME}" in

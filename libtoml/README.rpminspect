@@ -1,0 +1,24 @@
+This is a bundled copy of libtoml from this project:
+
+https://github.com/ajwans/libtoml
+
+The examples/ subdirectory has been removed as well as the
+CMakeLists.txt file.  I also removed test.c and main.c because this
+bundled library is only to build libtoml.a. config.h has been removed
+as well because it was only used by ccan and the value was static, so
+ccan has been modified to not conditonalize HAVE_TYPEOF.
+
+The parser has already been generated with ragel so that ragel is not
+a build dependency of rpminspect.  The toml_parse.c file can be
+regenerated with ragel with this command:
+
+    ragel -e -p -o toml_parse.c toml_parse.rl
+
+The generated toml_parse.c file was then stripped of all #line lines,
+uninitialized variables initialized, and unused variables removed.
+
+Other compile fixes have been committed to this fork.
+
+--
+David Cantrell
+<dcantrell@redhat.com>

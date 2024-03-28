@@ -4,6 +4,7 @@ app-shells/dash
 app-shells/ksh
 app-shells/tcsh
 app-shells/zsh
+dev-debug/valgrind
 dev-libs/icu
 dev-libs/json-c
 dev-libs/libyaml
@@ -15,5 +16,4 @@ dev-util/desktop-file-utils
 dev-util/gcovr
 dev-util/libabigail
 dev-util/patchelf
-dev-debug/valgrind
 sys-devel/gettext

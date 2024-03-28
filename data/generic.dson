@@ -137,5 +137,6 @@ such "common" is such "workdir" is "/var/tmp/rpminspect",
      "upstream" is empty!
      "debuginfo" is such "ignore" is so "/lib/modules/*" and
                                         "/usr/lib/debug/.dwz/*" and
-                                        "/usr/lib/grub/*" many,
+                                        "/usr/lib/grub/*" and
+                                        "/usr/lib/debug/usr/lib*/libpython3.so*" many,
                          "debuginfo_sections" is ".symtab .debug_info" wow wow

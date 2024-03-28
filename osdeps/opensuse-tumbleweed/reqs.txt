@@ -14,8 +14,8 @@ gcc-32bit
 gettext-tools
 git
 glibc-devel-32bit
-html-dtd
 html2text
+html-dtd
 kernel-default-devel
 kernel-devel
 ksh
@@ -36,9 +36,9 @@ make
 meson
 ninja
 patchelf
-python3-PyYAML
 python3-devel
 python3-pip
+python3-PyYAML
 python3-rpm
 rpm-build
 rpm-devel

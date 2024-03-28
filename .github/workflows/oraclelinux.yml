@@ -32,8 +32,7 @@ jobs:
         # Set up the matrix of distributions to test
         strategy:
             matrix:
-                container: ["oraclelinux:8"]
-
+                container: [ "oraclelinux:8", "oraclelinux:9" ]
         container:
             image: ${{ matrix.container }}
 
@@ -43,17 +42,21 @@ jobs:
             # Requirements before the git clone can happen
             - name: git clone requirements
               run: |
+                  . /etc/os-release
+                  V="$(echo "${VERSION}" | cut -d '.' -f 1)"
+
                   # Oracle's EPEL copy
+                  REPO="/etc/yum.repos.d/ol-epel.repo"
                   mkdir -p /etc/yum.repos.d
-                  echo '[ol8_developer_EPEL]' > /etc/yum.repos.d/ol8-epel.repo
-                  echo 'name=Oracle Linux $releasever EPEL ($basearch)' >> /etc/yum.repos.d/ol8-epel.repo
-                  echo 'baseurl=https://yum.oracle.com/repo/OracleLinux/OL8/developer/EPEL/$basearch/' >> /etc/yum.repos.d/ol8-epel.repo
-                  echo 'gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle' >> /etc/yum.repos.d/ol8-epel.repo
-                  echo 'gpgcheck=1' >> /etc/yum.repos.d/ol8-epel.repo
-                  echo 'enabled=1' >> /etc/yum.repos.d/ol8-epel.repo
+                  echo '[ol_developer_EPEL]' > ${REPO}
+                  echo 'name=Oracle Linux $releasever EPEL ($basearch)' >> ${REPO}
+                  echo "baseurl=https://yum.oracle.com/repo/OracleLinux/OL${V}/developer/EPEL/$(uname -m)/" >> "${REPO}"
+                  echo 'gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle' >> "${REPO}"
+                  echo 'gpgcheck=1' >> "${REPO}"
+                  echo 'enabled=1' >> "${REPO}"
 
                   # Turn on all the other repos
-                  sed -i -e 's|enabled=0|enabled=1|g' /etc/yum.repos.d/oracle-linux-ol8.repo
+                  sed -i -e 's|enabled=0|enabled=1|g' /etc/yum.repos.d/*.repo
 
                   dnf install -y git
 

@@ -31,6 +31,7 @@ libcurl-devel
 libffi-devel
 libicu-devel
 libmandoc-devel
+libtoml-devel
 libxml2-devel
 libyaml-devel
 make

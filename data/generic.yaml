@@ -1079,6 +1079,7 @@ debuginfo:
         - /lib/modules/*
         - /usr/lib/debug/.dwz/*
         - /usr/lib/grub/*
+        - /usr/lib/debug/usr/lib*/libpython3.so*
 
     # The ELF section name(s) required in debuginfo packages.  The
     # default is shown here.  Some products may need to modify this

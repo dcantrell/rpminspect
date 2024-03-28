@@ -170,12 +170,22 @@ if build_machine.system() == 'freebsd'
     deps += [ intl ]
 endif
 
+incdirs = [ inc, incxdiff ]
+locallibs = [ libxdiff ]
+
+if get_option('with_system_libtoml')
+    deps += [ toml ]
+else
+    incdirs += [ inctoml ]
+    locallibs += [ libtoml ]
+endif
+
 librpminspect = library(
     'rpminspect',
     librpminspect_sources,
-    include_directories : [ inc, incxdiff ],
+    include_directories : incdirs,
     version : '0.5.0',
     install : true,
-    link_with : [ libxdiff, ],
+    link_with : locallibs,
     dependencies : deps
 )

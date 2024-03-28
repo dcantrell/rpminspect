@@ -49,7 +49,7 @@ jobs:
 
                   # Requirements before the git clone can happen
                   prepare: |
-                      yes | pkg update
+                      env ASSUME_ALWAYS_YES=yes pkg update
                       pkg install -q -y git tree
 
                   # Run the build and test

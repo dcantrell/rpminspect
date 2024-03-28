@@ -33,7 +33,6 @@ following environments:
 |:-------------------------------------------------------|:----|----:|
 | [Fedora Linux](https://getfedora.org/)                 | rawhide<br />stable | [![Fedora Linux](https://github.com/rpminspect/rpminspect/actions/workflows/fedora.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/fedora.yml) |
 | [CentOS](https://www.centos.org/)               | Stream 9<br />Stream 8<br />7 | [![CentOS](https://github.com/rpminspect/rpminspect/actions/workflows/centos.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/centos.yml) |
-| [Slackware Linux](http://www.slackware.com/)           | stable | [![Slackware Linux](https://github.com/rpminspect/rpminspect/actions/workflows/slackware.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/slackware.yml) |
 | [Ubuntu Linux](https://ubuntu.com/)                    | stable | [![Ubuntu Linux](https://github.com/rpminspect/rpminspect/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/ubuntu.yml) |
 | [Debian GNU/Linux](https://www.debian.org/)            | testing<br />stable | [![Debian GNU/Linux](https://github.com/rpminspect/rpminspect/actions/workflows/debian.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/debian.yml) |
 | [OpenSUSE Linux](https://www.opensuse.org/)            | Leap | [![OpenSUSE](https://github.com/rpminspect/rpminspect/actions/workflows/opensuse.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/opensuse.yml) |
@@ -129,6 +128,7 @@ meson and ninja, plus the following libraries:
 | [gettext](https://www.gnu.org/software/gettext/) | | .po to .mo | [GPL-3.0-or-later](https://spdx.org/licenses/GPL-3.0-or-later.html) |
 | [libannocheck](https://sourceware.org/annobin/) | | | [GPL-3.0-or-later](https://spdx.org/licenses/GPL-3.0-or-later.html) |
 | [cdson](https://github.com/frozencemetery/cdson) | :heavy_check_mark: | | [MPL-2.0](https://spdx.org/licenses/MPL-2.0.html) |
+| [libtoml](https://github.com/ajwans/libtoml) | :heavy_check_mark: | | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) |
 
 Additionally, the unit test suite requires the following packages:
 
