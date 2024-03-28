@@ -2,10 +2,9 @@ project('rpminspect',
         'cpp',
         version : '2.0',
         default_options : [
-            'c_std=gnu11',
+            'cpp_std=c++17',
             'warning_level=3',
             'werror=true',
-            'cpp_std=c++17',
             'buildtype=debugoptimized'
         ],
         license : 'GPL-3.0-or-later AND LGPL-3.0-or-later AND Apache-2.0 AND MIT')
@@ -25,8 +24,8 @@ add_global_arguments('-D__STRICT_ANSI__', language : ['cpp'])
 
 # Relax the compiler warnings->errors a bit on FreeBSD
 if build_machine.system() == 'freebsd'
-    add_global_arguments('-Wno-language-extension-token', language : [ 'c', 'cpp' ])
-    add_global_arguments('-Wno-unused-but-set-variable', language : [ 'c', 'cpp' ])
+    add_global_arguments('-Wno-language-extension-token', language : ['cpp'])
+    add_global_arguments('-Wno-unused-but-set-variable', language : ['cpp'])
 endif
 
 # On NetBSD we need to build without pedantic errors because of some
@@ -39,13 +38,13 @@ endif
 add_global_arguments('-DVENDOR_DATA_DIR="@0@"'.format(get_option('vendor_data_dir')), language : ['cpp'])
 
 # Library search dirs
-search_dirs = [ '/usr/local/lib', '/usr/pkg/lib', '/usr/lib64', '/usr/lib' ]
+search_dirs = ['/usr/local/lib', '/usr/pkg/lib', '/usr/lib64', '/usr/lib']
 
 # Header search dirs
 if build_machine.system() == 'netbsd'
-    include_dirs = [ '/usr/local/include', '/usr/pkg/include', '/usr/include' ]
+    include_dirs = ['/usr/local/include', '/usr/pkg/include', '/usr/include']
 else
-    include_dirs = [ '/usr/local/include', '/usr/include' ]
+    include_dirs = ['/usr/local/include', '/usr/include']
 endif
 existing_include_dirs = []
 foreach dir : include_dirs
@@ -62,9 +61,9 @@ endif
 
 # On FreeBSD, figure out where strverscmp() is
 libiberty = cpp.find_library('iberty',
-                            dirs : search_dirs,
-                            required : false,
-                            static : true)
+                             dirs : search_dirs,
+                             required : false,
+                             static : true)
 
 if build_machine.system() == 'freebsd'
     # FreeBSD >= 14.x has it in libc
@@ -84,11 +83,11 @@ endif
 if find_program('xgettext', required : get_option('nls')).found()
     if build_machine.system() == 'freebsd'
         intl = cpp.find_library('intl',
-                               dirs : search_dirs,
-                               required : true,
-                               static : false)
+                                dirs : search_dirs,
+                                required : true,
+                                static : false)
 
-        if not intl.found() or not cpp.has_function('libintl_gettext', dependencies : [ intl ])
+        if not intl.found() or not cpp.has_function('libintl_gettext', dependencies : [intl])
             error('*** unable to find libintl (with symbol libintl_gettext())')
         endif
     endif
@@ -108,7 +107,7 @@ icu_uc = dependency('icu-uc', required : true)
 icu_io = dependency('icu-io', required : true)
 
 # Check for xmlSetGenericErrorFunc in newer releases of libxml
-if cpp.has_function('xmlSetGenericErrorFunc', dependencies : [ libxml ])
+if cpp.has_function('xmlSetGenericErrorFunc', dependencies : [libxml])
     add_project_arguments('-D_HAVE_XMLSETGENERICERRORFUNC', language : ['cpp'])
 endif
 
@@ -122,7 +121,7 @@ curlinfo_src = '''
     }
     '''
 have_newer_curlinfo = cpp.compiles(curlinfo_src,
-                                   dependencies: [ libcurl ],
+                                   dependencies: [libcurl],
                                    name: 'CURLINFO_CONTENT_LENGTH_DOWNLOAD_T availability test',
                                    no_builtin_args: true)
 
@@ -167,7 +166,7 @@ rpmbuild = cpp.find_library('rpmbuild', dirs : search_dirs, required : true)
 if rpmbuild.found()
     message('found librpmbuild')
 
-    if not cpp.has_function('rpmSpecParse', dependencies : [ rpmbuild ])
+    if not cpp.has_function('rpmSpecParse', dependencies : [rpmbuild])
         error('*** unable to find rpmSpecParse() in librpmbuild')
     endif
 else
@@ -192,17 +191,17 @@ endif
 # libarchive (need to check for specific functions)
 libarchive = dependency('libarchive', required : true)
 
-if cpp.has_function('archive_version_details', dependencies : [ libarchive ])
+if cpp.has_function('archive_version_details', dependencies : [libarchive])
     add_project_arguments('-D_HAVE_ARCHIVE_VERSION_DETAILS', language : ['cpp'])
-elif cpp.has_function('archive_version_string', dependencies : [ libarchive ])
+elif cpp.has_function('archive_version_string', dependencies : [libarchive])
     add_project_arguments('-D_HAVE_ARCHIVE_VERSION_STRING', language : ['cpp'])
 endif
 
 # openssl (need to check for the version info function)
 openssl = dependency('openssl', required : true)
 
-have_openssl_version = cpp.has_function('OpenSSL_version', dependencies : [ openssl ])
-have_ssleay_version = cpp.has_function('SSLeay_version', dependencies : [ openssl ])
+have_openssl_version = cpp.has_function('OpenSSL_version', dependencies : [openssl])
+have_ssleay_version = cpp.has_function('SSLeay_version', dependencies : [openssl])
 
 if not have_openssl_version and have_ssleay_version
     add_project_arguments('-DOpenSSL_version=SSLeay_version', language : ['cpp'])
