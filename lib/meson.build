@@ -5,11 +5,11 @@ pic_bits = find_program('pic_bits.sh')
 inspect_elf_bits_cxx = custom_target(
     'inspect_elf_bits_cxx',
     output : 'inspect_elf_bits.cxx',
-    command : [ pic_bits, '@OUTPUT@' ],
+    command : [pic_bits, '@OUTPUT@'],
     install : false
 )
 
-inspect_elf_bits_dep = declare_dependency(sources : [ inspect_elf_bits_cxx ])
+inspect_elf_bits_dep = declare_dependency(sources : [inspect_elf_bits_cxx])
 
 # Build librpminspect
 librpminspect_sources = [
@@ -139,45 +139,45 @@ deps = [
 ]
 
 if have_modularitylabel
-    librpminspect_sources += [ 'inspect_modularity.cxx' ]
+    librpminspect_sources += ['inspect_modularity.cxx']
 endif
 
 if build_machine.system() != 'netbsd'
-    deps += [ dl ]
+    deps += [dl]
 endif
 
 if build_machine.system() != 'freebsd'
     if get_option('with_libkmod')
-        librpminspect_sources += [ 'inspect_kmod.cxx', 'kmods.cxx' ]
-        deps += [ libkmod ]
+        librpminspect_sources += ['inspect_kmod.cxx', 'kmods.cxx']
+        deps += [libkmod]
     endif
 
     if get_option('with_libcap')
-        librpminspect_sources += [ 'inspect_capabilities.cxx' ]
-        deps += [ libcap ]
+        librpminspect_sources += ['inspect_capabilities.cxx']
+        deps += [libcap]
     endif
 
     if get_option('with_annocheck') or get_option('with_libannocheck')
-        librpminspect_sources += [ 'inspect_annocheck.cxx' ]
+        librpminspect_sources += ['inspect_annocheck.cxx']
 
         if get_option('with_libannocheck')
-            deps += [ libannocheck ]
+            deps += [libannocheck]
         endif
     endif
 endif
 
 if build_machine.system() == 'freebsd'
-    deps += [ intl ]
+    deps += [intl]
 endif
 
-incdirs = [ inc, incxdiff ]
-locallibs = [ libxdiff ]
+incdirs = [inc, incxdiff]
+locallibs = [libxdiff]
 
 if get_option('with_system_libtoml')
-    deps += [ toml ]
+    deps += [toml]
 else
-    incdirs += [ inctoml ]
-    locallibs += [ libtoml ]
+    incdirs += [inctoml]
+    locallibs += [libtoml]
 endif
 
 librpminspect = library(

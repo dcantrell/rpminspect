@@ -1,8 +1,8 @@
 # Build libtoml
 libtoml_sources = [
-    'toml.c',
-    'toml_parse.c',
-    'toml_private.c',
+    'toml.cxx',
+    'toml_parse.cxx',
+    'toml_private.cxx',
 ]
 
 libtoml = static_library(
