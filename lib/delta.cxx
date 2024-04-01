@@ -39,7 +39,7 @@ static int fill_mmfile(mmfile_t *mf, const char *file)
 
     /* extra byte for the \0 */
     size = sb.st_size;
-    buf = calloc(1, size + 1);
+    buf = (char *) calloc(1, size + 1);
 
     if (buf == NULL) {
         warn("*** malloc");
@@ -105,18 +105,18 @@ static int delta_out(void *priv, mmbuffer_t *mb, int nbuf)
         }
 
         /* capture the line */
-        entry = calloc(1, sizeof(*entry));
+        entry = (string_entry_t *) calloc(1, sizeof(*entry));
         assert(entry != NULL);
 
         if ((mb[i].size > 1) && mb[i].ptr != NULL) {
             if (prefix) {
-                entry->data = calloc(1, strlen(prefix) + mb[i].size + 1);
+                entry->data = (char *) calloc(1, strlen(prefix) + mb[i].size + 1);
                 assert(entry->data != NULL);
 
                 end = stpcpy(entry->data, prefix);
                 end = strncpy(end, mb[i].ptr, mb[i].size);
             } else {
-                entry->data = calloc(1, mb[i].size + 1);
+                entry->data = (char *) calloc(1, mb[i].size + 1);
                 assert(entry->data != NULL);
 
                 entry->data = strncpy(entry->data, mb[i].ptr, mb[i].size);
@@ -127,7 +127,7 @@ static int delta_out(void *priv, mmbuffer_t *mb, int nbuf)
 
         assert(entry->data != NULL);
         entry->data[strcspn(entry->data, "\n")] = '\0';
-        entry->data = realloc(entry->data, strlen(entry->data) + 1);
+        entry->data = (char *) realloc(entry->data, strlen(entry->data) + 1);
         TAILQ_INSERT_TAIL(list, entry, items);
         prefix = NULL;
     }
@@ -142,20 +142,20 @@ static int delta_out(void *priv, mmbuffer_t *mb, int nbuf)
  */
 char *get_file_delta(const char *a, const char *b)
 {
-    mmfile_t old;
-    mmfile_t new;
+    mmfile_t o;
+    mmfile_t n;
     xpparam_t xpp;
     xdemitconf_t xecfg;
     xdemitcb_t ecb;
     string_list_t *list = NULL;
     char *r = NULL;
 
-    if (fill_mmfile(&old, a) < 0) {
+    if (fill_mmfile(&o, a) < 0) {
         warn("*** fill_mmfile");
         return NULL;
     }
 
-    if (fill_mmfile(&new, b) < 0) {
+    if (fill_mmfile(&n, b) < 0) {
         warn("*** fill_mmfile");
         free(old.ptr);
         return NULL;
@@ -165,7 +165,7 @@ char *get_file_delta(const char *a, const char *b)
     memset(&xecfg, 0, sizeof(xecfg));
     memset(&ecb, 0, sizeof(ecb));
 
-    list = calloc(1, sizeof(*list));
+    list = (string_list_t *) calloc(1, sizeof(*list));
     assert(list != NULL);
     TAILQ_INIT(list);
 
@@ -176,14 +176,14 @@ char *get_file_delta(const char *a, const char *b)
     ecb.priv = list;
     ecb.outf = delta_out;
 
-    if (xdl_diff(&old, &new, &xpp, &xecfg, &ecb) < 0) {
+    if (xdl_diff(&o, &n, &xpp, &xecfg, &ecb) < 0) {
         warn("*** xdl_diff");
     }
 
     r = list_to_string(list, "\n");
     list_free(list, free);
-    free(old.ptr);
-    free(new.ptr);
+    free(o.ptr);
+    free(n.ptr);
 
     return r;
 }

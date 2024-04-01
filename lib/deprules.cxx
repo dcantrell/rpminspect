@@ -146,7 +146,7 @@ static deprule_list_t *gather_deprules_by_type(deprule_list_t *rules, Header hdr
 
             v = rpmtdGetString(ver);
 
-            deprule_entry = calloc(1, sizeof(*deprule_entry));
+            deprule_entry = (deprule_entry_t *) calloc(1, sizeof(*deprule_entry));
             assert(deprule_entry != NULL);
 
             deprule_entry->type = type;
@@ -394,17 +394,17 @@ dep_op_t get_dep_operator(const rpmsenseFlags f)
 /*
  * Given a dep_op_t, return a string representing the operator.
  */
-const char *get_deprule_operator_desc(const dep_op_t operator)
+const char *get_deprule_operator_desc(const dep_op_t op)
 {
-    if (operator == OP_EQUAL) {
+    if (op == OP_EQUAL) {
         return "=";
-    } else if (operator == OP_LESS) {
+    } else if (op == OP_LESS) {
         return "<";
-    } else if (operator == OP_GREATER) {
+    } else if (op == OP_GREATER) {
         return ">";
-    } else if (operator == OP_LESSEQUAL) {
+    } else if (op == OP_LESSEQUAL) {
         return "<=";
-    } else if (operator == OP_GREATEREQUAL) {
+    } else if (op == OP_GREATEREQUAL) {
         return ">=";
     } else {
         return NULL;

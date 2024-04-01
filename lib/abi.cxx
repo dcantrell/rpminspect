@@ -103,7 +103,7 @@ abi_t *read_abi(const char *vendor_data_dir, const char *product_release)
 
             /* package is not found, add it to the table */
             if (entry == NULL) {
-                entry = calloc(1, sizeof(*entry));
+                entry = (string_entry_t *) calloc(1, sizeof(*entry));
                 assert(entry != NULL);
 
                 entry->pkg = strdup(pkg->data);
@@ -188,11 +188,11 @@ string_list_t *get_abidiff_suppressions(const struct rpminspect *ri, const char 
         TAILQ_FOREACH(file, peer->after_files, items) {
             if (!strcmp(file->localpath, suppression_file)) {
                 if (list == NULL) {
-                    list = calloc(1, sizeof(*list));
+                    list = (string_list_t *) calloc(1, sizeof(*list));
                     TAILQ_INIT(list);
                 }
 
-                entry = calloc(1, sizeof(*entry));
+                entry = (string_entry_t *) calloc(1, sizeof(*entry));
                 xasprintf(&entry->data, "%s %s", ABI_SUPPRESSIONS, file->fullpath);
                 assert(entry->data != NULL);
                 TAILQ_INSERT_TAIL(list, entry, items);

@@ -214,7 +214,7 @@ static int copytree(const char *fpath, const struct stat *sb, int tflag, struct 
 /* lambda for adding filtered entries. */
 static bool filter_cb(const char *entry, void *cb_data)
 {
-    string_list_t *filter = cb_data;
+    string_list_t *filter = (string_list_t **) cb_data;
     list_add(filter, entry);
     return false;
 }
@@ -375,7 +375,7 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
                 }
 
                 /* Initialize a string list. */
-                filter = calloc(1, sizeof(*filter));
+                filter = (string_list_t *) calloc(1, sizeof(*filter));
                 assert(filter != NULL);
                 TAILQ_INIT(filter);
 
@@ -415,14 +415,14 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
             /* for modules, get the per-arch module metadata */
             if (workri->buildtype == KOJI_BUILD_MODULE) {
                 if (fetch_only) {
-                    xasprintf(&dst, "%s/%s/"MODULEMD_ARCH_FILENAME, workri->worksubdir, rpm->arch, rpm->arch);
+                    xasprintf(&dst, "%s/%s/%s", workri->worksubdir, rpm->arch, rpm->arch, MODULEMD_ARCH_FILENAME);
                 } else {
-                    xasprintf(&dst, "%s/%s/%s/"MODULEMD_ARCH_FILENAME, workri->worksubdir, build_desc[whichbuild], rpm->arch, rpm->arch);
+                    xasprintf(&dst, "%s/%s/%s/%s", workri->worksubdir, build_desc[whichbuild], rpm->arch, rpm->arch, MODULEMD_ARCH_FILENAME);
                 }
 
                 /* only download this file if we have not already gotten it */
                 if (access(dst, F_OK|R_OK)) {
-                    xasprintf(&src, "%s/packages/%s/%s/%s/files/module/"MODULEMD_ARCH_FILENAME, workri->kojimbs, build->package_name, build->version, build->release, rpm->arch);
+                    xasprintf(&src, "%s/packages/%s/%s/%s/files/module/%s", workri->kojimbs, build->package_name, build->version, build->release, rpm->arch, MODULEMD_ARCH_FILENAME);
                     curl_get_file(workri->verbose, src, dst);
                     free(src);
                 }
@@ -588,7 +588,7 @@ static int download_task(struct rpminspect *ri, struct koji_task *task)
                 }
 
                 len = strlen(dst);
-                dst = realloc(dst, len + strlen(pkg) + 2);
+                dst = (char *) realloc(dst, len + strlen(pkg) + 2);
                 tail = dst + len;
                 tail = stpcpy(tail, "/");
                 (void) stpcpy(tail, pkg);

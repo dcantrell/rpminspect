@@ -33,11 +33,6 @@ option('with_libannocheck',
        value : false,
        description : 'Use libannocheck rather than annocheck(1) for binary file analysis.  Mutually exclusive with the with_annocheck option.  Disabling both annocheck options will disable the annocheck inspection.')
 
-option('with_system_libtoml',
-       type : 'boolean',
-       value : false,
-       description : 'Use libtoml from the system rather than the bundled library in this source tree.')
-
 option('vendor_data_dir',
        type : 'string',
        value : '/usr/share/rpminspect',

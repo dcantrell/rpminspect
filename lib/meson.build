@@ -116,6 +116,7 @@ librpminspect_sources = [
 
 deps = [
     inspect_elf_bits_dep,
+    tomlpp,
     cdson,
     jsonc,
     xmlrpc,
@@ -128,7 +129,6 @@ deps = [
     libcurl,
     zlib,
     yaml,
-    toml,
     openssl,
     mandoc,
     magic,
@@ -172,13 +172,6 @@ endif
 
 incdirs = [inc, incxdiff]
 locallibs = [libxdiff]
-
-if get_option('with_system_libtoml')
-    deps += [toml]
-else
-    incdirs += [inctoml]
-    locallibs += [libtoml]
-endif
 
 librpminspect = library(
     'rpminspect',

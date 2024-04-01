@@ -34,7 +34,7 @@ static void add_entry(string_list_t **list, const char *s)
 /* lambda for array() below. */
 static bool array_cb(const char *entry, void *cb_data)
 {
-    string_list_t **list = cb_data;
+    string_list_t **list = (string_list_t **) cb_data;
     add_entry(list, entry);
     return false;
 }

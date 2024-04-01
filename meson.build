@@ -388,14 +388,9 @@ if not cpp.has_header('sys/queue.h', include_directories : inc)
     add_project_arguments('-D_COMPAT_QUEUE', language : ['cpp'])
 endif
 
-# Default to bundled libtoml, otherwise use the system one if we can.
-if get_option('with_system_libtoml') and cc.has_function('toml_init', args : ['-ltoml'])
-    inctoml = include_directories('libtoml')
-    toml = declare_dependency(link_args : ['-ltoml'])
-else
-    inctoml = include_directories('libtoml')
-    subdir('libtoml')
-endif
+# toml++
+tomlpp = dependency('tomlplusplus', required : true)
+add_project_arguments('-DTOML_EXCEPTIONS=0', language : ['cpp'])
 
 # Header files for builds
 inc = include_directories('include')

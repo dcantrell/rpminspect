@@ -49,12 +49,12 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
     assert(progver != NULL);
 
     /* initialize a new list */
-    list = calloc(1, sizeof(*list));
+    list = (string_list_t *) calloc(1, sizeof(*list));
     assert(list != NULL);
     TAILQ_INIT(list);
 
     /* start by adding info about ourself */
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "%s version %s", progname, progver);
     TAILQ_INSERT_TAIL(list, entry, items);
@@ -73,32 +73,32 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
 #ifdef _HAVE_MAGIC_VERSION
     /* libmagic */
     /* older versions of libmagic lack this function */
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "libmagic version %d", magic_version());
     TAILQ_INSERT_TAIL(list, entry, items);
 #endif
 
     /* libclamav */
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "libclamav version %s", cl_retver());
     TAILQ_INSERT_TAIL(list, entry, items);
 
     /* librpm */
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "librpm version %s", RPMVERSION);
     TAILQ_INSERT_TAIL(list, entry, items);
 
     /* libxml */
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "libxml version %s", xmlParserVersion);
     TAILQ_INSERT_TAIL(list, entry, items);
 
     /* json-c */
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "json-c version %s", json_c_version());
     TAILQ_INSERT_TAIL(list, entry, items);
@@ -117,7 +117,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
     tmp = list_to_string(details, " ");                     /* rejoin remaining details */
     list_free(details, free);
 
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "libcurl version %s (%s)", ver, tmp);
     TAILQ_INSERT_TAIL(list, entry, items);
@@ -140,7 +140,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
     tmp = list_to_string(details, " ");
     list_free(details, free);
 
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "libarchive version %s (%s)", ver, tmp);
     TAILQ_INSERT_TAIL(list, entry, items);
@@ -155,7 +155,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
 #endif
 
     /* libyaml */
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "libyaml version %s", yaml_get_version_string());
     TAILQ_INSERT_TAIL(list, entry, items);
@@ -163,7 +163,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
 #ifndef NO_OPENSSL_VERSION_FUNCTION
     /* openssl */
     tmp = strreplace(OpenSSL_version(OPENSSL_VERSION), "OpenSSL ", "OpenSSL version ");
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "%s", tmp);
     TAILQ_INSERT_TAIL(list, entry, items);
@@ -172,7 +172,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
 
     /* xmlrpc-c */
     xmlrpc_client_version(&major, &minor, &update);
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "xmlrpc-c version %u.%u.%u", major, minor, update);
     TAILQ_INSERT_TAIL(list, entry, items);
@@ -214,7 +214,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
             assert(ver != NULL);
         }
 
-        entry = calloc(1, sizeof(*entry));
+        entry = (string_entry_t *) calloc(1, sizeof(*entry));
         assert(entry != NULL);
         xasprintf(&entry->data, "%s", ver);
         TAILQ_INSERT_TAIL(list, entry, items);
@@ -247,7 +247,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
             assert(ver != NULL);
         }
 
-        entry = calloc(1, sizeof(*entry));
+        entry = (string_entry_t *) calloc(1, sizeof(*entry));
         assert(entry != NULL);
         xasprintf(&entry->data, "%s", ver);
         TAILQ_INSERT_TAIL(list, entry, items);
@@ -280,7 +280,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
             assert(ver != NULL);
         }
 
-        entry = calloc(1, sizeof(*entry));
+        entry = (string_entry_t *) calloc(1, sizeof(*entry));
         assert(entry != NULL);
         xasprintf(&entry->data, "%s", ver);
         TAILQ_INSERT_TAIL(list, entry, items);
@@ -312,7 +312,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
             assert(ver != NULL);
         }
 
-        entry = calloc(1, sizeof(*entry));
+        entry = (string_entry_t *) calloc(1, sizeof(*entry));
         assert(entry != NULL);
         xasprintf(&entry->data, "%s", ver);
         TAILQ_INSERT_TAIL(list, entry, items);
@@ -344,7 +344,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
             assert(ver != NULL);
         }
 
-        entry = calloc(1, sizeof(*entry));
+        entry = (string_entry_t *) calloc(1, sizeof(*entry));
         assert(entry != NULL);
         xasprintf(&entry->data, "udevadm version %s", ver);
         TAILQ_INSERT_TAIL(list, entry, items);

@@ -176,7 +176,7 @@ char *compute_checksum(const char *filename, mode_t *st_mode, int type)
     }
 
     /* this is our human readable digest, caller must free */
-    ret = calloc(len + 1, sizeof(char *));
+    ret = (char *) calloc(len + 1, sizeof(char *));
 
     if (ret == NULL) {
         warn("*** calloc");

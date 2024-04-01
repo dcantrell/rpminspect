@@ -222,7 +222,7 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
             goto cleanup;
         }
 
-        path_entry = calloc(1, sizeof(*path_entry));
+        path_entry = (struct file_data *) calloc(1, sizeof(*path_entry));
         assert(path_entry != NULL);
         path_entry->path = strdup(rpm_path);
         path_entry->index = i;
@@ -252,7 +252,7 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
     }
 
     /* Allocate space for the return value */
-    file_list = calloc(1, sizeof(rpmfile_t));
+    file_list = (rpmfile_t *)  calloc(1, sizeof(rpmfile_t));
     assert(file_list != NULL);
     TAILQ_INIT(file_list);
 
@@ -282,7 +282,7 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         }
 
         /* Create a new rpmfile_entry_t for this file */
-        file_entry = calloc(1, sizeof(rpmfile_entry_t));
+        file_entry = (rpmfile_entry_t *) calloc(1, sizeof(rpmfile_entry_t));
         assert(file_entry != NULL);
 
         file_entry->rpm_header = hdr;
@@ -445,7 +445,7 @@ static struct file_data *files_to_table(rpmfile_t *list)
     assert(iter);
 
     TAILQ_FOREACH(iter, list, items) {
-        fentry = calloc(1, sizeof(*fentry));
+        fentry = (struct file_data *) calloc(1, sizeof(*fentry));
         assert(fentry != NULL);
         fentry->path = iter->localpath;
         fentry->rpmfile = iter;

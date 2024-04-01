@@ -12,7 +12,8 @@
 #include <assert.h>
 #include <errno.h>
 #include <err.h>
-#include <toml.h>
+#include <iostream>
+#include <toml++/toml.hpp>
 #include "internal/callbacks.h"
 #include "parser.h"
 #include "rpminspect.h"
@@ -632,9 +633,8 @@ static inline void _remedy_walker(struct toml_node *node, void *data)
  */
 static void read_remedy(const char *remedyfile, struct rpminspect *ri)
 {
-    struct toml_node *root = NULL;
-    char *buf = NULL;
-    off_t len;
+    toml::parse_result result;
+    toml::table tbl;
 
     assert(ri != NULL);
 
@@ -643,28 +643,22 @@ static void read_remedy(const char *remedyfile, struct rpminspect *ri)
         return;
     }
 
-    /* init libtoml and read in the file */
-    if (toml_init(&root)) {
-        warn("toml_init");
+    /* parse the remedy file */
+    r = toml::parse(remedyfile);
+
+    if (r == 0) {
+        std::cerr << "toml::parse(): " << r.error() << "\n";
         return;
     }
 
-    buf = read_file_bytes(remedyfile, &len);
+    /* handle the results */
+    tbl = std::move(result).table();
 
-    if (toml_parse(root, buf, strlen(buf))) {
-        warn("toml_parse");
-        free(buf);
-        toml_free(root);
-        return;
-    }
 
-    free(buf);
 
     /* walk the results */
     toml_walk(root, _remedy_walker, ri);
 
-    /* clean up */
-    toml_free(root);
     return;
 }
 

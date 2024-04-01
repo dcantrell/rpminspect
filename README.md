@@ -128,7 +128,7 @@ meson and ninja, plus the following libraries:
 | [gettext](https://www.gnu.org/software/gettext/) | | .po to .mo | [GPL-3.0-or-later](https://spdx.org/licenses/GPL-3.0-or-later.html) |
 | [libannocheck](https://sourceware.org/annobin/) | | | [GPL-3.0-or-later](https://spdx.org/licenses/GPL-3.0-or-later.html) |
 | [cdson](https://github.com/frozencemetery/cdson) | :heavy_check_mark: | | [MPL-2.0](https://spdx.org/licenses/MPL-2.0.html) |
-| [libtoml](https://github.com/ajwans/libtoml) | :heavy_check_mark: | | [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause.html) |
+| [toml++](https://marzer.github.io/tomlplusplus/#mainpage-example) | :heavy_check_mark: | | [MIT](https://spdx.org/licenses/MIT.html) |
 
 Additionally, the unit test suite requires the following packages:
 
