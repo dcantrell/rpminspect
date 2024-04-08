@@ -115,7 +115,7 @@ static int scanA(struct histindex *index, int line1, int count1)
 
 	for (ptr = LINE_END(1); line1 <= ptr; ptr--) {
 		tbl_idx = TABLE_HASH(index, 1, ptr);
-		rec_chain = index->records + tbl_idx;
+		rec_chain = (struct record *) (index->records + tbl_idx);
 		rec = *rec_chain;
 
 		chain_len = 0;

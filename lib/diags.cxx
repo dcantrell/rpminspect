@@ -65,7 +65,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
      */
 
     /* zlib */
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "zlib version %s", zlibVersion());
     TAILQ_INSERT_TAIL(list, entry, items);
@@ -148,7 +148,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
     free(ver);
     free(tmp);
 #elif _HAVE_ARCHIVE_VERSION_STRING
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     xasprintf(&entry->data, "%s", archive_version_string());
     TAILQ_INSERT_TAIL(list, entry, items);

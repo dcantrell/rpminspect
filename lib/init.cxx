@@ -605,7 +605,7 @@ static inline void _remedy_walker(struct toml_node *node, void *data)
             entry->data = r;
 
             if (ri->remedy_overrides == NULL) {
-                ri->remedy_overrides = calloc(1, sizeof(*(ri->remedy_overrides)));
+                ri->remedy_overrides = (string_list_t *) calloc(1, sizeof(*(ri->remedy_overrides)));
                 assert(ri->remedy_overrides != NULL);
                 TAILQ_INIT(ri->remedy_overrides);
             }
@@ -1041,7 +1041,7 @@ bool init_fileinfo(struct rpminspect *ri)
     }
 
     /* initialize the list */
-    ri->fileinfo = calloc(1, sizeof(*(ri->fileinfo)));
+    ri->fileinfo = (fileinfo_t *) calloc(1, sizeof(*(ri->fileinfo)));
     assert(ri->fileinfo != NULL);
     TAILQ_INIT(ri->fileinfo);
 
@@ -1061,7 +1061,7 @@ bool init_fileinfo(struct rpminspect *ri)
         }
 
         /* initialize a new list entry */
-        fientry = calloc(1, sizeof(*fientry));
+        fientry = (fileinfo_entry_t *) calloc(1, sizeof(*fientry));
         assert(fientry != NULL);
 
         /* read the fields */
@@ -1129,7 +1129,7 @@ bool init_caps(struct rpminspect *ri)
 {
     char *line = NULL;
     char *token = NULL;
-    char *delim = NULL;
+    const char *delim = NULL;
     char *end = NULL;
     string_list_t *contents = NULL;
     string_entry_t *entry = NULL;
@@ -1160,7 +1160,7 @@ bool init_caps(struct rpminspect *ri)
     }
 
     /* initialize the list */
-    ri->caps = calloc(1, sizeof(*(ri->caps)));
+    ri->caps = (caps_t *) calloc(1, sizeof(*(ri->caps)));
     assert(ri->caps != NULL);
     TAILQ_INIT(ri->caps);
 
@@ -1204,17 +1204,17 @@ bool init_caps(struct rpminspect *ri)
 
                 if (TAILQ_EMPTY(ri->caps) || files == NULL) {
                     /* new package for the list */
-                    centry = calloc(1, sizeof(*centry));
+                    centry = (caps_entry_t *) calloc(1, sizeof(*centry));
                     assert(centry != NULL);
                     centry->pkg = strdup(token);
-                    centry->files = calloc(1, sizeof(*centry->files));
+                    centry->files = (caps_filelist_t *) calloc(1, sizeof(*centry->files));
                     assert(centry->files != NULL);
                     TAILQ_INIT(centry->files);
                     TAILQ_INSERT_TAIL(ri->caps, centry, items);
                     files = centry->files;
                 }
 
-                filelist_entry = calloc(1, sizeof(*filelist_entry));
+                filelist_entry = (caps_filelist_entry_t *) calloc(1, sizeof(*filelist_entry));
                 assert(filelist_entry != NULL);
                 field = FILEPATH;
             } else if (field == FILEPATH && filelist_entry->path == NULL) {
@@ -1294,7 +1294,7 @@ bool init_rebaseable(struct rpminspect *ri)
     }
 
     /* initialize the list */
-    ri->rebaseable = calloc(1, sizeof(*(ri->rebaseable)));
+    ri->rebaseable = (string_list_t *) calloc(1, sizeof(*(ri->rebaseable)));
     assert(ri->rebaseable != NULL);
     TAILQ_INIT(ri->rebaseable);
 
@@ -1354,7 +1354,7 @@ bool init_politics(struct rpminspect *ri)
     }
 
     /* initialize the list */
-    ri->politics = calloc(1, sizeof(*(ri->politics)));
+    ri->politics = (politics_list_t *) calloc(1, sizeof(*(ri->politics)));
     assert(ri->politics != NULL);
     TAILQ_INIT(ri->politics);
 
@@ -1374,7 +1374,7 @@ bool init_politics(struct rpminspect *ri)
         }
 
         /* initialize a new list entry */
-        pentry = calloc(1, sizeof(*pentry));
+        pentry = (politics_entry_t *) calloc(1, sizeof(*pentry));
         assert(pentry != NULL);
 
         /* read the fields */
@@ -1455,7 +1455,7 @@ bool init_security(struct rpminspect *ri)
     if (ri->security_initialized) {
         return true;
     } else {
-        ri->security = calloc(1, sizeof(*ri->security));
+        ri->security = (security_list_t *) calloc(1, sizeof(*ri->security));
         assert(ri->security != NULL);
         TAILQ_INIT(ri->security);
         ri->security_initialized = true;
@@ -1514,7 +1514,7 @@ bool init_security(struct rpminspect *ri)
         /* add the entry */
         if (path && pkg && ver && rel && rules) {
             /* allocate a new entry */
-            sentry = calloc(1, sizeof(*sentry));
+            sentry = (security_entry_t *) calloc(1, sizeof(*sentry));
             assert(sentry != NULL);
 
             /* the main values of a rule */
@@ -1567,7 +1567,7 @@ bool init_security(struct rpminspect *ri)
                 HASH_FIND_INT(sentry->rules, &stype, rule_entry);
 
                 if (rule_entry == NULL) {
-                    rule_entry = calloc(1, sizeof(*rule_entry));
+                    rule_entry = (secrule_t *) calloc(1, sizeof(*rule_entry));
                     assert(rule_entry != NULL);
                     rule_entry->type = stype;
                     rule_entry->severity = severity;
@@ -1631,7 +1631,7 @@ bool init_icons(struct rpminspect *ri)
     }
 
     /* initialize the list */
-    ri->icons = calloc(1, sizeof(*(ri->icons)));
+    ri->icons = (string_list_t *) calloc(1, sizeof(*(ri->icons)));
     assert(ri->icons != NULL);
     TAILQ_INIT(ri->icons);
 
@@ -1669,7 +1669,7 @@ struct rpminspect *calloc_rpminspect(struct rpminspect *ri)
     }
 
     /* Only initialize if we were given NULL for ri */
-    ri = calloc(1, sizeof(*ri));
+    ri = (struct rpminspect *) calloc(1, sizeof(*ri));
     assert(ri != NULL);
 
     /* Initialize the struct before reading files */
@@ -1706,7 +1706,7 @@ struct rpminspect *calloc_rpminspect(struct rpminspect *ri)
 
     /* Store full paths to all config files read */
     if (ri->cfgfiles == NULL) {
-        ri->cfgfiles = calloc(1, sizeof(*ri->cfgfiles));
+        ri->cfgfiles = (string_list_t *) calloc(1, sizeof(*ri->cfgfiles));
         assert(ri->cfgfiles != NULL);
         TAILQ_INIT(ri->cfgfiles);
     }
@@ -1728,7 +1728,7 @@ struct rpminspect *init_rpminspect(struct rpminspect *ri, const char *cfgfile, c
     char *tmp = NULL;
     char *cf = NULL;
     char *bn = NULL;
-    char *kernelnames[] = KERNEL_FILENAMES;
+    const char *kernelnames[] = KERNEL_FILENAMES;
     string_entry_t *cfg = NULL;
 
     /* initialize the default remedy strings */
@@ -1743,7 +1743,7 @@ struct rpminspect *init_rpminspect(struct rpminspect *ri, const char *cfgfile, c
 
     /* Read in the config file */
     if (cfgfile) {
-        cfg = calloc(1, sizeof(*cfg));
+        cfg = (string_entry_t *) calloc(1, sizeof(*cfg));
         assert(cfg != NULL);
         cfg->data = realpath(cfgfile, NULL);
 

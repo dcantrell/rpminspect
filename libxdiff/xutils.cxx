@@ -92,7 +92,7 @@ void xdl_cha_free(chastore_t *cha) {
 
 	for (cur = cha->head; (tmp = cur) != NULL;) {
 		cur = cur->next;
-		xdl_free(tmp);
+		free(tmp);
 	}
 }
 
@@ -102,7 +102,7 @@ void *xdl_cha_alloc(chastore_t *cha) {
 	void *data;
 
 	if (!(ancur = cha->ancur) || ancur->icurr == cha->nsize) {
-		if (!(ancur = (chanode_t *) xdl_malloc(sizeof(chanode_t) + cha->nsize))) {
+		if (!(ancur = (chanode_t *) malloc(sizeof(chanode_t) + cha->nsize))) {
 
 			return NULL;
 		}
@@ -124,12 +124,12 @@ void *xdl_cha_alloc(chastore_t *cha) {
 
 long xdl_guess_lines(mmfile_t *mf, long sample) {
 	long nl = 0, size, tsize = 0;
-	char const *data, *cur, *top;
+	const char *data, *cur, *top;
 
-	if ((cur = data = xdl_mmfile_first(mf, &size)) != NULL) {
+	if ((cur = data = (const char *) xdl_mmfile_first(mf, &size)) != NULL) {
 		for (top = data + size; nl < sample && cur < top; ) {
 			nl++;
-			if (!(cur = memchr(cur, '\n', top - cur)))
+			if (!(cur = (const char *) memchr(cur, '\n', top - cur)))
 				cur = top;
 			else
 				cur++;

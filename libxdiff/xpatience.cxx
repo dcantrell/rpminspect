@@ -42,36 +42,38 @@
 
 #define NON_UNIQUE ULONG_MAX
 
+typedef struct _entry_t {
+	unsigned long hash;
+	/*
+	 * 0 = unused entry, 1 = first line, 2 = second, etc.
+	 * line2 is NON_UNIQUE if the line is not unique
+	 * in either the first or the second file.
+	 */
+	unsigned long line1, line2;
+	/*
+	 * "next" & "previous" are used for the longest common
+	 * sequence;
+	 * initially, "next" reflects only the order in file1.
+	 */
+	_entry_t *next, *previous;
+} entry_t;
+
 /*
  * This is a hash mapping from line hash to line numbers in the first and
  * second file.
  */
-struct hashmap {
+typedef struct _hashmap_t {
 	int nr, alloc;
-	struct entry {
-		unsigned long hash;
-		/*
-		 * 0 = unused entry, 1 = first line, 2 = second, etc.
-		 * line2 is NON_UNIQUE if the line is not unique
-		 * in either the first or the second file.
-		 */
-		unsigned long line1, line2;
-		/*
-		 * "next" & "previous" are used for the longest common
-		 * sequence;
-		 * initially, "next" reflects only the order in file1.
-		 */
-		struct entry *next, *previous;
-	} *entries, *first, *last;
+	entry_t *entries, *first, *last;
 	/* were common records found? */
 	unsigned long has_matches;
 	mmfile_t *file1, *file2;
 	xdfenv_t *env;
 	xpparam_t const *xpp;
-};
+} hashmap_t;
 
 /* The argument "pass" is 1 for the first file, 2 for the second. */
-static void insert_record(int line, struct hashmap *map, int pass)
+static void insert_record(int line, hashmap_t *map, int pass)
 {
 	xrecord_t **records = pass == 1 ?
 		map->env->xdf1.recs : map->env->xdf2.recs;
@@ -129,7 +131,7 @@ static void insert_record(int line, struct hashmap *map, int pass)
  */
 static int fill_hashmap(mmfile_t *file1, mmfile_t *file2,
 		xpparam_t const *xpp, xdfenv_t *env,
-		struct hashmap *result,
+		hashmap_t *result,
 		int line1, int count1, int line2, int count2)
 {
 	result->file1 = file1;
@@ -139,11 +141,11 @@ static int fill_hashmap(mmfile_t *file1, mmfile_t *file2,
 
 	/* We know exactly how large we want the hash map */
 	result->alloc = count1 * 2;
-	result->entries = (struct entry *)
-		xdl_malloc(result->alloc * sizeof(struct entry));
+	result->entries = (entry_t *)
+		malloc(result->alloc * sizeof(entry_t));
 	if (!result->entries)
 		return -1;
-	memset(result->entries, 0, result->alloc * sizeof(struct entry));
+	memset(result->entries, 0, result->alloc * sizeof(entry_t));
 
 	/* First, fill with entries from the first file */
 	while (count1--)
@@ -160,8 +162,7 @@ static int fill_hashmap(mmfile_t *file1, mmfile_t *file2,
  * Find the longest sequence with a smaller last element (meaning a smaller
  * line2, as we construct the sequence with entries ordered by line1).
  */
-static int binary_search(struct entry **sequence, int longest,
-		struct entry *entry)
+static int binary_search(entry_t **sequence, int longest, entry_t *entry)
 {
 	int left = -1, right = longest;
 
@@ -186,11 +187,11 @@ static int binary_search(struct entry **sequence, int longest,
  * item per sequence length: the sequence with the smallest last
  * element (in terms of line2).
  */
-static struct entry *find_longest_common_sequence(struct hashmap *map)
+static entry_t *find_longest_common_sequence(hashmap_t *map)
 {
-	struct entry **sequence = xdl_malloc(map->nr * sizeof(struct entry *));
+	entry_t **sequence = malloc(map->nr * sizeof(entry_t *));
 	int longest = 0, i;
-	struct entry *entry;
+	entry_t *entry;
 
 	for (entry = map->first; entry; entry = entry->next) {
 		if (!entry->line2 || entry->line2 == NON_UNIQUE)
@@ -219,7 +220,7 @@ static struct entry *find_longest_common_sequence(struct hashmap *map)
 	return entry;
 }
 
-static int match(struct hashmap *map, int line1, int line2)
+static int match(hashmap_t *map, int line1, int line2)
 {
 	xrecord_t *record1 = map->env->xdf1.recs[line1 - 1];
 	xrecord_t *record2 = map->env->xdf2.recs[line2 - 1];
@@ -231,7 +232,7 @@ static int patience_diff(mmfile_t *file1, mmfile_t *file2,
 		xpparam_t const *xpp, xdfenv_t *env,
 		int line1, int count1, int line2, int count2);
 
-static int walk_common_sequence(struct hashmap *map, struct entry *first,
+static int walk_common_sequence(hashmap_t *map, entry_t *first,
 		int line1, int count1, int line2, int count2)
 {
 	int end1 = line1 + count1, end2 = line2 + count2;
@@ -259,7 +260,7 @@ static int walk_common_sequence(struct hashmap *map, struct entry *first,
 
 		/* Recurse */
 		if (next1 > line1 || next2 > line2) {
-			struct hashmap submap;
+			hashmap_t submap;
 
 			memset(&submap, 0, sizeof(submap));
 			if (patience_diff(map->file1, map->file2,
@@ -284,7 +285,7 @@ static int walk_common_sequence(struct hashmap *map, struct entry *first,
 	}
 }
 
-static int fall_back_to_classic_diff(struct hashmap *map,
+static int fall_back_to_classic_diff(hashmap_t *map,
 		int line1, int count1, int line2, int count2)
 {
 	xpparam_t xpp;
@@ -304,8 +305,8 @@ static int patience_diff(mmfile_t *file1, mmfile_t *file2,
 		xpparam_t const *xpp, xdfenv_t *env,
 		int line1, int count1, int line2, int count2)
 {
-	struct hashmap map;
-	struct entry *first;
+	hashmap_t map;
+	entry_t *first;
 	int result = 0;
 
 	/* trivial case: one side is empty */
