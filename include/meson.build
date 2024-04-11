@@ -1,5 +1,6 @@
 install_headers(
     'constants.h',
+    'helpers.h',
     'i18n.h',
     'init.h',
     'inspect.h',

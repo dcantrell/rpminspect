@@ -15,6 +15,7 @@ struct remedy remedies[] = {
      *   "short name",
      *   "default remedy message" },
      */
+    { REMEDY_NULL, "", NULL },
     { REMEDY_ABIDIFF, "abidiff", NULL },
     { REMEDY_ADDEDFILES, "addedfiles", NULL },
     { REMEDY_ANNOCHECK_FORTIFY_SOURCE, "annocheck_fortify_source", NULL },

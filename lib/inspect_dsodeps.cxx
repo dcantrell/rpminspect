@@ -66,7 +66,7 @@ static bool dsodeps_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* If we lack dynamic or shared ELF files, we're done */
-    if ((after_elf = get_elf(file->fullpath, &after_fd)) == NULL) {
+    if ((after_elf = get_elf(file, &after_fd)) == NULL) {
         return true;
     }
 
@@ -90,7 +90,7 @@ static bool dsodeps_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     params.arch = arch;
     params.file = file->localpath;
 
-    if ((before_elf = get_elf(file->fullpath, &before_fd)) == NULL) {
+    if ((before_elf = get_elf(file, &before_fd)) == NULL) {
         xasprintf(&params.msg, _("%s was an ELF file and now is not on %s"), file->localpath, arch);
         params.verb = VERB_CHANGED;
         params.noun = _("ELF file ${FILE} on ${ARCH}");

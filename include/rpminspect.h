@@ -24,6 +24,7 @@ extern "C"
 #endif
 
 #include "constants.h"
+#include "helpers.h"
 #include "types.h"
 #include "inspect.h"
 #include "output.h"
@@ -53,20 +54,6 @@ extern struct buildtype buildtypes[];
 extern volatile sig_atomic_t terminal_resized;
 
 /* Macros */
-#ifdef NDEBUG
-/* Don't create unused variables if not using assert() */
-#define xasprintf(dest, ...) {                         \
-    *(dest) = NULL;                                    \
-    asprintf((dest), __VA_ARGS__);                     \
-}
-#else
-#define xasprintf(dest, ...) {                         \
-    int _xasprintf_result;                             \
-    *(dest) = NULL;                                    \
-    _xasprintf_result = asprintf((dest), __VA_ARGS__); \
-    assert(_xasprintf_result != -1);                   \
-}
-#endif
 
 /*
  * Simple debugging printf.  Sends output to stderr if debugging

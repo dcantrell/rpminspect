@@ -60,7 +60,7 @@ PRIMARY_AUTHORS = dcantrell@redhat.com
 
 # full path to release tarball and detached signature
 # (this comes from a 'make srpm')
-RELEASED_TARBALL = $(PROJECT_NAME)-$(PROJECT_VERSION).tar.xz
+RELEASED_TARBALL = $(PROJECT_NAME)-$(PROJECT_VERSION).tar.gz
 RELEASED_TARBALL_ASC = $(RELEASED_TARBALL).asc
 
 # The python executable to use for the debug build and tests

@@ -61,7 +61,7 @@ srpm:
 	sed -i -e 's|%%GPGKEYRING%%|gpgkey-$(GPGKEY).gpg|g' "$(SPEC)"
 ifeq ($(BUILDTYPE),copr)
 	sed -i -e '/^Release:/ s/1[^%]*/0.1.$(GITDATE)git$(GITHASH)/' "$(SPEC)"
-	sed -i -e 's|^Source0:.*$$|Source0: $(TARBALL_BASENAME).tar.xz|g' "$(SPEC)"
+	sed -i -e 's|^Source0:.*$$|Source0: $(TARBALL_BASENAME).tar.gz|g' "$(SPEC)"
 	sed -i -e 's|^%autosetup.*$$|%autosetup -n $(TARBALL_BASENAME)|g' "$(SPEC)"
 	sed -i -e '/^Source1:.*$$/d' "$(SPEC)"
 	sed -i -e '/^Source2:.*$$/d' "$(SPEC)"
@@ -69,14 +69,14 @@ ifeq ($(BUILDTYPE),copr)
 	echo "* $(RPMDATE) $(RPMAUTHOR) - $(VER)-$(GITDATE)git$(GITHASH)" >> "$(SPEC)"
 	echo "- Build $(PKG)-$(VER)-$(GITDATE)git$(GITHASH) snapshot" >> "$(SPEC)"
 endif
-	rm -f "$(TARBALL_BASENAME)".tar.xz.asc
+	rm -f "$(TARBALL_BASENAME)".tar.gz.asc
 	git archive \
 		--format=tar \
 		--output='$(topdir)/$(TARBALL_BASENAME).tar' \
 		--prefix='$(TARBALL_BASENAME)/' $(TAG) $(topdir)
-	xz -9f $(topdir)/$(TARBALL_BASENAME).tar
+	gzip -9f $(topdir)/$(TARBALL_BASENAME).tar
 ifeq ($(BUILDTYPE),release)
-	gpg --detach-sign --armor "$(TARBALL_BASENAME)".tar.xz
+	gpg --detach-sign --armor "$(TARBALL_BASENAME)".tar.gz
 	gpg --export -a $(GPGKEY) > gpgkey-$(GPGKEY).gpg
 endif
 	rpmbuild \

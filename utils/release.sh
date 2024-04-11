@@ -130,7 +130,7 @@ fi
 meson setup build
 ninja -v -C build dist
 cd build/meson-dist || exit
-gpg --detach-sign --armor "${PROJECT}"-"${VERSION}".tar.xz
+gpg --detach-sign --armor "${PROJECT}"-"${VERSION}".tar.gz
 cd "${CWD}" || exit
 
 # Push the changes

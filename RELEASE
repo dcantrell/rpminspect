@@ -46,8 +46,8 @@ Use the upstream release repo for these steps:
     contents of 'newchanges' in the description box.  Attach these
     files to the release from this directory:
 
-        rpminspect-X.Y.tar.xz
-        rpminspect-X.Y.tar.xz.asc
+        rpminspect-X.Y.tar.gz
+        rpminspect-X.Y.tar.gz.asc
 
 [ ] make koji
 

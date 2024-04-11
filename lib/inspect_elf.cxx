@@ -870,7 +870,7 @@ static bool elf_driver(struct rpminspect *ri, rpmfile_entry_t *after)
     }
 
     /* Skip kernel modules */
-    after_elf = get_elf(after->fullpath, &after_elf_fd);
+    after_elf = get_elf(after, &after_elf_fd);
 
     if (after_elf != NULL
         && get_elf_type(after_elf) == ET_REL
@@ -890,15 +890,15 @@ static bool elf_driver(struct rpminspect *ri, rpmfile_entry_t *after)
     arch = get_rpm_header_arch(after->rpm_header);
 
     /* Is this an archive or a regular ELF file? */
-    if ((after_elf = get_elf_archive(after->fullpath, &after_elf_fd)) != NULL) {
+    if ((after_elf = get_elf_archive(after, &after_elf_fd)) != NULL) {
         if (after->peer_file != NULL) {
-            before_elf = get_elf_archive(after->peer_file->fullpath, &before_elf_fd);
+            before_elf = get_elf_archive(after->peer_file, &before_elf_fd);
         }
 
         result = elf_archive_tests(ri, after_elf, after_elf_fd, before_elf, before_elf_fd, after, arch, name);
-    } else if ((after_elf = get_elf(after->fullpath, &after_elf_fd)) != NULL) {
+    } else if ((after_elf = get_elf(after, &after_elf_fd)) != NULL) {
         if (after->peer_file != NULL) {
-            before_elf = get_elf(after->peer_file->fullpath, &before_elf_fd);
+            before_elf = get_elf(after->peer_file, &before_elf_fd);
         }
 
         result = elf_regular_tests(ri, after_elf, before_elf, after, arch, name);

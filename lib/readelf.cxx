@@ -111,34 +111,46 @@ static Elf *get_elf_with_kind(const char *fullpath, int *out_fd, Elf_Kind kind)
 /* Return a read-only Elf object for the given path, or NULL on error or if the path is not an ELF object.
  * On success, the opened file descriptor is written to out_fd.
  */
-Elf * get_elf(const char *fullpath, int *out_fd)
+Elf * get_elf(rpmfile_entry_t *file, int *out_fd)
 {
-    return get_elf_with_kind(fullpath, out_fd, ELF_K_ELF);
+    /* -1 "no", 1 "yes", 0 "don't know yet" */
+    if (file->is_elf_file == -1) {
+        return NULL;
+    }
+
+    Elf *r = get_elf_with_kind(file->fullpath, out_fd, ELF_K_ELF);
+    file->is_elf_file = r ? 1 : -1;
+    return r;
 }
 
 /* Like above, but verifies that the file is an archive instead of an ELF file */
-Elf * get_elf_archive(const char *fullpath, int *out_fd)
+Elf * get_elf_archive(rpmfile_entry_t *file, int *out_fd)
 {
-    return get_elf_with_kind(fullpath, out_fd, ELF_K_AR);
+    /* -1 "no", 1 "yes", 0 "don't know yet" */
+    if (file->is_elf_archive == -1) {
+        return NULL;
+    }
+
+    Elf *r = get_elf_with_kind(file->fullpath, out_fd, ELF_K_AR);
+    file->is_elf_archive = r ? 1 : -1;
+    return r;
 }
 
 /*
  * Return true if a specified file is ELF, false otherwise.
  */
-bool is_elf(const char *path)
+bool is_elf(rpmfile_entry_t *file)
 {
-    return (is_elf_file(path) || is_elf_archive(path));
+    return (is_elf_file(file) || is_elf_archive(file));
 }
 
-static bool _is_elf_type(const char *path, int type)
+static bool _is_elf_type(rpmfile_entry_t *file, int type)
 {
     bool result = false;
     int fd = 0;
     Elf *elf = NULL;
 
-    assert(path != NULL);
-
-    elf = get_elf(path, &fd);
+    elf = get_elf(file, &fd);
 
     if (elf && get_elf_type(elf) == type) {
         result = true;
@@ -153,30 +165,49 @@ static bool _is_elf_type(const char *path, int type)
  * Return true if a specified file is an ELF shared library file, that
  * is, of type ET_DYN.
  */
-bool is_elf_shared_library(const char *path)
+bool is_elf_shared_library(rpmfile_entry_t *file)
 {
-    return _is_elf_type(path, ET_DYN);
+    /* -1 "no", 1 "yes", 0 "don't know yet" */
+    if (file->is_elf_shared_library != 0) {
+        return (file->is_elf_shared_library + 1) >> 1; /* return 1/0 for "yes" / "no" */
+    }
+
+    bool r = _is_elf_type(file, ET_DYN);
+    file->is_elf_shared_library = r ? 1 : -1;
+    return r;
 }
 
 /*
  * Return true if a specified file is an ELF executable file, that
  * is, of type ET_EXEC.
  */
-bool is_elf_executable(const char *path)
+bool is_elf_executable(rpmfile_entry_t *file)
 {
-    return _is_elf_type(path, ET_EXEC);
+    /* -1 "no", 1 "yes", 0 "don't know yet" */
+    if (file->is_elf_executable != 0) {
+        return (file->is_elf_executable + 1) >> 1; /* return 1/0 for "yes" / "no" */
+    }
+
+    bool r = _is_elf_type(file, ET_EXEC);
+    file->is_elf_executable = r ? 1 : -1;
+    return r;
 }
 
 /*
  * Return true for any ELF file.
  */
-bool is_elf_file(const char *path)
+bool is_elf_file(rpmfile_entry_t *file)
 {
+    /* -1 "no", 1 "yes", 0 "don't know yet" */
+    if (file->is_elf_file != 0) {
+        return (file->is_elf_file + 1) >> 1; /* return 1/0 for "yes" / "no" */
+    }
+
     int fd = 0;
     Elf *elf = NULL;
 
     /* try it as a shared object */
-    elf = get_elf(path, &fd);
+    elf = get_elf(file, &fd); /* sets file->is_elf_file to 1 or -1 */
 
     if (elf) {
         elf_end(elf);
@@ -194,13 +225,18 @@ bool is_elf_file(const char *path)
 /*
  * Return true for any ELF archive.
  */
-bool is_elf_archive(const char *path)
+bool is_elf_archive(rpmfile_entry_t *file)
 {
+    /* -1 "no", 1 "yes", 0 "don't know yet" */
+    if (file->is_elf_archive != 0) {
+        return (file->is_elf_archive + 1) >> 1; /* return 1/0 for "yes" / "no" */
+    }
+
     int fd = 0;
     Elf *elf = NULL;
 
     /* try it as a static library */
-    elf = get_elf_archive(path, &fd);
+    elf = get_elf_archive(file, &fd); /* sets is_elf_archive to 1 or -1 */
 
     if (elf) {
         elf_end(elf);
@@ -457,7 +493,7 @@ GElf_Phdr * get_elf_phdr(Elf *elf, Elf64_Word type, GElf_Phdr *out)
  * Returns the SONAME of the given file or NULL if unable.
  * Caller must free the returned string.
  */
-char *get_elf_soname(const char *filepath)
+char *get_elf_soname(rpmfile_entry_t *file)
 {
     char *soname = NULL;
     Elf *e = NULL;
@@ -467,9 +503,7 @@ char *get_elf_soname(const char *filepath)
     size_t sz = 0;
     bool found = false;
 
-    assert(filepath != NULL);
-
-    if ((e = get_elf(filepath, &fd)) == NULL) {
+    if ((e = get_elf(file, &fd)) == NULL) {
         close(fd);
         return NULL;
     }

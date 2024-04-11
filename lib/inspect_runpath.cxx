@@ -232,7 +232,7 @@ static bool runpath_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* If we lack dynamic or shared ELF files, we're done */
-    if ((elf = get_elf(file->fullpath, &fd)) == NULL) {
+    if ((elf = get_elf(file, &fd)) == NULL) {
         result = true;
         goto cleanup;
     }

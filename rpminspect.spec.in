@@ -21,8 +21,8 @@ Group:          Development/Tools
 # * libxdiff/ is LGPL-2.1-or-later
 License:        GPL-3.0-or-later AND LGPL-3.0-or-later AND LGPL-2.1-or-later AND Apache-2.0 AND MIT AND AND BSD-1-Clause AND BSD-2-Clause AND BSD-3-Clause AND CC-BY-4.0
 URL:            https://github.com/rpminspect/rpminspect
-Source0:        https://github.com/rpminspect/rpminspect/releases/download/v%{version}/%{name}-%{version}.tar.xz
-Source1:        https://github.com/rpminspect/rpminspect/releases/download/v%{version}/%{name}-%{version}.tar.xz.asc
+Source0:        https://github.com/rpminspect/rpminspect/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source1:        https://github.com/rpminspect/rpminspect/releases/download/v%{version}/%{name}-%{version}.tar.gz.asc
 Source2:        %%GPGKEYRING%%
 Requires:       librpminspect%{?_isa} = %{version}-%{release}
 
@@ -88,6 +88,11 @@ Recommends:     html401-dtds
 # Required to support things like %%autorelease in spec files
 %if 0%{?fedora} >= 33
 Recommends:     rpm_macro(autorelease)
+%endif
+
+# Required because we build against the system libtoml in Fedora
+%if 0%{?fedora}
+Requires:       libtoml
 %endif
 
 # These programs are only required for the 'shellsyntax' functionality.
@@ -160,7 +165,7 @@ control files.
 
 
 %build
-%meson -D tests=false -D with_system_libtoml=true
+%meson -D tests=false %{?fedora:-D with_system_libtoml=true}
 %meson_build
 
 

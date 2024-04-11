@@ -179,14 +179,14 @@ static bool abidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* skip anything that is not an ELF shared library file.  */
-    if (!S_ISREG(file->st.st_mode) || !is_elf_file(file->fullpath)) {
+    if (!S_ISREG(file->st.st_mode) || !is_elf_file(file)) {
         return true;
     }
 
-    soname = get_elf_soname(file->fullpath);
+    soname = get_elf_soname(file);
 
     /* ET_DYN with no DT_SONAME is _probably_ an executable */
-    if (is_elf_executable(file->fullpath) || (is_elf_shared_library(file->fullpath) && soname == NULL)) {
+    if (is_elf_executable(file) || (is_elf_shared_library(file) && soname == NULL)) {
         return true;
     }
 

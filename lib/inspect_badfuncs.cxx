@@ -107,10 +107,10 @@ static bool badfuncs_driver(struct rpminspect *ri, rpmfile_entry_t *after)
     arch = get_rpm_header_arch(after->rpm_header);
 
     /* get an ELF object of some sort, if we can */
-    after_elf = get_elf_archive(after->fullpath, &after_elf_fd);
+    after_elf = get_elf_archive(after, &after_elf_fd);
 
     if (after_elf == NULL) {
-        after_elf = get_elf(after->fullpath, &after_elf_fd);
+        after_elf = get_elf(after, &after_elf_fd);
     }
 
     if (after_elf == NULL) {

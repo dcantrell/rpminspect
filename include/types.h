@@ -119,6 +119,10 @@ typedef struct _rpmfile_entry_t {
     struct _rpmfile_entry_t *peer_file;
     bool moved_path;
     bool moved_subpackage;
+    signed char is_elf_archive;
+    signed char is_elf_file;
+    signed char is_elf_executable;
+    signed char is_elf_shared_library;
     TAILQ_ENTRY(_rpmfile_entry_t) items;
 } rpmfile_entry_t;
 

@@ -47,15 +47,13 @@ static uint64_t get_flags(const char *s)
     return r;
 }
 
-static uint64_t _section_helper(const char *fullpath, const uint64_t flags, const bool check)
+static uint64_t _section_helper(rpmfile_entry_t *file, const uint64_t flags, const bool check)
 {
     uint64_t gathered = 0;
     int fd = 0;
     Elf *elf = NULL;
 
-    assert(fullpath != NULL);
-
-    elf = get_elf(fullpath, &fd);
+    elf = get_elf(file, &fd);
     assert(elf != NULL);
 
     if ((flags & NEEDS_SYMTAB) && have_elf_section(elf, -1, ELF_SYMTAB) == check) {
@@ -83,14 +81,14 @@ static uint64_t _section_helper(const char *fullpath, const uint64_t flags, cons
     return gathered;
 }
 
-static uint64_t have_sections(const char *fullpath, const uint64_t flags)
+static uint64_t have_sections(rpmfile_entry_t *file, const uint64_t flags)
 {
-    return _section_helper(fullpath, flags, true);
+    return _section_helper(file, flags, true);
 }
 
-static uint64_t missing_sections(const char *fullpath, const uint64_t flags)
+static uint64_t missing_sections(rpmfile_entry_t *file, const uint64_t flags)
 {
-    return _section_helper(fullpath, flags, false);
+    return _section_helper(file, flags, false);
 }
 
 static char *strflags(const uint64_t flags)
@@ -119,7 +117,7 @@ static char *strflags(const uint64_t flags)
  * If we see any section headers that begin with ".guile." then assume
  * this is a Guile object file.
  */
-static bool is_guile(const char *path)
+static bool is_guile(rpmfile_entry_t *file)
 {
     bool r = false;
     Elf *elf = NULL;
@@ -127,9 +125,7 @@ static bool is_guile(const char *path)
     string_list_t *sections = NULL;
     string_entry_t *entry = NULL;
 
-    assert(path != NULL);
-
-    elf = get_elf(path, &fd);
+    elf = get_elf(file, &fd);
 
     if (elf == NULL) {
         return false;
@@ -179,12 +175,12 @@ static bool debuginfo_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Only deal with ELF shared libraries or executables */
-    if (!is_elf_shared_library(file->fullpath) && !is_elf_executable(file->fullpath)) {
+    if (!is_elf_shared_library(file) && !is_elf_executable(file)) {
         return true;
     }
 
     if (file->peer_file) {
-        if (!is_elf_shared_library(file->peer_file->fullpath) && !is_elf_executable(file->peer_file->fullpath)) {
+        if (!is_elf_shared_library(file->peer_file) && !is_elf_executable(file->peer_file)) {
             return true;
         }
     }
@@ -206,8 +202,8 @@ static bool debuginfo_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     params.header = NAME_DEBUGINFO;
 
     /* Check for and report missing or misplaced debuginfo symbols */
-    after_missing = missing_sections(file->fullpath, flags);
-    have = have_sections(file->fullpath, flags);
+    after_missing = missing_sections(file, flags);
+    have = have_sections(file, flags);
 
     if (debugpkg && after_missing) {
         /* debuginfo packages should not be missing debugging symbols */
@@ -230,7 +226,7 @@ static bool debuginfo_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         free(params.details);
 
         result = false;
-    } else if (!debugpkg && !is_guile(file->fullpath) && have) {
+    } else if (!debugpkg && !is_guile(file) && have) {
         /* non-debuginfo packages should not contain debugging symbols */
         xasprintf(&params.msg, _("%s in %s on %s contains debugging symbols"), file->localpath, nvr, arch);
         params.severity = RESULT_BAD;
@@ -251,9 +247,9 @@ static bool debuginfo_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
     /* handle build comparisons */
     if (file->peer_file) {
-        after_missing = missing_sections(file->fullpath, flags);
-        before_missing = missing_sections(file->peer_file->fullpath, flags);
-        have = have_sections(file->fullpath, flags);
+        after_missing = missing_sections(file, flags);
+        before_missing = missing_sections(file->peer_file, flags);
+        have = have_sections(file, flags);
 
         if (before_missing && !after_missing && have) {
             /* stripped in the before file but not the after file */
@@ -312,7 +308,7 @@ static bool debuginfo_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
     /* Final non-debuginfo package checks */
     if (!debugpkg) {
-        elf = get_elf(file->fullpath, &fd);
+        elf = get_elf(file, &fd);
 
         if (elf && have_elf_section(elf, -1, ELF_GOSYMTAB) && have_elf_section(elf, -1, ELF_GNU_DEBUGDATA)) {
             xasprintf(&params.msg, _("%s in %s on %s carries .gosymtab but should not have the .gnu_debugdata symbol"), file->localpath, nvr, arch);

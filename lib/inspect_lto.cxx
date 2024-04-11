@@ -125,7 +125,7 @@ static bool lto_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Only valid for ELF files */
-    if (!is_elf_file(file->fullpath)) {
+    if (!is_elf_file(file)) {
         return true;
     }
 
@@ -143,7 +143,7 @@ static bool lto_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     params.file = file->localpath;
     params.noun = _("${FILE} not portable on ${ARCH}");
 
-    if ((elf = get_elf_archive(file->fullpath, &fd)) != NULL) {
+    if ((elf = get_elf_archive(file, &fd)) != NULL) {
         /* we found an ELF static library */
         elf_archive_iterate(fd, elf, find_lto_symbols, &names);
 
@@ -156,7 +156,7 @@ static bool lto_driver(struct rpminspect *ri, rpmfile_entry_t *file)
             free(badsyms);
             result = false;
         }
-    } else if (((elf = get_elf(file->fullpath, &fd)) != NULL) && (get_elf_type(elf) == ET_REL)) {
+    } else if (((elf = get_elf(file, &fd)) != NULL) && (get_elf_type(elf) == ET_REL)) {
         /* we found an ELF relocatable */
         names = get_elf_section_names(elf, SHT_SYMTAB);
 

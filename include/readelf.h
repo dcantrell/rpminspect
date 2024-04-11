@@ -70,7 +70,7 @@ extern "C"
  *        of path.
  * @return The Elf object for path or NULL on error.
  */
-Elf *get_elf(const char *path, int *out_fd);
+Elf *get_elf(rpmfile_entry_t *file, int *out_fd);
 
 /**
  * @brief Get an Elf object for the named ELF archive object.
@@ -91,7 +91,7 @@ Elf *get_elf(const char *path, int *out_fd);
  *        of path.
  * @return The Elf object for path or NULL on error.
  */
-Elf *get_elf_archive(const char *path, int *out_fd);
+Elf *get_elf_archive(rpmfile_entry_t *file, int *out_fd);
 
 /**
  * @brief Return the ELF_TYPE of the given Elf object.
@@ -131,7 +131,7 @@ GElf_Half get_elf_machine(Elf *elf);
  * @param path The full path to the file in question.
  * @return True if the file is ELF, false otherwise.
  */
-bool is_elf(const char *path);
+bool is_elf(rpmfile_entry_t *file);
 
 /**
  * @brief Determine if the specified file is an ELF shared library.
@@ -142,7 +142,7 @@ bool is_elf(const char *path);
  * @param path The fullpath to the file in question.
  * @return True if the file is an ELF shared library, false otherwise.
  */
-bool is_elf_shared_library(const char *path);
+bool is_elf_shared_library(rpmfile_entry_t *file);
 
 /**
  * @brief Determine if the specified file is an ELF executable.
@@ -153,7 +153,7 @@ bool is_elf_shared_library(const char *path);
  * @param path The fullpath to the file in question.
  * @return True if the file is an ELF executable, false otherwise.
  */
-bool is_elf_executable(const char *path);
+bool is_elf_executable(rpmfile_entry_t *file);
 
 /**
  * @brief Determine if the specified file is an ELF file.
@@ -165,7 +165,7 @@ bool is_elf_executable(const char *path);
  * @param path The fullpath to the file in question.
  * @return True if the file is an ELF file, false otherwise.
  */
-bool is_elf_file(const char *path);
+bool is_elf_file(rpmfile_entry_t *file);
 
 /**
  * @brief Determine if the specified file is an ELF archive.
@@ -177,7 +177,7 @@ bool is_elf_file(const char *path);
  * @param path The fullpath to the file in question.
  * @return True if the file is an ELF archive, false otherwise.
  */
-bool is_elf_archive(const char *path);
+bool is_elf_archive(rpmfile_entry_t *file);
 
 /**
  * @brief Determine if the specified Elf object contains the specified
@@ -277,7 +277,7 @@ GElf_Phdr *get_elf_phdr(Elf *elf, Elf64_Word type, GElf_Phdr *out);
  * @return Newly allocated string containing the DT_SONAME value or
  *         NULL
  */
-char *get_elf_soname(const char *filepath);
+char *get_elf_soname(rpmfile_entry_t *file);
 
 /**
  * @brief Check for tag in the specified ELF object

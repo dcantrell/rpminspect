@@ -471,11 +471,11 @@ toml_value_as_string(struct toml_node* node)
 	switch (node->type)
 	{
 	case TOML_INT:
-		asprintf(&ret, "%" PRId64, node->value.integer);
+		xasprintf(&ret, "%" PRId64, node->value.integer);
 		break;
 
 	case TOML_FLOAT:
-		asprintf(&ret, "%.*f", node->value.floating.precision,
+		xasprintf(&ret, "%.*f", node->value.floating.precision,
 								node->value.floating.value);
 		break;
 
@@ -501,7 +501,7 @@ toml_value_as_string(struct toml_node* node)
 		if (!gmtime_r(&node->value.rfc3339_time.epoch, &tm))
 			break;
 
-		asprintf(&ret, "%d-%02d-%02dT%02d:%02d:%02d%s%s",
+		xasprintf(&ret, "%d-%02d-%02dT%02d:%02d:%02d%s%s",
 			1900 + tm.tm_year,
 			tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec,
 			sec_frac, offset_string);
@@ -509,7 +509,7 @@ toml_value_as_string(struct toml_node* node)
 	}
 
 	case TOML_BOOLEAN:
-		asprintf(&ret, "%s", node->value.integer ? "true" : "false");
+		xasprintf(&ret, "%s", node->value.integer ? "true" : "false");
 		break;
 
 	default:

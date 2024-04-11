@@ -334,7 +334,7 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Only run this check on ELF files */
-    if (!is_elf_file(file->fullpath) || (!is_elf_file(file->fullpath) && file->peer_file && !is_elf_file(file->peer_file->fullpath))) {
+    if (!is_elf_file(file) || (!is_elf_file(file) && file->peer_file && !is_elf_file(file->peer_file))) {
         return true;
     }
 
@@ -670,6 +670,8 @@ bool inspect_annocheck(struct rpminspect *ri)
         annocheck_profile = "el8";
     } else if (strprefix(ri->product_release, "el9")) {
         annocheck_profile = "el9";
+    } else if (strprefix(ri->product_release, "el10")) {
+        annocheck_profile = "el10";
     } else if (strprefix(ri->product_release, "fc") || !strcmp(ri->product_release, "rawhide")) {
         annocheck_profile = "rawhide";
     }
