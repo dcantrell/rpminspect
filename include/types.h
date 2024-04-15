@@ -819,7 +819,7 @@ struct inspect {
     uint64_t flag;
 
     /* short name of inspection */
-    char *name;
+    const char *name;
 
     /*
      * Does this inspection perform any security checks?  That is,

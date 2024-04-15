@@ -620,7 +620,7 @@ static char *path_verrel_substring(const char *path, const char *version, const 
     char *r = NULL;
     char *subrel = NULL;
     char *rel = NULL;
-    char *tmp = NULL;
+    const char *tmp = NULL;
 
     assert(path != NULL);
     assert(version != NULL);

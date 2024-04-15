@@ -106,7 +106,7 @@ static deprule_list_t *gather_deprules_by_type(deprule_list_t *rules, Header hdr
 
     if (headerGet(hdr, rtag, req, flags) && headerGet(hdr, otag, op, flags) && headerGet(hdr, vtag, ver, flags)) {
         if (deprules == NULL) {
-            deprules = calloc(1, sizeof(*deprules));
+            deprules = (deprule_list_t *) calloc(1, sizeof(*deprules));
             assert(deprules != NULL);
             TAILQ_INIT(deprules);
         }

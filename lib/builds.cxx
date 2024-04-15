@@ -269,7 +269,7 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
     char *mend = NULL;
     int i = 0;
     char *src = NULL;
-    char *srcfmt = NULL;
+    const char *srcfmt = NULL;
     char *dst = NULL;
     char *pkg = NULL;
     parser_plugin *p = &yaml_parser;

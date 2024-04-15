@@ -103,7 +103,7 @@ abi_t *read_abi(const char *vendor_data_dir, const char *product_release)
 
             /* package is not found, add it to the table */
             if (entry == NULL) {
-                entry = (string_entry_t *) calloc(1, sizeof(*entry));
+                entry = (abi_t *) calloc(1, sizeof(*entry));
                 assert(entry != NULL);
 
                 entry->pkg = strdup(pkg->data);

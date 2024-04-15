@@ -396,15 +396,6 @@ add_project_arguments('-DTOML_EXCEPTIONS=0', language : ['cpp'])
 inc = include_directories('include')
 incxdiff = include_directories('libxdiff')
 
-# libtoml
-# Default to bundled library, otherwise use the system one if we can.
-if get_option('with_system_libtoml') and cpp.has_function('toml_init', args : ['-ltoml'])
-    toml = declare_dependency(link_args : ['-ltoml'])
-else
-    inctoml = include_directories('libtoml')
-    subdir('libtoml')
-endif
-
 # Include all of the relevant subdirectories of the source tree
 subdir('libxdiff')
 subdir('lib')

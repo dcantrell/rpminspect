@@ -123,7 +123,7 @@ static int xdl_classify_record(unsigned int pass, xdlclassifier_t *cf, xrecord_t
 			break;
 
 	if (!rcrec) {
-		if (!(rcrec = xdl_cha_alloc(&cf->ncha))) {
+		if (!(rcrec = (xdlclass_t *) xdl_cha_alloc(&cf->ncha))) {
 
 			return -1;
 		}
@@ -192,7 +192,7 @@ static int xdl_prepare_ctx(unsigned int pass, mmfile_t *mf, long narec, xpparam_
 	}
 
 	nrec = 0;
-	if ((cur = blk = xdl_mmfile_first(mf, &bsize)) != NULL) {
+	if ((cur = blk = (const char *) xdl_mmfile_first(mf, &bsize)) != NULL) {
 		for (top = blk + bsize; cur < top; ) {
 			prev = cur;
 			hav = xdl_hash_record(&cur, top, xpp->flags);
@@ -202,7 +202,7 @@ static int xdl_prepare_ctx(unsigned int pass, mmfile_t *mf, long narec, xpparam_
 					goto abort;
 				recs = rrecs;
 			}
-			if (!(crec = xdl_cha_alloc(&xdf->rcha)))
+			if (!(crec = (xrecord_t *) xdl_cha_alloc(&xdf->rcha)))
 				goto abort;
 			crec->ptr = prev;
 			crec->size = (long) (cur - prev);
