@@ -8,7 +8,8 @@ if [ "$(uname -m)" = "x86_64" ]; then
 fi
 
 # cdson is not [yet] in Oracle Linux
-git clone https://github.com/frozencemetery/cdson.git
+cd "${CWD}" || exit 1
+git clone -q https://github.com/frozencemetery/cdson.git
 cd cdson || exit 1
 TAG="$(git tag -l | sort -n | tail -n 1)"
 git checkout -b "${TAG}" "${TAG}"

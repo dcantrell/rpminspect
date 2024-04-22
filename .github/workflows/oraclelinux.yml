@@ -58,6 +58,7 @@ jobs:
                   # Turn on all the other repos
                   sed -i -e 's|enabled=0|enabled=1|g' /etc/yum.repos.d/*.repo
 
+                  dnf upgrade -y
                   dnf install -y git
 
             # This means clone the git repo
@@ -73,7 +74,10 @@ jobs:
                   # Install build dependencies and set up the target
                   make instreqs
 
+                  # Use the latest Python
+                  PYTHON_PROG="$(basename $(ls -1 /usr/bin/python*.* | grep -v config | sort -V | tail -n 1))"
+
                   # Build the software and run the test suite
-                  make debug
-                  make check
+                  make debug PYTHON=${PYTHON_PROG}
+                  make check PYTHON=${PYTHON_PROG}
                   ninja -C build coverage && ( curl -s https://codecov.io/bash | bash ) || :

@@ -13,7 +13,7 @@ if [ -r /etc/os-release ] || [ -L /etc/os-release ]; then
 fi
 
 # Crux Linux lacks /etc/os-release or an /etc/*-release file
-grep -q ^CRUX /etc/issue >&- 2>&-
+grep -q ^CRUX /etc/issue >/dev/null 2>&1
 IS_CRUX=$?
 
 # NetBSD does not have an /etc/os-release file
@@ -22,7 +22,7 @@ if [ -z "${ID}" ] && [ ! -f /etc/os-release ]; then
 fi
 
 if [ -r /etc/fedora-release ] && [ "${ID}" = "fedora" ]; then
-    if grep -q -i rawhide /etc/fedora-release >&- 2>&- ; then
+    if grep -q -i rawhide /etc/fedora-release >/dev/null 2>&1 ; then
         echo "${ID}-rawhide"
     else
         echo "${ID}"

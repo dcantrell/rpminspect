@@ -39,7 +39,7 @@ packages="zsh kernel python3 firefox mutt emacs tmux elfutils"
 # Validate programs we need are present
 reqs="rpmbuild koji"
 for req in $reqs; do
-    if ! $req --help >&- 2>&-; then
+    if ! $req --help >/dev/null 2>&1 ; then
         echo "ERROR: Required program $req missing." >&2
         exit 1
     fi

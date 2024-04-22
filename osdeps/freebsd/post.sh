@@ -8,7 +8,7 @@ git clone https://git.freebsd.org/ports.git /usr/ports
 
 # https://github.com/rpm-software-management/rpm/pull/2459
 RPMTAG_HDR="/usr/local/include/rpm/rpmtag.h"
-if grep RPM_MASK_RETURN_TYPE ${RPMTAG_HDR} 2>&- | grep -q 0xffff0000 >&- 2>&- ; then
+if grep RPM_MASK_RETURN_TYPE ${RPMTAG_HDR} 2>/dev/null | grep -q 0xffff0000 >/dev/null 2>&1 ; then
     sed -I -E 's|^.*RPM_MASK_RETURN_TYPE.*=.*0xffff0000$|#define RPM_MASK_RETURN_TYPE 0xffff0000|g' ${RPMTAG_HDR}
     sed -I -E '/RPM_MAPPING_RETURN_TYPE/ s/\,$//' ${RPMTAG_HDR}
 fi
@@ -26,13 +26,13 @@ pip install -q cpp-coveralls gcovr rpmfluff
 
 # libmandoc is missing on FreeBSD
 cd "${CWD}" || exit 1
-if curl -s http://mandoc.bsd.lv/ >&- 2>&- ; then
+if curl -s http://mandoc.bsd.lv/ >/dev/null 2>&1 ; then
     curl -O http://mandoc.bsd.lv/snapshots/mandoc.tar.gz
 else
     # failed to connect to upstream host; take Debian's source
     DEBIAN_URL=http://ftp.debian.org/debian/pool/main/m/mdocml/
     # figure out which one is the latest and get that
-    SRCFILE="$(curl -s ${DEBIAN_URL} 2>&- | sed -r 's/<[^>]*>//g' | sed -r 's/<[^>]*>$//g' | tr -s ' ' | grep -vE '^[ \t]*$' | grep ".orig.tar" | sed -r 's/[0-9]{4}-[0-9]{2}-[0-9]{2}.*$//g' | sort -n | tail -n 1)"
+    SRCFILE="$(curl -s ${DEBIAN_URL} 2>/dev/null | sed -r 's/<[^>]*>//g' | sed -r 's/<[^>]*>$//g' | tr -s ' ' | grep -vE '^[ \t]*$' | grep ".orig.tar" | sed -r 's/[0-9]{4}-[0-9]{2}-[0-9]{2}.*$//g' | sort -n | tail -n 1)"
     curl -o mandoc.tar.gz ${DEBIAN_URL}/"${SRCFILE}"
 fi
 SUBDIR="$(tar -tvf mandoc.tar.gz | head -n 1 | rev | cut -d ' ' -f 1 | rev)"

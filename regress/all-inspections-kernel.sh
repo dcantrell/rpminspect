@@ -21,7 +21,7 @@ trap 'rm -rf "${TMPDIR}"' EXIT
 
 # Make sure we have additional commands available
 for cmd in ${RPMINSPECT} ${TIMECMD} koji ; do
-    ${cmd} --help >&- 2>&-
+    ${cmd} --help >/dev/null 2>&1
     if [ $? -eq 127 ]; then
         echo "*** Missing ${cmd}, exiting." >&2
         exit 1

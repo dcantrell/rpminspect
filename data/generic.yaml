@@ -214,13 +214,14 @@ macrofiles:
     # that.
     #
     # This is a list of file paths.  glob(7) syntax is allowed as are
-    # RPM macros.
+    # RPM macros.  Any entries using glob(7) syntax need to be wrapped
+    # in single quotes.
     - /usr/lib/rpm/macros
-    - /usr/lib/rpm/macros.d/macros.*
+    - '/usr/lib/rpm/macros.d/macros.*'
     - /usr/lib/rpm/platform/%{_target}/macros
-    - /usr/lib/rpm/fileattrs/*.attr
+    - '/usr/lib/rpm/fileattrs/*.attr'
     - /usr/lib/rpm/redhat/macros
-    - /etc/rpm/macros.*
+    - '/etc/rpm/macros.*'
     - /etc/rpm/macros
     - /etc/rpm/%{_target}/macros
 
@@ -229,8 +230,9 @@ ignore:
     # rpminspect.  This section lets you list paths--glob(7) syntax
     # allowed--that you want rpminspect to ignore for all inspections.
     #
-    # This is an array of glob(7) compatible strings to match paths
-    # to ignore.
+    # This is an array of glob(7) compatible strings to match paths to
+    # ignore.  If you use globbing characters, make sure you wrap the
+    # string in single quotes.
     #
     # You can also add an entry that ends with a slash '/' and
     # rpminspect will treat it as a path prefix.
@@ -325,9 +327,10 @@ elf:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # the string in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 #emptyrpm:
     # Optional list of packages in a build that will contain an empty
@@ -349,9 +352,10 @@ manpage:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # the string in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 xml:
     # Regular expression (man 7 regex) matching directories to include
@@ -367,9 +371,10 @@ xml:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # the string in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 desktop:
     # Where desktop entry files live
@@ -399,9 +404,10 @@ desktop:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # the string in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 changedfiles:
     # Optional: Filename extensions expected for C and C++ header files
@@ -416,9 +422,10 @@ changedfiles:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # the string in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 addedfiles:
     # Optional: Forbidden path prefixes.
@@ -445,27 +452,30 @@ addedfiles:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 movedfiles:
     # Optional list of glob(7) specifications or path prefixes to
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 removedfiles:
     # Optional list of glob(7) specifications or path prefixes to
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 ownership:
     # Path prefixes where executable files live
@@ -493,9 +503,10 @@ ownership:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 shellsyntax:
     # List of shells used to perform syntax checking (must support -n)
@@ -519,9 +530,10 @@ shellsyntax:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 filesize:
     # File size reporting threshold percentage.  What percentage
@@ -542,9 +554,10 @@ filesize:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 lto:
     # Link Time Optimization symbol name prefixes. Symbols are checked
@@ -562,9 +575,10 @@ lto:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 specname:
     # Spec filename test matching type.
@@ -599,9 +613,10 @@ specname:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 annocheck:
     # Reporting severity for annocheck(1) failures.  By default,
@@ -661,9 +676,10 @@ annocheck:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 javabytecode:
     # Minimum major JVM version number for each product release.  The
@@ -682,9 +698,10 @@ javabytecode:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 pathmigration:
     # Path migrations.  Over time the established best practices or
@@ -714,18 +731,20 @@ pathmigration:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 politics:
     # Optional list of glob(7) specifications or path prefixes to
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 files:
     # %files sections in spec files.  Some checks are performed on
@@ -768,9 +787,10 @@ abidiff:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 kmidiff:
     # The name of the optional ABI suppression file that SRPMs can
@@ -819,9 +839,10 @@ kmidiff:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 patches:
     # List of spec file macros that handle automatic patching.  If one
@@ -869,10 +890,10 @@ badfuncs:
 
     # Some libraries deliberately use forbidden functions.  In these
     # cases, you can specify an 'allowed' block listing path globs and
-    # the specific functions they are allowed to use.  It is
-    # advisable to add a comment indicating why the function is
-    # allowed to use forbidden functions for future reference.  The
-    # path specifications can be explicit paths or patterns that are
+    # the specific functions they are allowed to use.  It is advisable
+    # to add a comment indicating why the function is allowed to use
+    # forbidden functions for future reference.  The path
+    # specifications can be explicit paths or patterns that are
     # compatible with fnmatch(3) and glob(3).
     #
     #allowed:
@@ -886,9 +907,11 @@ badfuncs:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
+
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 runpath:
     # Allowed DT_RUNPATH and DT_RPATH path elements when the element
@@ -929,18 +952,20 @@ runpath:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 types:
     # Optional list of glob(7) specifications or path prefixes to
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 unicode:
     # Regular expression to match file and directory names for
@@ -1020,43 +1045,48 @@ config:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /etc/something*/*.conf
+    #    - '/etc/something*/*.conf'
 
 doc:
     # Optional list of glob(7) specifications or path prefixes to
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/share/doc/example/README*
+    #    - '/usr/share/doc/example/README*'
 
 kmod:
     # Optional list of glob(7) specifications or path prefixes to
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /lib/modules/*/kernel/drivers/pcmcia/yenta_socket.ko*
+    #    - '/lib/modules/*/kernel/drivers/pcmcia/yenta_socket.ko*'
 
 permissions:
     # Optional list of glob(7) specifications or path prefixes to
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - /usr/lib*/libexample.so*
+    #    - '/usr/lib*/libexample.so*'
 
 symlinks:
     # Optional list of glob(7) specifications or path prefixes to
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
     #    - /usr/bin/superlink
 
@@ -1065,21 +1095,23 @@ upstream:
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     #ignore:
-    #    - upstream-archive-name-*.tar.gz
+    #    - 'upstream-archive-name-*.tar.gz'
 
 debuginfo:
     # Optional list of glob(7) specifications or path prefixes to
     # match files to ignore for this inspection.  The format of this
     # list is the same as the global 'ignore' list.  The difference is
     # the items specified here will only be used during this
-    # inspection.
+    # inspection.  If globbing characters are used, be sure to wrap
+    # them in single quotes.
     ignore:
-        - /lib/modules/*
-        - /usr/lib/debug/.dwz/*
-        - /usr/lib/grub/*
-        - /usr/lib/debug/usr/lib*/libpython3.so*
+        - '/lib/modules/*'
+        - '/usr/lib/debug/.dwz/*'
+        - '/usr/lib/grub/*'
+        - '/usr/lib/debug/usr/lib*/libpython3.so*'
 
     # The ELF section name(s) required in debuginfo packages.  The
     # default is shown here.  Some products may need to modify this

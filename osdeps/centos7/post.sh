@@ -18,7 +18,11 @@ sed -i -e 's/PKG_CONFIG openssl /PKG_CONFIG openssl11 /g' configure
 make -j "$(nproc)"
 make altinstall
 PYTHON_VER="$(./python -c 'import sys ; print("%d.%d" % (sys.version_info[0], sys.version_info[1]))')"
-unzip -d /usr/local/lib/python"${PYTHON_VER}"/site-packages /usr/local/lib/python"${PYTHON_VER}"/test/setuptools*whl
+
+# Install Python modules for our recent Python.  Have to do this here
+# because post.sh installed the Python we have to use for these tests.
+pip"${PYTHON_VER}" install --upgrade pip setuptools
+pip"${PYTHON_VER}" install cpp-coveralls gcovr PyYAML timeout-decorator rpmfluff
 
 # Now rebuild rpm because we need the Python bindings to use the newer
 # Python.
@@ -26,7 +30,7 @@ cd "${CWD}" || exit 1
 yumdownloader --source python3-rpm
 SRPM="$(ls -1 "${CWD}"/*.rpm)"
 rpmdev-setuptree
-rpm -Uvh "${SRPM}" 2>&-
+rpm -Uvh "${SRPM}" 2>/dev/null
 rm -f "${SRPM}"
 cd ~/rpmbuild/SPECS || exit 1
 sed -i -e 's|^Name:.*$|Name: python3-rpm-rebuild|g' python3-rpm.spec
@@ -42,21 +46,16 @@ rpmbuild -ba \
          python3-rpm.spec
 rpm -Uvh ~/rpmbuild/RPMS/"$(uname -m)"/*.rpm
 
-# Install Python modules for our recent Python.  Have to do this here
-# because post.sh installed the Python we have to use for these tests.
-pip"${PYTHON_VER}" install --upgrade pip setuptools
-pip"${PYTHON_VER}" install cpp-coveralls gcovr PyYAML timeout-decorator rpmfluff
-
 # Install the latest mandoc package to /usr/local, the official EPEL-7
 # repos may be dated.
 cd "${CWD}" || exit 1
-if curl -s http://mandoc.bsd.lv/ >&- 2>&- ; then
+if curl -s http://mandoc.bsd.lv/ >/dev/null 2>&1 ; then
     curl -O http://mandoc.bsd.lv/snapshots/mandoc.tar.gz
 else
     # failed to connect to upstream host; take Debian's source
     DEBIAN_URL=http://ftp.debian.org/debian/pool/main/m/mdocml/
     # figure out which one is the latest and get that
-    SRCFILE="$(curl -s ${DEBIAN_URL} 2>&- | sed -r 's/<[^>]*>//g' | sed -r 's/<[^>]*>$//g' | tr -s ' ' | grep -vE '^[ \t]*$' | grep ".orig.tar" | sed -r 's/[0-9]{4}-[0-9]{2}-[0-9]{2}.*$//g' | sort -n | tail -n 1)"
+    SRCFILE="$(curl -s ${DEBIAN_URL} 2>/dev/null | sed -r 's/<[^>]*>//g' | sed -r 's/<[^>]*>$//g' | tr -s ' ' | grep -vE '^[ \t]*$' | grep ".orig.tar" | sed -r 's/[0-9]{4}-[0-9]{2}-[0-9]{2}.*$//g' | sort -n | tail -n 1)"
     curl -o mandoc.tar.gz ${DEBIAN_URL}/"${SRCFILE}"
 fi
 SUBDIR="$(tar -tvf mandoc.tar.gz | head -n 1 | rev | cut -d ' ' -f 1 | rev)"

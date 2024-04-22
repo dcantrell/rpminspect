@@ -31,7 +31,7 @@ trap cleanup EXIT
 
 # Verify specific tools are available
 for tool in ${TOOLS} ${VENDORPKG} ${VENDORKOJI} ; do
-    ${tool} >&- 2>&-
+    ${tool} >/dev/null 2>&1
     if [ $? -eq 127 ]; then
         echo "*** Missing '${tool}', perhaps 'yum install -y /usr/bin/${tool}'" >&2
         exit 1
@@ -51,7 +51,7 @@ if [ ! -f "${TARBALL}" ]; then
     exit 1
 fi
 
-if ! tar tf "${TARBALL}" >&- 2>&- ; then
+if ! tar tf "${TARBALL}" >/dev/null 2>&1 ; then
     echo "*** $(basename "${TARBALL}") is not a tar archive" >&2
     exit 1
 fi
@@ -88,13 +88,13 @@ PROJECT="$1"
 shift
 
 # Need a krb5 ticket
-klist >&- 2>&-
+klist >/dev/null 2>&1
 if [ $? -eq 1 ]; then
     echo "*** You lack an active Kerberos ticket" >&2
     exit 1
 fi
 
-klist | grep -q "krbtgt/FEDORAPROJECT.ORG@FEDORAPROJECT.ORG" >&- 2>&-
+klist | grep -q "krbtgt/FEDORAPROJECT.ORG@FEDORAPROJECT.ORG" >/dev/null 2>&1
 if [ $? -eq 1 ]; then
     echo "*** You need a FEDORAPROJECT.ORG Kerberos ticket" >&2
     exit 1
@@ -121,7 +121,7 @@ for branch in ${BRANCHES} ; do
 
     # skip this branch if we lack build targets
     if [ ! "${branch}" = "rawhide" ]; then
-        if ! ${VENDORKOJI} list-targets --name="${branch}-candidate" >&- 2>&- ; then
+        if ! ${VENDORKOJI} list-targets --name="${branch}-candidate" >/dev/null 2>&1 ; then
             echo "*** Skipping ${branch} because there is no longer a ${VENDORKOJI} target"
             continue
         fi
