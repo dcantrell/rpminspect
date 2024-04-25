@@ -41,12 +41,12 @@ static char *run_and_capture(const char *where, char **output, char *cmd, const 
 
     if (fd == -1) {
         warn("*** mkstemp");
-        return false;
+        return NULL;
     }
 
     if (close(fd) == -1) {
         warn("*** close");
-        return false;
+        return NULL;
     }
 
     /* Run command and return output */

@@ -61,7 +61,7 @@ static bool filesize_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         r = stat(file->fullpath, &sb);
 
         if (r == -1) {
-            warn("stat");
+            warn("*** stat");
         }
 
         file->st.st_size = sb.st_size;
@@ -72,7 +72,7 @@ static bool filesize_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         r = stat(file->peer_file->fullpath, &sb);
 
         if (r == -1) {
-            warn("stat");
+            warn("*** stat");
         }
 
         file->peer_file->st.st_size = sb.st_size;

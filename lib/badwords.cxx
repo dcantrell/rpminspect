@@ -40,7 +40,7 @@ bool has_bad_word(const char *s, const string_list_t *badwords)
 {
     string_entry_t *badword = NULL;
     size_t badword_len;
-    char *search;
+    char *search = NULL;
     bool found = false;
 
     assert(s != NULL);

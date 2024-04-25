@@ -116,8 +116,7 @@ curlinfo_src = '''
     #include <curl/curl.h>
     int main(void)
     {
-        CURLcode info = CURLINFO_CONTENT_LENGTH_DOWNLOAD_T;
-        return 0;
+        return !(CURL_AT_LEAST_VERSION(7, 55, 0));
     }
     '''
 have_newer_curlinfo = cpp.compiles(curlinfo_src,

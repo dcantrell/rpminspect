@@ -12,17 +12,16 @@ char *human_size(const unsigned long int bytes)
 {
     char *r = NULL;
     double s = 0;
-    char *units = "BKMGTPEZY";
-    char *begin = units;
+    const char units[] = "BKMGTPEZY";
+    int i = 0;
 
     s = (double) bytes;
-    units = begin;
 
-    while ((s > 1024) && (*(units + 1) != '\0')) {
+    while ((s > 1024) && (units[i] != '\0')) {
         s = round(s / 1024);
-        units++;
+        i++;
     }
 
-    xasprintf(&r, "%lu %c%s", lround(s), *units, (*units == 'B') ? "" : "iB");
+    xasprintf(&r, "%lu %c%s", lround(s), units[i], (units[i] == 'B') ? "" : "iB");
     return r;
 }
