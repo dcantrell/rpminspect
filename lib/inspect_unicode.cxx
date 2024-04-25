@@ -20,13 +20,13 @@
 #include "rpminspect.h"
 
 /* subdirectories to create or link for the rpmbuild structure */
-static char *subdirs[] = { RPMBUILD_BUILDDIR,
-                           RPMBUILD_BUILDROOTDIR,
-                           RPMBUILD_RPMDIR,
-                           RPMBUILD_SOURCEDIR,
-                           RPMBUILD_SPECDIR,
-                           RPMBUILD_SRPMDIR,
-                           NULL };
+static const char *subdirs[] = { RPMBUILD_BUILDDIR,
+                                 RPMBUILD_BUILDROOTDIR,
+                                 RPMBUILD_RPMDIR,
+                                 RPMBUILD_SOURCEDIR,
+                                 RPMBUILD_SPECDIR,
+                                 RPMBUILD_SRPMDIR,
+                                 NULL };
 
 /* has the SRPM been checked? */
 static bool seen = false;
@@ -215,7 +215,7 @@ static char *rpm_prep_source(struct rpminspect *ri, const rpmfile_entry_t *file,
         }
 
         /* run through the %prep stage */
-        ba = calloc(1, sizeof(*ba));
+        ba = (BTA_t) calloc(1, sizeof(*ba));
         assert(ba != NULL);
         ba->buildAmount |= RPMBUILD_PREP;
 
@@ -268,7 +268,7 @@ static char *rpm_prep_source(struct rpminspect *ri, const rpmfile_entry_t *file,
 
         free(*details);
         *details = NULL;
-        buf = calloc(1, n);
+        buf = (char *) calloc(1, n);
         assert(buf != NULL);
 
         while (getline(&buf, &n, reader) != -1) {
@@ -306,7 +306,7 @@ static char *rpm_prep_source(struct rpminspect *ri, const rpmfile_entry_t *file,
             tail[strcspn(tail, "\n")] = 0;
         }
 
-        *details = realloc(*details, strlen(*details) + 1);
+        *details = (char *) realloc(*details, strlen(*details) + 1);
         assert(*details != NULL);
     }
 
@@ -504,7 +504,7 @@ static int validate_file(const char *fpath, __attribute__((unused)) const struct
         return 0;
     }
 
-    line = calloc(sz, sizeof(*line));
+    line = (UChar *) calloc(sz, sizeof(*line));
     assert(line != NULL);
     linenum = 1;
 
@@ -516,7 +516,7 @@ static int validate_file(const char *fpath, __attribute__((unused)) const struct
                 sz *= 2;
                 errno = 0;
 #ifdef _HAVE_REALLOCARRAY
-                line_new = reallocarray(line, sz, sizeof(*line));
+                line_new = (UChar *) reallocarray(line, sz, sizeof(*line));
 #else
                 line_new = realloc(line, sz * sizeof(*line));
 #endif
@@ -709,12 +709,12 @@ bool inspect_unicode(struct rpminspect *ri)
     /* only run if there are forbidden code points */
     if (ri->unicode_forbidden_codepoints != NULL && !TAILQ_EMPTY(ri->unicode_forbidden_codepoints)) {
         /* convert code points to UChar values */
-        forbidden = calloc(1, sizeof(*forbidden));
+        forbidden = (UChar32_list_t *) calloc(1, sizeof(*forbidden));
         assert(forbidden != NULL);
         TAILQ_INIT(forbidden);
 
         TAILQ_FOREACH(sentry, ri->unicode_forbidden_codepoints, items) {
-            entry = calloc(1, sizeof(*entry));
+            entry = (UChar32_entry_t *) calloc(1, sizeof(*entry));
             assert(entry != NULL);
             errno = 0;
             entry->data = strtol(sentry->data, NULL, 16);

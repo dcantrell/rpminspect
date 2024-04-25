@@ -20,7 +20,7 @@ static struct result_params params;
 static bool virus_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 {
     bool result = true;
-    int r = 0;
+    cl_error_t r = 0;
 #ifndef CL_SCAN_STDOPT
     struct cl_scan_options opts;
 #endif

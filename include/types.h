@@ -133,7 +133,7 @@ typedef TAILQ_HEAD(rpmfile_s, _rpmfile_entry_t) rpmfile_t;
  */
 
 /* Dependency types */
-typedef enum _dep_type_t {
+enum dep_type_t {
     TYPE_NULL = 0,
     TYPE_REQUIRES = 1,
     TYPE_PROVIDES = 2,
@@ -143,20 +143,20 @@ typedef enum _dep_type_t {
     TYPE_RECOMMENDS = 6,
     TYPE_SUGGESTS = 7,
     TYPE_SUPPLEMENTS = 8
-} dep_type_t;
+};
 
 #define FIRST_DEP_TYPE TYPE_REQUIRES
 #define LAST_DEP_TYPE TYPE_SUPPLEMENTS
 
 /* Possible dependency operators */
-typedef enum _dep_op_t {
+enum dep_op_t {
     OP_NULL = 0,
     OP_EQUAL = 1,
     OP_LESS = 2,
     OP_GREATER = 3,
     OP_LESSEQUAL = 4,
     OP_GREATEREQUAL = 5
-} dep_op_t;
+};
 
 /* Individual dependency entries and the list type */
 typedef struct _deprule_entry_t {
@@ -211,7 +211,7 @@ typedef TAILQ_HEAD(rpmpeer_s, _rpmpeer_entry_t) rpmpeer_t;
  * code of the program is.  For example, RESULT_OK needs to be
  * a lower int than RESULT_BAD.
  */
-typedef enum _severity_t {
+enum severity_t {
     RESULT_NULL   = 0,      /* used to indicate internal error */
     RESULT_DIAG   = 1,      /* only used by the 'diagnostics' inspection */
     RESULT_SKIP   = 2,
@@ -219,16 +219,16 @@ typedef enum _severity_t {
     RESULT_INFO   = 4,
     RESULT_VERIFY = 5,
     RESULT_BAD    = 6
-} severity_t;
+};
 
-typedef enum _waiverauth_t {
+enum waiverauth_t {
     NULL_WAIVERAUTH      = 0,
     NOT_WAIVABLE         = 1,
     WAIVABLE_BY_ANYONE   = 2,
     WAIVABLE_BY_SECURITY = 3
-} waiverauth_t;
+};
 
-typedef enum _verb_t {
+enum verb_t {
     VERB_NIL = 0,       /* not used, same as "not set" */
     VERB_ADDED = 1,     /* new file or metadata */
     VERB_REMOVED = 2,   /* removed file or metadata */
@@ -236,7 +236,7 @@ typedef enum _verb_t {
     VERB_FAILED = 4,    /* check failing */
     VERB_OK = 5,        /* the everything is ok alarm */
     VERB_SKIP = 6       /* for skipped inspections or checks */
-} verb_t;
+};
 
 /*
  * struct to make it easier to make multiple calls to add_result()
@@ -276,24 +276,24 @@ typedef TAILQ_HEAD(results_s, _results_entry_t) results_t;
 /*
  * Known types of Koji builds
  */
-typedef enum _koji_build_type_t {
+enum koji_build_type_t {
     KOJI_BUILD_NULL = 0,       /* initializer, not an actual build */
     KOJI_BUILD_IMAGE = 1,      /* not supported */
     KOJI_BUILD_MAVEN = 2,      /* not supported */
     KOJI_BUILD_MODULE = 3,
     KOJI_BUILD_RPM = 4,
     KOJI_BUILD_WIN = 5         /* not supported */
-} koji_build_type_t;
+};
 
 /*
  * fileinfo for a product release. Used by some of the inspections.
  */
-typedef enum _fileinfo_field_t {
+enum fileinfo_field_t {
     MODE = 0,
     OWNER = 1,
     GROUP = 2,
     FILENAME = 3
-} fileinfo_field_t;
+};
 
 typedef struct _fileinfo_entry_t {
     mode_t mode;
@@ -308,12 +308,12 @@ typedef TAILQ_HEAD(fileinfo_entry_s, _fileinfo_entry_t) fileinfo_t;
 /*
  * caps list for a product release.  Used by some of the inspections.
  */
-typedef enum _caps_field_t {
+enum caps_field_t {
     PACKAGE = 0,
     FILEPATH = 1,
     EQUAL = 2,
     CAPABILITIES = 3
-} caps_field_t;
+};
 
 typedef struct _caps_filelist_entry_t {
     char *path;
@@ -334,28 +334,28 @@ typedef TAILQ_HEAD(caps_entry_s, _caps_entry_t) caps_t;
 #ifdef _HAVE_MODULARITYLABEL
 
 /* Modularity static context types */
-typedef enum _static_context_t {
+enum static_context_t {
     STATIC_CONTEXT_NULL = 0,
     STATIC_CONTEXT_REQUIRED = 1,
     STATIC_CONTEXT_FORBIDDEN = 2,
     STATIC_CONTEXT_RECOMMEND = 3
-} static_context_t;
+};
 
 #endif
 
 /* Spec filename matching types */
-typedef enum _specname_match_t {
+enum specname_match_t {
     MATCH_NULL = 0,
     MATCH_FULL = 1,
     MATCH_PREFIX = 2,
     MATCH_SUFFIX = 3
-} specname_match_t;
+};
 
-typedef enum _specname_primary_t {
+enum specname_primary_t {
     PRIMARY_NULL = 0,
     PRIMARY_NAME = 1,
     PRIMARY_FILENAME = 2
-} specname_primary_t;
+};
 
 /* RPM header cache so we don't balloon out our memory */
 typedef struct _header_cache_t {
@@ -365,11 +365,11 @@ typedef struct _header_cache_t {
 } header_cache_t;
 
 /* Product release string favoring */
-typedef enum _favor_release_t {
+enum favor_release_t {
     FAVOR_NONE = 0,
     FAVOR_OLDEST = 1,
     FAVOR_NEWEST = 2
-} favor_release_t;
+};
 
 /*
  * Politics list
@@ -383,11 +383,11 @@ typedef struct _politics_entry_t {
 
 typedef TAILQ_HEAD(politics_entry_s, _politics_entry_t) politics_list_t;
 
-typedef enum _politics_field_t {
+enum politics_field_t {
     PATTERN = 0,
     DIGEST = 1,
     PERMISSION = 2
-} politics_field_t;
+};
 
 /* Commands used by rpminspect at runtime. */
 struct command_paths {
@@ -788,7 +788,7 @@ struct buildtype {
     koji_build_type_t type;
 
     /* name of the build type */
-    char *name;
+    const char *name;
 
     /* whether or not this type is supported */
     bool supported;
@@ -1047,11 +1047,11 @@ typedef struct _koji_task_entry_t {
 } koji_task_entry_t;
 
 /* Types of files -- used by internal nftw() callbacks */
-typedef enum _filetype_t {
+enum filetype_t {
     FILETYPE_NULL = 0,
     FILETYPE_EXECUTABLE = 1,
     FILETYPE_ICON = 2
-} filetype_t;
+};
 
 /* Kernel module handling */
 #ifdef _WITH_LIBKMOD
@@ -1069,12 +1069,12 @@ typedef struct _kernel_alias_data_t {
 #endif
 
 /* Types of workdirs */
-typedef enum _workdir_t {
+enum workdir_t {
     NULL_WORKDIR = 0,          /* unused                    */
     LOCAL_WORKDIR = 1,         /* locally cached koji build */
     TASK_WORKDIR = 2,          /* like for scratch builds   */
     BUILD_WORKDIR = 3          /* remote koji build spec    */
-} workdir_t;
+};
 
 /**
  * @brief Callback function to pass to foreach_peer_file.
@@ -1091,10 +1091,10 @@ typedef enum _workdir_t {
 typedef bool (*foreach_peer_file_func)(struct rpminspect *, rpmfile_entry_t *);
 
 /* Types of ELF information we can return */
-typedef enum _elfinfo_t {
+enum elfinfo_t {
     ELF_TYPE    = 0,
     ELF_MACHINE = 1
-} elfinfo_t;
+};
 
 /*
  * Exit status for abidiff and abicompat tools.  It's actually a bit

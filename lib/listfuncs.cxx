@@ -69,7 +69,7 @@ char **list_to_array(const string_list_t *list)
 
     assert(list != NULL);
 
-    array = calloc(list_len(list), sizeof(*array));
+    array = (char **) calloc(list_len(list), sizeof(*array));
     assert(array != NULL);
 
     TAILQ_FOREACH(entry, list, items) {
@@ -93,7 +93,7 @@ string_map_t *list_to_table(const string_list_t *list)
 
     /* Allocate the table */
     TAILQ_FOREACH(iter, list, items) {
-        hentry = calloc(1, sizeof(*hentry));
+        hentry = (string_map_t *) calloc(1, sizeof(*hentry));
         assert(hentry != NULL);
         hentry->key = strdup(iter->data);
         hentry->value = strdup(iter->data);
@@ -188,7 +188,7 @@ string_list_t *list_union(const string_list_t *a, const string_list_t *b)
         HASH_FIND_STR(u_table, iter->data, hentry);
 
         if (hentry == NULL) {
-            hentry = calloc(1, sizeof(*hentry));
+            hentry = (string_map_t *) calloc(1, sizeof(*hentry));
             assert(hentry != NULL);
             hentry->key = strdup(iter->data);
             HASH_ADD_KEYPTR(hh, u_table, hentry->key, strlen(hentry->key), hentry);
@@ -201,7 +201,7 @@ string_list_t *list_union(const string_list_t *a, const string_list_t *b)
         HASH_FIND_STR(u_table, iter->data, hentry);
 
         if (hentry == NULL) {
-            hentry = calloc(1, sizeof(*hentry));
+            hentry = (string_map_t *) calloc(1, sizeof(*hentry));
             assert(hentry != NULL);
             hentry->key = strdup(iter->data);
             HASH_ADD_KEYPTR(hh, u_table, hentry->key, strlen(hentry->key), hentry);
@@ -291,7 +291,7 @@ string_list_t *list_sort(const string_list_t *list)
 
     /* create a sorted hash table of the entries */
     TAILQ_FOREACH(iter, list, items) {
-        entry = calloc(1, sizeof(*entry));
+        entry = (string_map_t *) calloc(1, sizeof(*entry));
         assert(entry != NULL);
         entry->key = strdup(iter->data);
         assert(entry->key != NULL);
@@ -412,12 +412,12 @@ string_list_t *list_add(string_list_t *list, const char *s)
     }
 
     if (list == NULL) {
-        list = calloc(1, sizeof(*list));
+        list = (string_list_t *) calloc(1, sizeof(*list));
         assert(list != NULL);
         TAILQ_INIT(list);
     }
 
-    entry = calloc(1, sizeof(*entry));
+    entry = (string_entry_t *) calloc(1, sizeof(*entry));
     assert(entry != NULL);
     entry->data = strdup(s);
     assert(entry->data != NULL);

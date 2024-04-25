@@ -168,7 +168,7 @@ void curl_get_file(const bool verbose, const char *src, const char *dst)
     FILE *fp = NULL;
     char *archive = NULL;
     CURL *c = NULL;
-    CURLcode cc;
+    CURLcode cc = CURL_LAST;
 
     assert(src != NULL);
     assert(dst != NULL);
@@ -248,7 +248,7 @@ curl_off_t curl_get_size(const char *src)
 {
     curl_off_t r = 0;
     CURL *c = NULL;
-    CURLcode cc;
+    CURLcode cc = CURL_LAST;
 #ifndef _HAVE_NEWER_CURLINFO
     double len = 0;
 #endif
@@ -292,7 +292,7 @@ curl_off_t curl_get_size(const char *src)
 bool is_remote_rpm(const char *url)
 {
     CURL *c = NULL;
-    CURLcode r = -1;
+    CURLcode r = CURL_LAST;
 
     assert(url != NULL);
 

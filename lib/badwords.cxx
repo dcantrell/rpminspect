@@ -52,7 +52,7 @@ bool has_bad_word(const char *s, const string_list_t *badwords)
     /* check each bad word expression for a match with our string */
     TAILQ_FOREACH(badword, badwords, items) {
         /* Do a case insensitive search for the word */
-        search = strcasestr(s, badword->data);
+        search = (char *) strcasestr(s, (const char *) badword->data);
 
         if (search != NULL) {
             /*

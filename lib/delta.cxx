@@ -81,7 +81,7 @@ static int fill_mmfile(mmfile_t *mf, const char *file)
 static int delta_out(void *priv, mmbuffer_t *mb, int nbuf)
 {
     int i = 0;
-    char *prefix = NULL;
+    const char *prefix = NULL;
     char *end = NULL;
     string_list_t *list = (string_list_t *) priv;
     string_entry_t *entry = NULL;
@@ -157,7 +157,7 @@ char *get_file_delta(const char *a, const char *b)
 
     if (fill_mmfile(&n, b) < 0) {
         warn("*** fill_mmfile");
-        free(old.ptr);
+        free(o.ptr);
         return NULL;
     }
 

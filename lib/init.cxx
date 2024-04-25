@@ -76,13 +76,13 @@ static int add_regex(const char *pattern, regex_t **regex_out)
     assert(regex_out);
 
     free_regex(*regex_out);
-    *regex_out = calloc(1, sizeof(regex_t));
+    *regex_out = (regex_t *) calloc(1, sizeof(regex_t));
     assert(*regex_out != NULL);
 
     if ((reg_result = regcomp(*regex_out, pattern, REG_EXTENDED)) != 0) {
         /* Get the size needed for the error message */
         errbuf_size = regerror(reg_result, *regex_out, NULL, 0);
-        errbuf = malloc(errbuf_size);
+        errbuf = (char *) malloc(errbuf_size);
         assert(errbuf != NULL);
 
         regerror(reg_result, *regex_out, errbuf, errbuf_size);
@@ -113,7 +113,7 @@ static void add_string_list_map_entry(string_list_map_t **table, const char *key
 
     if (mapentry == NULL) {
         /* start a new entry for this inspection */
-        mapentry = calloc(1, sizeof(*mapentry));
+        mapentry = (string_list_map_t *) calloc(1, sizeof(*mapentry));
         assert(mapentry != NULL);
         mapentry->key = strdup(key);
         mapentry->value = list_add(mapentry->value, value);
@@ -168,7 +168,7 @@ static void process_table(const char *key, const char *value, const bool require
             warnx("*** missing key `%s', unable to append `%s'", key, value);
         } else {
             /* add the new key/value pair to the table */
-            entry = calloc(1, sizeof(*entry));
+            entry = (string_map_t *) calloc(1, sizeof(*entry));
             assert(entry != NULL);
             entry->key = strdup(key);
             entry->value = strdup(value);
@@ -351,7 +351,7 @@ static inline void strget(parser_plugin *p, parser_context *ctx, const char *key
 /* lambda for add_ignores() below. */
 static bool add_ignores_cb(const char *entry, void *cb_data)
 {
-    add_ignores_cb_data *d = cb_data;
+    add_ignores_cb_data *d = (add_ignores_cb_data *) cb_data;
     add_string_list_map_entry(d->inspection_ignores, d->inspection, entry);
     return false;
 }
@@ -405,7 +405,7 @@ static inline void add_ignores(struct rpminspect *ri, parser_plugin *p, parser_c
 /* lambda for tabledict below. */
 static bool tabledict_cb(const char *key, const char *value, void *cb_data)
 {
-    tabledict_cb_data *data = cb_data;
+    tabledict_cb_data *data = (tabledict_cb_data *) cb_data;
 
     /* javabytecode uses this at top-level, but also supports ignores. */
     if (!strcasecmp(key, RI_IGNORE)) {
@@ -432,7 +432,7 @@ static void tabledict(parser_plugin *p, parser_context *ctx, const char *key1, c
  * tabledict_cb that skips more keys. */
 static bool annocheck_cb(const char *key, const char *value, void *cb_data)
 {
-    tabledict_cb_data *data = cb_data;
+    tabledict_cb_data *data = (tabledict_cb_data *) cb_data;
 
     if (!strcasecmp(key, RI_FAILURE_SEVERITY) || !strcasecmp(key, RI_EXTRA_OPTS) || !strcasecmp(key, RI_IGNORE)) {
         return false;
@@ -445,7 +445,7 @@ static bool annocheck_cb(const char *key, const char *value, void *cb_data)
 /* lambda to handle entries in the rpmdeps config file section. */
 static bool rpmdeps_cb(const char *key, const char *value, void *cb_data)
 {
-    deprule_ignore_map_t **deprules_ignore = cb_data;
+    deprule_ignore_map_t **deprules_ignore = (deprule_ignore_map_t **) cb_data;
     dep_type_t depkey = TYPE_NULL;
     deprule_ignore_map_t *drentry = NULL;
 
@@ -473,7 +473,7 @@ static bool rpmdeps_cb(const char *key, const char *value, void *cb_data)
 
     /* overwrite existing entry, otherwise create new one */
     if (drentry == NULL) {
-        drentry = calloc(1, sizeof(*drentry));
+        drentry = (deprule_ignore_map_t *) calloc(1, sizeof(*drentry));
         assert(drentry != NULL);
         drentry->type = depkey;
         drentry->pattern = strdup(value);
@@ -502,7 +502,7 @@ static bool rpmdeps_cb(const char *key, const char *value, void *cb_data)
 /* lambda for handle_inspections() below. */
 static bool handle_inspections_cb(const char *key, const char *value, void *cb_data)
 {
-    uint64_t *tests = cb_data;
+    uint64_t *tests = (uint64_t *) cb_data;
     bool onoff = true;
 
     if (!strcasecmp(value, RI_ON)) {
@@ -532,7 +532,7 @@ static inline void handle_inspections(struct rpminspect *ri, parser_plugin *p, p
 /* lambda for adding entries from the badfuncs_allowed configuration. */
 static bool badfuncs_allowed_cb(const char *key, const char *value, void *cb_data)
 {
-    string_list_map_t **bad_functions_allowed = cb_data;
+    string_list_map_t **bad_functions_allowed = (string_list_map_t **) cb_data;
 
     add_string_list_map_entry(bad_functions_allowed, key, value);
     return false;
@@ -554,7 +554,7 @@ static void process_desktop_skips(desktop_skips_t **desktop_skips, string_list_t
         HASH_FIND_STR(*desktop_skips, sentry->data, ds);
 
         if (ds == NULL) {
-            ds = calloc(1, sizeof(*ds));
+            ds = (desktop_skips_t *) calloc(1, sizeof(*ds));
             assert(ds != NULL);
             ds->path = strdup(sentry->data);
             assert(ds->path != NULL);
@@ -1748,7 +1748,7 @@ struct rpminspect *calloc_rpminspect(struct rpminspect *ri)
     ri->kmidiff_debuginfo_path = strdup(DEBUG_PATH);
     ri->annocheck_failure_severity = RESULT_VERIFY;
     ri->size_threshold = -1;
-    ri->debuginfo_sections = strdup(ELF_SYMTAB" "ELF_DEBUG_INFO);
+    xasprintf(&ri->debuginfo_sections, "%s %s", ELF_SYMTAB, ELF_DEBUG_INFO);
     ri->udev_rules_dirs = list_from_array(UDEV_RULES_DIRS);
 
     /* Initialize commands */

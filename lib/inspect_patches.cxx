@@ -667,7 +667,7 @@ bool inspect_patches(struct rpminspect *ri)
             /* get patch numbers unless automacro is in use */
             if (automacro) {
                 TAILQ_FOREACH(patch, patchfiles, items) {
-                    hentry = calloc(1, sizeof(*hentry));
+                    hentry = (patches_t *) calloc(1, sizeof(*hentry));
                     assert(hentry != NULL);
                     hentry->patch = strdup(patch->data);
                     hentry->num = -1;                       /* automacro == true */
@@ -742,7 +742,7 @@ bool inspect_patches(struct rpminspect *ri)
                         }
 
                         /* add a new patch entry to the hash table */
-                        hentry = calloc(1, sizeof(*hentry));
+                        hentry = (patches_t *) calloc(1, sizeof(*hentry));
                         assert(hentry != NULL);
                         hentry->patch = strdup(patchfile);
                         errno = 0;
@@ -829,7 +829,7 @@ bool inspect_patches(struct rpminspect *ri)
                             continue;
                         }
 
-                        aentry = calloc(1, sizeof(*aentry));
+                        aentry = (patches_t *) calloc(1, sizeof(*aentry));
                         assert(aentry != NULL);
                         errno = 0;
                         aentry->num = strtoll(buf, NULL, 10);

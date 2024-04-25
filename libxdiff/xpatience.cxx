@@ -189,7 +189,7 @@ static int binary_search(entry_t **sequence, int longest, entry_t *entry)
  */
 static entry_t *find_longest_common_sequence(hashmap_t *map)
 {
-	entry_t **sequence = malloc(map->nr * sizeof(entry_t *));
+	entry_t **sequence = (entry_t **) malloc(map->nr * sizeof(entry_t *));
 	int longest = 0, i;
 	entry_t *entry;
 

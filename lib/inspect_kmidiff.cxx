@@ -83,7 +83,7 @@ static void get_kabi_dir(struct rpminspect *ri)
 static char *get_kabi_file(const struct rpminspect *ri, const char *arch)
 {
     char *tmp = NULL;
-    char *template = NULL;
+    char *pattern = NULL;
     char *kabi = NULL;
 
     assert(ri != NULL);
@@ -93,16 +93,16 @@ static char *get_kabi_file(const struct rpminspect *ri, const char *arch)
         return NULL;
     }
 
-    /* build the template */
-    xasprintf(&template, "%s/%s", kabi_dir, ri->kabi_filename);
-    assert(template != NULL);
+    /* build the pattern */
+    xasprintf(&pattern, "%s/%s", kabi_dir, ri->kabi_filename);
+    assert(pattern != NULL);
 
     /* replace variables */
-    tmp = strreplace(template, "${ARCH}", arch);
+    tmp = strreplace(pattern, "${ARCH}", arch);
 
     if (strstr(tmp, "$ARCH")) {
         free(tmp);
-        tmp = strreplace(template, "$ARCH", arch);
+        tmp = strreplace(pattern, "$ARCH", arch);
     }
 
     /* normalize the path */
@@ -117,7 +117,7 @@ static char *get_kabi_file(const struct rpminspect *ri, const char *arch)
     }
 
     /* we're done */
-    free(template);
+    free(pattern);
     return kabi;
 }
 
@@ -132,7 +132,8 @@ static bool kmidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     char *kabi = NULL;
     int exitcode = 0;
     int i = 0;
-    char *fname[] = KERNEL_FILENAMES;
+    const char *fname[] = KERNEL_FILENAMES;
+    char *kname = NULL;
     char *compare = NULL;
     char *cmd = NULL;
     char *tmp = NULL;
@@ -169,7 +170,9 @@ static bool kmidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
     /* skip anything that is not a kernel image */
     for (i = 0; fname[i] != NULL; i++) {
-        xasprintf(&compare, "/%s", basename(fname[i]));
+        kname = strdup(fname[i]);
+        assert(kname != NULL);
+        xasprintf(&compare, "/%s", kname);
         assert(compare != NULL);
 
         if (strsuffix(file->localpath, compare)) {
@@ -177,6 +180,7 @@ static bool kmidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         }
 
         free(compare);
+        free(kname);
 
         if (found_kernel_image) {
             break;

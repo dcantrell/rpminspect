@@ -271,12 +271,12 @@ static string_list_t *read_koji_descendent_results(xmlrpc_env *env, xmlrpc_value
     size = xmlrpc_array_size(env, value);
     xmlrpc_abort_on_fault(env);
 
-    results = calloc(1, sizeof(*results));
+    results = (string_list_t *) calloc(1, sizeof(*results));
     assert(results != NULL);
     TAILQ_INIT(results);
 
     for (i = 0; i < size; i++) {
-        entry = calloc(1, sizeof(*entry));
+        entry = (string_entry_t *) calloc(1, sizeof(*entry));
         assert(entry != NULL);
         xmlrpc_array_read_item(env, value, i, &s);
         xmlrpc_abort_on_fault(env);
@@ -296,7 +296,7 @@ koji_buildlist_t *init_koji_buildlist(void)
 {
     koji_buildlist_t *builds = NULL;
 
-    builds = calloc(1, sizeof(*(builds)));
+    builds = (koji_buildlist_t *) calloc(1, sizeof(*(builds)));
     assert(builds != NULL);
     TAILQ_INIT(builds);
     return builds;
@@ -346,7 +346,7 @@ koji_rpmlist_t *init_koji_rpmlist(void)
 {
     koji_rpmlist_t *rpms = NULL;
 
-    rpms = calloc(1, sizeof(*(rpms)));
+    rpms = (koji_rpmlist_t *) calloc(1, sizeof(*(rpms)));
     assert(rpms != NULL);
     TAILQ_INIT(rpms);
     return rpms;
@@ -477,21 +477,21 @@ void init_koji_task_entry(koji_task_entry_t *entry)
 {
     assert(entry != NULL);
 
-    entry->task = malloc(sizeof(*entry->task));
+    entry->task = (koji_task *) malloc(sizeof(*entry->task));
     assert(entry->task != NULL);
     init_koji_task(entry->task);
 
     entry->brootid = -1;
 
-    entry->srpms = malloc(sizeof(*entry->srpms));
+    entry->srpms = (string_list_t *) malloc(sizeof(*entry->srpms));
     assert(entry->srpms != NULL);
     TAILQ_INIT(entry->srpms);
 
-    entry->rpms = malloc(sizeof(*entry->rpms));
+    entry->rpms = (string_list_t *) malloc(sizeof(*entry->rpms));
     assert(entry->rpms != NULL);
     TAILQ_INIT(entry->rpms);
 
-    entry->logs = malloc(sizeof(*entry->logs));
+    entry->logs = (string_list_t *) malloc(sizeof(*entry->logs));
     assert(entry->logs != NULL);
     TAILQ_INIT(entry->logs);
 
@@ -630,7 +630,7 @@ struct koji_build *get_koji_build(struct rpminspect *ri, const char *buildspec)
     }
 
     /* initialize everything and get XMLRPC ready */
-    build = calloc(1, sizeof(*build));
+    build = (koji_build *) calloc(1, sizeof(*build));
     assert(build != NULL);
     init_koji_build(build);
     xmlrpc_limit_set(XMLRPC_XML_SIZE_LIMIT_ID, SIZE_MAX);
@@ -724,7 +724,7 @@ struct koji_build *get_koji_build(struct rpminspect *ri, const char *buildspec)
             xmlrpc_decompose_value(&env, value, "i", &build->id);
         } else if (!strcmp(keyname, "build_id")) {
             /* we hit this on regular packages, modules handled below */
-            buildentry = calloc(1, sizeof(*buildentry));
+            buildentry = (koji_buildlist_entry_t *) calloc(1, sizeof(*buildentry));
             assert(buildentry != NULL);
 
             xmlrpc_decompose_value(&env, value, "i", &buildentry->build_id);
@@ -733,7 +733,7 @@ struct koji_build *get_koji_build(struct rpminspect *ri, const char *buildspec)
                 buildentry->package_name = strdup(build->package_name);
             }
 
-            buildentry->rpms = calloc(1, sizeof(*buildentry->rpms));
+            buildentry->rpms = (koji_rpmlist_t *) calloc(1, sizeof(*buildentry->rpms));
             assert(buildentry->rpms != NULL);
             TAILQ_INIT(buildentry->rpms);
 
@@ -909,7 +909,7 @@ struct koji_build *get_koji_build(struct rpminspect *ri, const char *buildspec)
             subsize = xmlrpc_struct_size(&env, element);
             xmlrpc_abort_on_fault(&env);
 
-            buildentry = calloc(1, sizeof(*buildentry));
+            buildentry = (koji_buildlist_entry_t *) calloc(1, sizeof(*buildentry));
             assert(buildentry != NULL);
 
             j = 0;
@@ -988,7 +988,7 @@ struct koji_build *get_koji_build(struct rpminspect *ri, const char *buildspec)
 
             xmlrpc_DECREF(element);
 
-            buildentry->rpms = calloc(1, sizeof(*buildentry->rpms));
+            buildentry->rpms = (koji_rpmlist_t *) calloc(1, sizeof(*buildentry->rpms));
             assert(buildentry->rpms != NULL);
             TAILQ_INIT(buildentry->rpms);
 
@@ -1018,7 +1018,7 @@ struct koji_build *get_koji_build(struct rpminspect *ri, const char *buildspec)
             xmlrpc_abort_on_fault(&env);
 
             /* create a new rpm list entry */
-            rpm = calloc(1, sizeof(*rpm));
+            rpm = (koji_rpmlist_entry_t *) calloc(1, sizeof(*rpm));
             assert(rpm != NULL);
 
             for (j = 0; j < subsize; j++) {
@@ -1126,7 +1126,7 @@ struct koji_task *get_koji_task(struct rpminspect *ri, const char *taskspec)
     }
 
     /* initialize everything and get XMLRPC ready */
-    task = calloc(1, sizeof(*task));
+    task = (koji_task *) calloc(1, sizeof(*task));
     assert(task != NULL);
     init_koji_task(task);
     xmlrpc_limit_set(XMLRPC_XML_SIZE_LIMIT_ID, SIZE_MAX);
@@ -1184,7 +1184,7 @@ struct koji_task *get_koji_task(struct rpminspect *ri, const char *taskspec)
     size = xmlrpc_struct_size(&env, result);
     xmlrpc_abort_on_fault(&env);
 
-    task->descendents = calloc(1, sizeof(*task->descendents));
+    task->descendents = (koji_task_list_t *) calloc(1, sizeof(*task->descendents));
     assert(task->descendents != NULL);
     TAILQ_INIT(task->descendents);
 
@@ -1206,7 +1206,7 @@ struct koji_task *get_koji_task(struct rpminspect *ri, const char *taskspec)
             xmlrpc_abort_on_fault(&env);
 
             /* initialize a struct and read the results */
-            descendent = calloc(1, sizeof(*descendent));
+            descendent = (koji_task_entry_t *) calloc(1, sizeof(*descendent));
             assert(descendent != NULL);
             init_koji_task_entry(descendent);
             read_koji_task_struct(&env, dstruct, descendent->task);
@@ -1247,12 +1247,12 @@ struct koji_task *get_koji_task(struct rpminspect *ri, const char *taskspec)
                 } else if (!strcmp(key, "srpm") && xmlrpc_value_type(tr_v) == XMLRPC_TYPE_STRING) {
                     /* we should not have both 'srpms' and 'srpm' */
                     if (descendent->srpms == NULL) {
-                        descendent->srpms = calloc(1, sizeof(*(descendent->srpms)));
+                        descendent->srpms = (string_list_t *) calloc(1, sizeof(*(descendent->srpms)));
                         assert(descendent->srpms != NULL);
                         TAILQ_INIT(descendent->srpms);
                     }
 
-                    entry = calloc(1, sizeof(*entry));
+                    entry = (string_entry_t *) calloc(1, sizeof(*entry));
                     assert(entry != NULL);
                     xmlrpc_decompose_value(&env, tr_v, "s", &entry->data);
                     xmlrpc_abort_on_fault(&env);

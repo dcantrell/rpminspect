@@ -181,6 +181,17 @@ static deprule_list_t *gather_deprules_by_type(deprule_list_t *rules, Header hdr
 }
 
 /*
+ * Lets us ++ on dep_type_t enums.
+ */
+static dep_type_t operator ++(dep_type_t &deptype, int)
+{
+    dep_type_t current_deptype = deptype;
+
+    deptype = static_cast<dep_type_t>(dep_type_t + 1);
+    return current_deptype;
+}
+
+/*
  * Collect the dependency type specified and return the allocated
  * deprule_list_t.
  */

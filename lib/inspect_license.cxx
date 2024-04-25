@@ -63,7 +63,7 @@ static parser_plugin *read_licensedb(struct rpminspect *ri, const char *db, pars
 /* lambda; checks against an entry in the license database. */
 static bool lic_cb(const char *license_name, void *cb_data)
 {
-    lic_cb_data *data = cb_data;
+    lic_cb_data *data = (lic_cb_data *) cb_data;
     const char *lic = data->lic;
     parser_plugin *p = data->p;
     parser_context *db = data->db;
@@ -207,7 +207,7 @@ static void token_add(string_map_t **tags, const char *token)
 
     assert(token != NULL);
 
-    tag_entry = calloc(1, sizeof(*tag_entry));
+    tag_entry = (string_map_t *) calloc(1, sizeof(*tag_entry));
     assert(tag_entry != NULL);
     tag_entry->key = strdup(token);
     assert(tag_entry->key != NULL);
@@ -326,16 +326,16 @@ static string_list_t *get_paren_expressions(const char *license)
         end = strchr(start, ')');
 
         if ((end - start) > 0) {
-            entry = calloc(1, sizeof(*entry));
+            entry = (string_entry_t *) calloc(1, sizeof(*entry));
             assert(entry != NULL);
 
-            entry->data = calloc(1, end - start + 1);
+            entry->data = (char *) calloc(1, end - start + 1);
             assert(entry->data != NULL);
 
             entry->data = strncpy(entry->data, start, end - start);
 
             if (list == NULL) {
-                list = calloc(1, sizeof(*list));
+                list = (string_list_t *) calloc(1, sizeof(*list));
                 assert(list != NULL);
                 TAILQ_INIT(list);
             }

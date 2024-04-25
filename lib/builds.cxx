@@ -35,7 +35,7 @@ static bool fetch_only = false;
 static int mode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
 
 /* This array holds strings that map to the whichbuild index value. */
-static char *build_desc[] = { "before", "after" };
+static const char *build_desc[] = { "before", "after" };
 
 /* Local prototypes */
 static void set_worksubdir(struct rpminspect *, workdir_t, const struct koji_build *, const struct koji_task *);
@@ -214,7 +214,7 @@ static int copytree(const char *fpath, const struct stat *sb, int tflag, struct 
 /* lambda for adding filtered entries. */
 static bool filter_cb(const char *entry, void *cb_data)
 {
-    string_list_t *filter = (string_list_t **) cb_data;
+    string_list_t *filter = (string_list_t *) cb_data;
     list_add(filter, entry);
     return false;
 }
@@ -415,14 +415,14 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
             /* for modules, get the per-arch module metadata */
             if (workri->buildtype == KOJI_BUILD_MODULE) {
                 if (fetch_only) {
-                    xasprintf(&dst, "%s/%s/%s", workri->worksubdir, rpm->arch, rpm->arch, MODULEMD_ARCH_FILENAME);
+                    xasprintf(&dst, "%s/%s/%s/%s", workri->worksubdir, rpm->arch, rpm->arch, MODULEMD_ARCH_FILENAME);
                 } else {
-                    xasprintf(&dst, "%s/%s/%s/%s", workri->worksubdir, build_desc[whichbuild], rpm->arch, rpm->arch, MODULEMD_ARCH_FILENAME);
+                    xasprintf(&dst, "%s/%s/%s/%s/%s", workri->worksubdir, build_desc[whichbuild], rpm->arch, rpm->arch, MODULEMD_ARCH_FILENAME);
                 }
 
                 /* only download this file if we have not already gotten it */
                 if (access(dst, F_OK|R_OK)) {
-                    xasprintf(&src, "%s/packages/%s/%s/%s/files/module/%s", workri->kojimbs, build->package_name, build->version, build->release, rpm->arch, MODULEMD_ARCH_FILENAME);
+                    xasprintf(&src, "%s/packages/%s/%s/%s/files/module/%s/%s", workri->kojimbs, build->package_name, build->version, build->release, rpm->arch, MODULEMD_ARCH_FILENAME);
                     curl_get_file(workri->verbose, src, dst);
                     free(src);
                 }

@@ -174,7 +174,7 @@ static bool have_unexpanded_macros(struct rpminspect *ri, const char *name, cons
  */
 static string_list_t *get_explicit_requires(struct rpminspect *ri, const deprule_entry_t *dep)
 {
-    string_list_t *requires = NULL;
+    string_list_t *reqs = NULL;
     string_entry_t *entry = NULL;
     deprule_entry_t *req = NULL;
     rpmpeer_entry_t *peer = NULL;
@@ -210,7 +210,7 @@ static string_list_t *get_explicit_requires(struct rpminspect *ri, const deprule
 
             TAILQ_FOREACH(entry, dep->providers, items) {
                 if (!strcmp(entry->data, req->requirement)) {
-                    requires = list_add(requires, entry->data);
+                    reqs = list_add(reqs, entry->data);
                 }
             }
         }
@@ -250,7 +250,7 @@ static bool check_explicit_lib_deps(struct rpminspect *ri, Header h, deprule_lis
     const char *pv = NULL;
     const char *pr = NULL;
     uint64_t epoch = 0;
-    char *rulestr = NULL;
+    const char *rulestr = NULL;
     bool found = false;
     bool collect = false;
     const char *tn = NULL;

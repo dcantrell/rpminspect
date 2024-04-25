@@ -39,7 +39,7 @@ static string_list_t *get_changelog(const Header hdr)
     }
 
     /* start the changelog */
-    changelog = calloc(1, sizeof(*changelog));
+    changelog = (string_list_t *) calloc(1, sizeof(*changelog));
     assert(changelog != NULL);
     TAILQ_INIT(changelog);
 
@@ -74,7 +74,7 @@ static string_list_t *get_changelog(const Header hdr)
              * %changelog section from the spec file entry by entry and the
              * actual number of blank lines may not be the same.
              */
-            entry = calloc(1, sizeof(*entry));
+            entry = (string_entry_t *) calloc(1, sizeof(*entry));
             assert(entry != NULL);
             xasprintf(&entry->data, "* %s %s\n%s\n\n", tbuf, name, line);
 

@@ -88,7 +88,7 @@ struct region {
 	((LINE_MAP(index, ptr))->cnt)
 
 #define REC(env, s, l) \
-	(env->xdf##s.recs[l - 1])
+	(env->xdf ## s.recs[l - 1])
 
 static int cmp_recs(xpparam_t const *xpp,
 	xrecord_t *r1, xrecord_t *r2)
