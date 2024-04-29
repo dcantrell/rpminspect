@@ -48,8 +48,8 @@
 #define MAX_PTR	UINT_MAX
 #define MAX_CNT	UINT_MAX
 
-#define LINE_END(n) (line##n + count##n - 1)
-#define LINE_END_PTR(n) (*line##n + *count##n - 1)
+#define LINE_END(n) (line ## n + count ## n - 1)
+#define LINE_END_PTR(n) (*line ## n + *count ## n - 1)
 
 struct histindex {
 	struct record {
@@ -115,7 +115,7 @@ static int scanA(struct histindex *index, int line1, int count1)
 
 	for (ptr = LINE_END(1); line1 <= ptr; ptr--) {
 		tbl_idx = TABLE_HASH(index, 1, ptr);
-		rec_chain = (struct record **) (index->records + tbl_idx);
+		rec_chain = index->records + tbl_idx;
 		rec = *rec_chain;
 
 		chain_len = 0;

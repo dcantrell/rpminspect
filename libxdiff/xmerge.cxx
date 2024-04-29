@@ -60,7 +60,7 @@ static int xdl_append_merge(xdmerge_t **merge, int mode,
 		m->chg1 = i1 + chg1 - m->i1;
 		m->chg2 = i2 + chg2 - m->i2;
 	} else {
-		m = xdl_malloc(sizeof(xdmerge_t));
+		m = (xdmerge_t *) xdl_malloc(sizeof(xdmerge_t));
 		if (!m)
 			return -1;
 		m->next = NULL;
@@ -311,7 +311,7 @@ static int xdl_refine_conflicts(xdfenv_t *xe1, xdfenv_t *xe2, xdmerge_t *m,
 		m->i2 = xscr->i2 + i2;
 		m->chg2 = xscr->chg2;
 		while (xscr->next) {
-			xdmerge_t *m2 = xdl_malloc(sizeof(xdmerge_t));
+			xdmerge_t *m2 = (xdmerge_t *) xdl_malloc(sizeof(xdmerge_t));
 			if (!m2) {
 				xdl_free_env(&xe);
 				xdl_free_script(x);
@@ -555,7 +555,7 @@ static int xdl_do_merge(xdfenv_t *xe1, xdchange_t *xscr1,
 						 ancestor_name,
 						 favor, changes, NULL, style,
 						 marker_size);
-		result->ptr = xdl_malloc(size);
+		result->ptr = (char *) xdl_malloc(size);
 		if (!result->ptr) {
 			xdl_cleanup_merge(changes);
 			return -1;
@@ -597,11 +597,11 @@ int xdl_merge(mmfile_t *orig, mmfile_t *mf1, mmfile_t *mf2,
 	}
 	status = 0;
 	if (!xscr1) {
-		result->ptr = xdl_malloc(mf2->size);
+		result->ptr = (char *) xdl_malloc(mf2->size);
 		memcpy(result->ptr, mf2->ptr, mf2->size);
 		result->size = mf2->size;
 	} else if (!xscr2) {
-		result->ptr = xdl_malloc(mf1->size);
+		result->ptr = (char *) xdl_malloc(mf1->size);
 		memcpy(result->ptr, mf1->ptr, mf1->size);
 		result->size = mf1->size;
 	} else {

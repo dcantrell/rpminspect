@@ -40,7 +40,7 @@ long xdl_bogosqrt(long n) {
 }
 
 
-int xdl_emit_diffrec(char const *rec, long size, char const *pre, long psize,
+int xdl_emit_diffrec(const char *rec, long size, const char *pre, long psize,
 		     xdemitcb_t *ecb) {
 	int i = 2;
 	mmbuffer_t mb[3];
@@ -92,7 +92,7 @@ void xdl_cha_free(chastore_t *cha) {
 
 	for (cur = cha->head; (tmp = cur) != NULL;) {
 		cur = cur->next;
-		free(tmp);
+		xdl_free(tmp);
 	}
 }
 
@@ -102,7 +102,7 @@ void *xdl_cha_alloc(chastore_t *cha) {
 	void *data;
 
 	if (!(ancur = cha->ancur) || ancur->icurr == cha->nsize) {
-		if (!(ancur = (chanode_t *) malloc(sizeof(chanode_t) + cha->nsize))) {
+		if (!(ancur = (chanode_t *) xdl_malloc(sizeof(chanode_t) + cha->nsize))) {
 
 			return NULL;
 		}
@@ -224,10 +224,10 @@ int xdl_recmatch(const char *l1, long s1, const char *l2, long s2, long flags)
 	return 1;
 }
 
-static unsigned long xdl_hash_record_with_whitespace(char const **data,
-		char const *top, long flags) {
+static unsigned long xdl_hash_record_with_whitespace(const char **data,
+		const char *top, long flags) {
 	unsigned long ha = 5381;
-	char const *ptr = *data;
+	const char *ptr = *data;
 
 	for (; ptr < top && *ptr != '\n'; ptr++) {
 		if (XDL_ISSPACE(*ptr)) {
@@ -301,12 +301,12 @@ static inline long count_masked_bytes(unsigned long mask)
 	}
 }
 
-unsigned long xdl_hash_record(char const **data, char const *top, long flags)
+unsigned long xdl_hash_record(const char **data, const char *top, long flags)
 {
 	unsigned long hash = 5381;
 	unsigned long a = 0, mask = 0;
-	char const *ptr = *data;
-	char const *end = top - sizeof(unsigned long) + 1;
+	const char *ptr = *data;
+	const char *end = top - sizeof(unsigned long) + 1;
 
 	if (flags & XDF_WHITESPACE_FLAGS)
 		return xdl_hash_record_with_whitespace(data, top, flags);
@@ -366,9 +366,9 @@ unsigned long xdl_hash_record(char const **data, char const *top, long flags)
 
 #else /* XDL_FAST_HASH */
 
-unsigned long xdl_hash_record(char const **data, char const *top, long flags) {
+unsigned long xdl_hash_record(const char **data, const char *top, long flags) {
 	unsigned long ha = 5381;
-	char const *ptr = *data;
+	const char *ptr = *data;
 
 	if (flags & XDF_WHITESPACE_FLAGS)
 		return xdl_hash_record_with_whitespace(data, top, flags);

@@ -25,13 +25,13 @@
 
 
 
-static long xdl_get_rec(xdfile_t *xdf, long ri, char const **rec);
-static int xdl_emit_record(xdfile_t *xdf, long ri, char const *pre, xdemitcb_t *ecb);
+static long xdl_get_rec(xdfile_t *xdf, long ri, const char **rec);
+static int xdl_emit_record(xdfile_t *xdf, long ri, const char *pre, xdemitcb_t *ecb);
 
 
 
 
-static long xdl_get_rec(xdfile_t *xdf, long ri, char const **rec) {
+static long xdl_get_rec(xdfile_t *xdf, long ri, const char **rec) {
 
 	*rec = xdf->recs[ri]->ptr;
 
@@ -39,9 +39,9 @@ static long xdl_get_rec(xdfile_t *xdf, long ri, char const **rec) {
 }
 
 
-static int xdl_emit_record(xdfile_t *xdf, long ri, char const *pre, xdemitcb_t *ecb) {
+static int xdl_emit_record(xdfile_t *xdf, long ri, const char *pre, xdemitcb_t *ecb) {
 	long size, psize = strlen(pre);
-	char const *rec;
+	const char *rec;
 
 	size = xdl_get_rec(xdf, ri, &rec);
 	if (xdl_emit_diffrec(rec, size, pre, psize, ecb) < 0) {

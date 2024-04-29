@@ -610,7 +610,7 @@ static bool unicode_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     globalarch = get_rpm_header_arch(file->rpm_header);
     assert(globalarch != NULL);
 
-    globalfile = calloc(1, sizeof(*globalfile));
+    globalfile = (rpmfile_entry_t *) calloc(1, sizeof(*globalfile));
     assert(globalfile != NULL);
     globalfile->rpm_header = file->rpm_header;
     assert(globalfile->rpm_header != NULL);

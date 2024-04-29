@@ -142,7 +142,7 @@ static int fill_hashmap(mmfile_t *file1, mmfile_t *file2,
 	/* We know exactly how large we want the hash map */
 	result->alloc = count1 * 2;
 	result->entries = (entry_t *)
-		malloc(result->alloc * sizeof(entry_t));
+		xdl_malloc(result->alloc * sizeof(entry_t));
 	if (!result->entries)
 		return -1;
 	memset(result->entries, 0, result->alloc * sizeof(entry_t));
@@ -162,7 +162,8 @@ static int fill_hashmap(mmfile_t *file1, mmfile_t *file2,
  * Find the longest sequence with a smaller last element (meaning a smaller
  * line2, as we construct the sequence with entries ordered by line1).
  */
-static int binary_search(entry_t **sequence, int longest, entry_t *entry)
+static int binary_search(entry_t **sequence, int longest,
+		entry_t *entry)
 {
 	int left = -1, right = longest;
 
@@ -189,7 +190,7 @@ static int binary_search(entry_t **sequence, int longest, entry_t *entry)
  */
 static entry_t *find_longest_common_sequence(hashmap_t *map)
 {
-	entry_t **sequence = (entry_t **) malloc(map->nr * sizeof(entry_t *));
+	entry_t **sequence = (entry_t **) xdl_malloc(map->nr * sizeof(entry_t *));
 	int longest = 0, i;
 	entry_t *entry;
 
