@@ -167,6 +167,11 @@ int unpack_archive(const char *archive, const char *dest, const bool force)
 
     /* extract each archive member */
     while ((r = archive_read_next_header(input, &entry)) != ARCHIVE_EOF) {
+        if (r == ARCHIVE_FATAL) {
+            /* we cannot recover here, so just take what we could extract */
+            break;
+        }
+
         if (r != ARCHIVE_OK) {
             warnx("*** archive_read_next_header: %s", archive_error_string(input));
         } else if (r < ARCHIVE_WARN) {

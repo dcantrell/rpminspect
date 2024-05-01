@@ -1,0 +1,5 @@
+cpp-coveralls
+gcovr
+PyYAML
+rpmfluff
+timeout-decorator

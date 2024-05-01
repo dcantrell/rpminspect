@@ -1,0 +1,93 @@
+name: RHEL UBI
+
+on:
+    push:
+        branches: [ main ]
+        paths-ignore:
+            - AUTHORS.md
+            - CC-BY-4.0.txt
+            - CHANGES.md
+            - CODE_OF_CONDUCT.md
+            - CONTRIBUTING.md
+            - COPYING
+            - COPYING.LIB
+            - HISTORY
+            - LICENSE-2.0.txt
+            - MISSING
+            - MIT.txt
+            - README.md
+            - RELEASE
+            - TODO
+            - 'contrib/**'
+            - 'data/**'
+            - 'doc/**'
+            - 'po/**'
+            - 'regress/**'
+
+jobs:
+    centos:
+        # Use containers on their ubuntu latest image
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                container: ["registry.access.redhat.com/ubi9/ubi:latest"]
+
+        container:
+            image: ${{ matrix.container }}
+
+        # All of these steps run from within the main source
+        # directory, so think of that as your $PWD
+        steps:
+            # Requirements before the git clone can happen
+            - name: git clone requirements
+              run: |
+                  case "${{ matrix.container }}" in
+                      *ubi9)
+                          # UBI by itself does not contain every BR we
+                          # need, so supplement with CentOS Stream 9
+                          if [ -d /etc/yum.repos.d ]; then
+                              rm -f /etc/yum.repos.d/ubi.repo
+                          else
+                              mkdir -p /etc/yum.repos.d
+                          fi
+
+                          for c in BaseOS AppStream CRB ; do
+                              echo "[c9s-${c}]" >> /etc/yum.repos.d/ubi.repo
+                              echo "name = CentOS Stream 9 - ${c}" >> /etc/yum.repos.d/ubi.repo
+                              echo "baseurl = https://mirror.stream.centos.org/9-stream/${c}/\$basearch/os/" >> /etc/yum.repos.d/ubi.repo
+                              echo "cost = 100" >> /etc/yum.repos.d/ubi.repo
+                              echo "enabled = 1" >> /etc/yum.repos.d/ubi.repo
+                              echo "gpgcheck = 0" >> /etc/yum.repos.d/ubi.repo
+                              echo >> /etc/yum.repos.d/ubi.repo
+                          done
+
+                          # Upgrade things
+                          dnf upgrade -y
+
+                          # Now enable EPEL and install git
+                          dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+                          dnf install -y git
+                          ;;
+                  esac
+
+
+            # This means clone the git repo
+            - uses: actions/checkout@v4
+
+            # Within the container, install the dependencies, build,
+            # and run the test suite
+            - name: Build and run the test suite
+              run: |
+                  # Install make(1) so we can use the instreqs target
+                  dnf install -y make
+
+                  # Install build dependencies and set up the target
+                  make instreqs
+
+                  # Build and run the test suite
+                  make debug
+                  make check
+
+                  # Report coverage
+                  ninja -C build coverage && ( curl -s https://codecov.io/bash | bash ) || :

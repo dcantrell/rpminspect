@@ -40,7 +40,11 @@ elif [ -r /etc/redhat-release ] && [ "${ID}" = "rhel" ]; then
     v="$(echo "${VERSION_ID}" | cut -d '.' -f 1)"
     case "${v}" in
         7|8|9)
-            echo "${ID}${v}"
+            if [ -f /etc/yum.repos.d/ubi.repo ]; then
+                echo "ubi${v}"
+            else
+                echo "${ID}${v}"
+            fi
             ;;
         *)
             echo "unknown OS: ${ID}:${v}" >&2
