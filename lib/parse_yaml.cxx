@@ -171,7 +171,7 @@ static void wait_for(context *c, yaml_token_t *token, yaml_token_type_t target)
  */
 static y_value *p_value(context *context)
 {
-    yaml_token_t token = { 0 }, ptoken = { 0 };
+    yaml_token_t token = { YAML_NO_TOKEN }, ptoken = { YAML_NO_TOKEN };
     y_value *ret = NULL;
     size_t i = 0;
     bool implicit = false;
@@ -190,7 +190,7 @@ static y_value *p_value(context *context)
             /* These tokens don't mean anything to us. */
             continue;
         } else if (token.type == YAML_SCALAR_TOKEN) {
-            ret = xalloc(sizeof(*ret));
+            ret = (y_value *) xalloc(sizeof(*ret));
             ret->type = Y_STRING;
             ret->v.string = strndup((char *)token.data.scalar.value, token.data.scalar.length);
             assert(ret->v.string);
@@ -198,7 +198,7 @@ static y_value *p_value(context *context)
             goto done;
         } else if (token.type == YAML_BLOCK_MAPPING_START_TOKEN
                    || token.type == YAML_FLOW_MAPPING_START_TOKEN) {
-            ret = xalloc(sizeof(*ret));
+            ret = (y_value *) xalloc(sizeof(*ret));
             ret->type = Y_DICT;
             ret->v.dict.keys = xalloc(sizeof(ret->v.dict.keys));
             ret->v.dict.values = xalloc(sizeof(ret->v.dict.values));
@@ -264,7 +264,7 @@ static y_value *p_value(context *context)
                 implicit = true;
             }
 
-            ret = xalloc(sizeof(*ret));
+            ret = (y_value *) xalloc(sizeof(*ret));
             ret->type = Y_ARRAY;
 
             while (1) {

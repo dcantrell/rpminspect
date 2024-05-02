@@ -18,7 +18,7 @@ static bool dson_parse_file(parser_context **context_out, const char *filepath)
     dson_value *out = NULL;
     off_t len = 0;
 
-    buf = read_file_bytes(filepath, &len);
+    buf = (char *) read_file_bytes(filepath, &len);
     errmsg = dson_parse(buf, len, false, &out);
     free(buf);
 
@@ -211,12 +211,12 @@ static bool dson_keymap(parser_context *context, const char *key1, const char *k
 }
 
 parser_plugin dson_parser = {
-    .name = "dson",
-    .parse_file = dson_parse_file,
-    .fini = dson_fini,
-    .havesection = dson_have_section,
-    .getstr = dson_getstr,
-    .strarray_foreach = dson_strarray_foreach,
-    .strdict_foreach = dson_strdict_foreach,
-    .keymap = dson_keymap,
+    dson_parser.name = "dson",
+    dson_parser.parse_file = dson_parse_file,
+    dson_parser.fini = dson_fini,
+    dson_parser.havesection = dson_have_section,
+    dson_parser.getstr = dson_getstr,
+    dson_parser.strarray_foreach = dson_strarray_foreach,
+    dson_parser.strdict_foreach = dson_strdict_foreach,
+    dson_parser.keymap = dson_keymap,
 };

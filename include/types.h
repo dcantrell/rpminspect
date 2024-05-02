@@ -802,7 +802,7 @@ struct format {
     int type;
 
     /* short name of the format */
-    char *name;
+    const char *name;
 
     /* output driver function */
     void (*driver)(const results_t *, const char *, const severity_t, const severity_t);

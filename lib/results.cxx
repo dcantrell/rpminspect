@@ -77,7 +77,7 @@ void free_results(results_t *results)
  */
 void debug_print_result(const results_entry_t *result)
 {
-    char *v = NULL;
+    const char *v = NULL;
 
     assert(result != NULL);
 

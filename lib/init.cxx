@@ -572,30 +572,38 @@ static void process_desktop_skips(desktop_skips_t **desktop_skips, string_list_t
  * Callback function for toml_walk() to read in the data from the
  * remedy override file.
  */
-static inline void _remedy_walker(struct toml_node *node, void *data)
+static inline void _remedy_walker(struct toml_node *node __attribute__((unused)), void *data __attribute__((unused)))
 {
+/*
     char *r = NULL;
     char *n = NULL;
     string_entry_t *entry = NULL;
     struct rpminspect *ri = (struct rpminspect *) data;
     static bool in_remedy = false;
+*/
 
     /* sure, beginning of document, got it */
+/*
     if (toml_type(node) == TOML_ROOT) {
         return;
     }
-
+*/
     /* the name in this context is like 'key' in key=value */
+/*
     n = toml_name(node);
+*/
 
     /* note if we are in the [remedy] section */
+/*
     if (toml_type(node) == TOML_TABLE && n != NULL && !strcmp(n, "remedy")) {
         in_remedy = true;
         free(n);
         return;
     }
+*/
 
     /* gather all strings in the remedy section that match a known remedy */
+/*
     if (in_remedy && toml_type(node) == TOML_STRING) {
         r = toml_value_as_string(node);
 
@@ -625,97 +633,98 @@ static inline void _remedy_walker(struct toml_node *node, void *data)
     }
 
     free(n);
+*/
     return;
 }
 
 /*
  * Parse remedy TOML file and load override remedy strings.
  */
-static void read_remedy(const char *remedyfile, struct rpminspect *ri)
+static void read_remedy(const char *remedyfile __attribute__((unused)), struct rpminspect *ri __attribute__((unused)))
 {
-    toml::parse_result result;
-    toml::table tbl;
-    auto custom_remedy_strs;
-    string_entry_t *entry = NULL;
-
-    assert(ri != NULL);
-
-    /* no remedyfile defined in the config file, fine */
-    if (remedyfile == NULL) {
-        return;
-    }
-
-    /* parse the remedy file */
-    r = toml::parse(remedyfile);
-
-    if (r == 0) {
-        std::cerr << "toml::parse(): " << r.error() << "\n";
-        return;
-    }
-
-    /* handle the results */
-    tbl = std::move(result).table();
-
-    /* walk the results */
-    custom_remedy_strs = tbl["remedy"];
-
-    if (custom_remedy_strs->for_each([](auto&& remedy) {
-        if constexpr (toml::is_string<decltype(remedy)>) {
-            value() cons
-
-
-
-/*
-        {
-            if constexpr (toml::is_number<decltype(el)>)
-                (*el)++;
-            else if constexpr (toml::is_string<decltype(el)>)
-                el = "five"sv;
-        });
-*/
-
-
-
-
-
-    /* gather all strings in the remedy section that match a known remedy */
-    if (in_remedy && toml_type(node) == TOML_STRING) {
-        r = toml_value_as_string(node);
-
-        if (r) {
-            entry = calloc(1, sizeof(*entry));
-            assert(entry != NULL);
-            entry->data = r;
-
-            if (ri->remedy_overrides == NULL) {
-                ri->remedy_overrides = (string_list_t *) calloc(1, sizeof(*(ri->remedy_overrides)));
-                assert(ri->remedy_overrides != NULL);
-                TAILQ_INIT(ri->remedy_overrides);
-            }
-
-            TAILQ_INSERT_TAIL(ri->remedy_overrides, entry, items);
-        }
-
-        if (!set_remedy(n, r)) {
-            warnx("*** '%s' is not a valid remedy identifier", n);
-
-            if (r) {
-                TAILQ_REMOVE(ri->remedy_overrides, entry, items);
-                free(entry->data);
-                free(entry);
-            }
-        }
-    }
-
-
-
-
-
-    }
-
-
-    t//oml_walk(root, _remedy_walker, ri);
-
+//    toml::parse_result result;
+//    toml::table tbl;
+//    auto custom_remedy_strs;
+//    string_entry_t *entry = NULL;
+//
+//    assert(ri != NULL);
+//
+//    /* no remedyfile defined in the config file, fine */
+//    if (remedyfile == NULL) {
+//        return;
+//    }
+//
+//    /* parse the remedy file */
+//    r = toml::parse(remedyfile);
+//
+//    if (r == 0) {
+//        std::cerr << "toml::parse(): " << r.error() << "\n";
+//        return;
+//    }
+//
+//    /* handle the results */
+//    tbl = std::move(result).table();
+//
+//    /* walk the results */
+//    custom_remedy_strs = tbl["remedy"];
+//
+//    if (custom_remedy_strs->for_each([](auto&& remedy) {
+//        if constexpr (toml::is_string<decltype(remedy)>) {
+//            value() cons
+//
+//
+//
+///*
+//        {
+//            if constexpr (toml::is_number<decltype(el)>)
+//                (*el)++;
+//            else if constexpr (toml::is_string<decltype(el)>)
+//                el = "five"sv;
+//        });
+//*/
+//
+//
+//
+//
+//
+//    /* gather all strings in the remedy section that match a known remedy */
+//    if (in_remedy && toml_type(node) == TOML_STRING) {
+//        r = toml_value_as_string(node);
+//
+//        if (r) {
+//            entry = calloc(1, sizeof(*entry));
+//            assert(entry != NULL);
+//            entry->data = r;
+//
+//            if (ri->remedy_overrides == NULL) {
+//                ri->remedy_overrides = (string_list_t *) calloc(1, sizeof(*(ri->remedy_overrides)));
+//                assert(ri->remedy_overrides != NULL);
+//                TAILQ_INIT(ri->remedy_overrides);
+//            }
+//
+//            TAILQ_INSERT_TAIL(ri->remedy_overrides, entry, items);
+//        }
+//
+//        if (!set_remedy(n, r)) {
+//            warnx("*** '%s' is not a valid remedy identifier", n);
+//
+//            if (r) {
+//                TAILQ_REMOVE(ri->remedy_overrides, entry, items);
+//                free(entry->data);
+//                free(entry);
+//            }
+//        }
+//    }
+//
+//
+//
+//
+//
+//    }
+//
+//
+//    toml_walk(root, _remedy_walker, ri);
+//
     return;
 }
 

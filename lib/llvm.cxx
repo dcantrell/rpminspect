@@ -18,8 +18,8 @@ bool is_llvm_ir_bitcode(const char *file)
 {
     int fd;
     int flags = O_RDONLY | O_CLOEXEC;
-    unsigned char target[4] = { '\x42', '\x43', '\xC0', '\xDE' };
-    unsigned char magic[4];
+    char target[4] = { '\x42', '\x43', '\xC0', '\xDE' };
+    char magic[4];
 
     assert(file != NULL);
 
