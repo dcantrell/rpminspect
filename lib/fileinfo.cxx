@@ -42,7 +42,7 @@ bool match_fileinfo_mode(struct rpminspect *ri, const rpmfile_entry_t *file, con
     assert(ri != NULL);
     assert(file != NULL);
 
-    perms = get_interesting_perms(file->st.st_mode);
+    perms = get_interesting_perms(file->st_mode);
     pkg = headerGetString(file->rpm_header, RPMTAG_NAME);
 
     init_result_params(&params);
@@ -53,7 +53,7 @@ bool match_fileinfo_mode(struct rpminspect *ri, const rpmfile_entry_t *file, con
     if (init_fileinfo(ri)) {
         TAILQ_FOREACH(fientry, ri->fileinfo, items) {
             if (!strcmp(file->localpath, fientry->filename)) {
-                if (file->st.st_mode == fientry->mode) {
+                if (file->st_mode == fientry->mode) {
                     xasprintf(&params.msg, _("%s in %s on %s carries expected mode %04o"), file->localpath, pkg, params.arch, perms);
                     params.severity = RESULT_INFO;
                     params.waiverauth = NOT_WAIVABLE;
@@ -128,7 +128,7 @@ bool match_fileinfo_owner(struct rpminspect *ri, const rpmfile_entry_t *file, co
         assert(fname != NULL);
     }
 
-    perms = get_interesting_perms(file->st.st_mode);
+    perms = get_interesting_perms(file->st_mode);
     pkg = headerGetString(file->rpm_header, RPMTAG_NAME);
 
     init_result_params(&params);
@@ -167,7 +167,7 @@ bool match_fileinfo_owner(struct rpminspect *ri, const rpmfile_entry_t *file, co
     }
 
     /* catch anything not on the fileinfo list with setuid/setgid */
-    if (!(*reported) && (file->st.st_mode & (S_ISUID|S_ISGID))) {
+    if (!(*reported) && (file->st_mode & (S_ISUID|S_ISGID))) {
         params.severity = get_secrule_result_severity(ri, file, SECRULE_MODES);
 
         if (params.severity != RESULT_NULL && params.severity != RESULT_SKIP) {
@@ -214,7 +214,7 @@ bool match_fileinfo_group(struct rpminspect *ri, const rpmfile_entry_t *file, co
         assert(fname != NULL);
     }
 
-    perms = get_interesting_perms(file->st.st_mode);
+    perms = get_interesting_perms(file->st_mode);
     pkg = headerGetString(file->rpm_header, RPMTAG_NAME);
 
     init_result_params(&params);
@@ -253,7 +253,7 @@ bool match_fileinfo_group(struct rpminspect *ri, const rpmfile_entry_t *file, co
     }
 
     /* catch anything not on the fileinfo list with setuid/setgid */
-    if (!(*reported) && (file->st.st_mode & (S_ISUID|S_ISGID))) {
+    if (!(*reported) && (file->st_mode & (S_ISUID|S_ISGID))) {
         params.severity = get_secrule_result_severity(ri, file, SECRULE_MODES);
 
         if (params.severity != RESULT_NULL && params.severity != RESULT_SKIP) {

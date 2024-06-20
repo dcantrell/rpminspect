@@ -37,7 +37,7 @@ static bool doc_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* only compare regular files and symlinks */
-    if (S_ISDIR(file->st.st_mode) || S_ISCHR(file->st.st_mode) || S_ISBLK(file->st.st_mode) || S_ISFIFO(file->st.st_mode) || S_ISSOCK(file->st.st_mode)) {
+    if (S_ISDIR(file->st_mode) || S_ISCHR(file->st_mode) || S_ISBLK(file->st_mode) || S_ISFIFO(file->st_mode) || S_ISSOCK(file->st_mode)) {
         return true;
     }
 

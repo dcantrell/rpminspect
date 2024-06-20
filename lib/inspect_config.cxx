@@ -40,7 +40,7 @@ static bool config_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* only compare regular files and symlinks */
-    if (S_ISDIR(file->st.st_mode) || S_ISCHR(file->st.st_mode) || S_ISBLK(file->st.st_mode) || S_ISFIFO(file->st.st_mode) || S_ISSOCK(file->st.st_mode)) {
+    if (S_ISDIR(file->st_mode) || S_ISCHR(file->st_mode) || S_ISBLK(file->st_mode) || S_ISFIFO(file->st_mode) || S_ISSOCK(file->st_mode)) {
         return true;
     }
 
@@ -86,9 +86,9 @@ static bool config_driver(struct rpminspect *ri, rpmfile_entry_t *file)
          * resolution works.  Absolutel symlinks will fail this
          * routine.
          */
-        if (S_ISLNK(file->st.st_mode) || S_ISLNK(file->peer_file->st.st_mode)) {
+        if (S_ISLNK(file->st_mode) || S_ISLNK(file->peer_file->st_mode)) {
             /* read the before link destination */
-            if (S_ISLNK(file->peer_file->st.st_mode)) {
+            if (S_ISLNK(file->peer_file->st_mode)) {
                 memset(before_dest, '\0', sizeof(before_dest));
                 n = readlink(file->peer_file->fullpath, before_dest, PATH_MAX);
 
@@ -99,7 +99,7 @@ static bool config_driver(struct rpminspect *ri, rpmfile_entry_t *file)
             }
 
             /* read the after link destination */
-            if (S_ISLNK(file->st.st_mode)) {
+            if (S_ISLNK(file->st_mode)) {
                 memset(after_dest, '\0', sizeof(after_dest));
                 n = readlink(file->fullpath, after_dest, PATH_MAX);
 
@@ -110,7 +110,7 @@ static bool config_driver(struct rpminspect *ri, rpmfile_entry_t *file)
             }
 
             /* report changes */
-            if (!S_ISLNK(file->peer_file->st.st_mode) && S_ISLNK(file->st.st_mode)) {
+            if (!S_ISLNK(file->peer_file->st_mode) && S_ISLNK(file->st_mode)) {
                 xasprintf(&params.msg, _("%%config file %s went from actual file to symlink (pointing to %s) in %s on %s"), file->localpath, after_dest, name, arch);
                 add_result(ri, &params);
                 free(params.msg);
@@ -119,7 +119,7 @@ static bool config_driver(struct rpminspect *ri, rpmfile_entry_t *file)
                 if (params.severity == RESULT_VERIFY) {
                     result = false;
                 }
-            } else if (S_ISLNK(file->peer_file->st.st_mode) && !S_ISLNK(file->st.st_mode)) {
+            } else if (S_ISLNK(file->peer_file->st_mode) && !S_ISLNK(file->st_mode)) {
                 xasprintf(&params.msg, _("%%config file %s was a symlink (pointing to %s), became an actual file in %s on %s"), file->peer_file->localpath, before_dest, name, arch);
                 add_result(ri, &params);
                 free(params.msg);

@@ -73,7 +73,7 @@
   },
   "12": {
     "approved": "yes",
-    "fedora_abbrev": "",
+    "fedora_abbrev": "MIT",
     "fedora_name": "",
     "spdx_abbrev": "MIT",
   },
@@ -175,5 +175,26 @@
       ]
     },
     "fedora": {}
+  },
+  "26": {
+    "license": {
+      "expression": "Python-2.0.1",
+      "status": [
+        "allowed"
+      ],
+      "url": "https://spdx.org/licenses/Python-2.0.1.html"
+    },
+    "fedora": {
+      "legacy-name": [
+        "Python License"
+      ],
+      "legacy-abbreviation": [
+        "Python"
+      ]
+    },
+    "approved": "yes",
+    "fedora_abbrev": "Python",
+    "fedora_name": "Python License",
+    "spdx_abbrev": "Python-2.0.1"
   }
 }

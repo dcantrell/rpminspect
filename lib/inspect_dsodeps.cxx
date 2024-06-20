@@ -48,7 +48,7 @@ static bool dsodeps_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Only perform checks on regular files */
-    if (!S_ISREG(file->st.st_mode)) {
+    if (!S_ISREG(file->st_mode)) {
         return true;
     }
 
@@ -114,8 +114,7 @@ static bool dsodeps_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
     /* Gather the DT_NEEDED entries */
     if (get_dynamic_tags(after_elf, DT_NEEDED, &dyn, &sz, &shdr)) {
-        after_needed = (string_list_t *) calloc(1, sizeof(*after_needed));
-        assert(after_needed != NULL);
+        after_needed = xalloc(sizeof(*after_needed));
         TAILQ_INIT(after_needed);
 
         for (i = 0; i < sz; i++) {
@@ -126,8 +125,7 @@ static bool dsodeps_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     if (get_dynamic_tags(before_elf, DT_NEEDED, &dyn, &sz, &shdr)) {
-        before_needed = (string_list_t *) calloc(1, sizeof(*before_needed));
-        assert(before_needed != NULL);
+        before_needed = xalloc(sizeof(*before_needed));
         TAILQ_INIT(before_needed);
 
         for (i = 0; i < sz; i++) {

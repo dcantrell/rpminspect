@@ -58,7 +58,7 @@ bool process_inspection_flag(const char *inspection, const bool exclude, uint64_
     for (i = 0; inspections[i].name != NULL; i++) {
         if (!strcasecmp(inspection, inspections[i].name)) {
             /* user specified a valid inspection */
-            if (exclude) {
+            if (exclude && inspections[i].security_checks == false) {
                 *selected &= ~(inspections[i].flag);
                 found = true;
                 break;

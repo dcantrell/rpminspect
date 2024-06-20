@@ -7,17 +7,27 @@ import rpm
 import subprocess
 import rpmfluff
 import unittest
-from distutils.version import LooseVersion
-
 from baseclass import TestSRPM, TestCompareSRPM
 
 # rpm < v4.18 does not support '%patch N' syntax
 rpmver = list(map(lambda x: int(x), rpm.__version__.strip().split("-")[0].split(".")))
+patch_N_supported = True
 
-if LooseVersion("%d.%d" % (rpmver[0], rpmver[1])) <= LooseVersion("4.18"):
-    patch_N_supported = False
-else:
-    patch_N_supported = True
+# Starting with Python 3.10, distutils emits DeprecationWarnings and
+# more recent Python releases have simply removed distutils entirely.
+# Try the modern replacement before falling back on distutils.  This
+# should allow the test suite to work across a range of Python 3.x
+# releases.
+try:
+    from packaging.version import Version, parse
+
+    if parse("%d.%d" % (rpmver[0], rpmver[1])) <= Version("4.18"):
+        patch_N_supported = False
+except ImportError:
+    from distutils.version import LooseVersion
+
+    if LooseVersion("%d.%d" % (rpmver[0], rpmver[1])) < LooseVersion("4.18"):
+        patch_N_supported = False
 
 # Check to see if %autopatch works (requires lua)
 proc = subprocess.Popen(
@@ -467,7 +477,7 @@ class PatchDefinedWithoutFieldSpaceSRPM(TestSRPM):
         self.rpm.patches[patchIndex] = patch
         self.rpm.section_patches += "Patch%s:%s\n" % (patchIndex, patch.sourceName)
         self.rpm.add_check(rpmfluff.CheckSourceFile(patch.sourceName))
-        self.rpm.section_prep += "%%patch%i\n" % patchIndex
+        self.rpm.section_prep += "%%patch -P %i\n" % patchIndex
 
         self.inspection = "patches"
         self.result = "INFO"
@@ -487,7 +497,7 @@ class PatchDefinedWithoutFieldSpaceCompareSRPM(TestCompareSRPM):
             patch.sourceName,
         )
         self.after_rpm.add_check(rpmfluff.CheckSourceFile(patch.sourceName))
-        self.after_rpm.section_prep += "%%patch%i\n" % patchIndex
+        self.after_rpm.section_prep += "%%patch -P %i\n" % patchIndex
 
         self.inspection = "patches"
         self.result = "INFO"

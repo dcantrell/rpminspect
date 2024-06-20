@@ -47,7 +47,7 @@ static bool find_lto_symbols(Elf *elf, __attribute__((unused)) string_list_t **u
         return true;
     }
 
-    specifics = (string_list_t *) calloc(1, sizeof(*specifics));
+    specifics = xalloc(sizeof(*specifics));
     TAILQ_INIT(specifics);
 
     names = get_elf_section_names(elf, SHT_PROGBITS);
@@ -115,7 +115,7 @@ static bool lto_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Only for regular files */
-    if (!S_ISREG(file->st.st_mode)) {
+    if (!S_ISREG(file->st_mode)) {
         return true;
     }
 

@@ -108,7 +108,10 @@ typedef struct _rpmfile_entry_t {
     Header rpm_header;
     char *fullpath;
     char *localpath;
-    struct stat st;
+    /* struct stat st; - 128 bytes on x86, store only fields we need: */
+    off_t st_size;
+    mode_t st_mode;
+    unsigned st_nlink;
     int idx;
     char *type;
     char *checksum;

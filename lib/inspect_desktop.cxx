@@ -155,7 +155,7 @@ static bool is_desktop_entry_file(const char *desktop_entry_files_dir, const rpm
     }
 
     /* Is this a regular file? */
-    if (!file->fullpath || !S_ISREG(file->st.st_mode)) {
+    if (!file->fullpath || !S_ISREG(file->st_mode)) {
         return false;
     }
 

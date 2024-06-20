@@ -92,7 +92,7 @@ static bool kmod_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Only perform this inspection on regular files */
-    if (!S_ISREG(file->st.st_mode)) {
+    if (!S_ISREG(file->st_mode)) {
         return true;
     }
 

@@ -32,11 +32,11 @@ static bool politics_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 #endif
 
     /* special files and directories can be skipped */
-    if (S_ISDIR(file->st.st_mode) ||
-        S_ISCHR(file->st.st_mode) ||
-        S_ISBLK(file->st.st_mode) ||
-        S_ISFIFO(file->st.st_mode) ||
-        S_ISSOCK(file->st.st_mode)) {
+    if (S_ISDIR(file->st_mode) ||
+        S_ISCHR(file->st_mode) ||
+        S_ISBLK(file->st_mode) ||
+        S_ISFIFO(file->st_mode) ||
+        S_ISSOCK(file->st_mode)) {
         return true;
     }
 
@@ -98,7 +98,7 @@ static bool politics_driver(struct rpminspect *ri, rpmfile_entry_t *file)
                 matched = true;
                 allowed = pentry->allowed;
             } else {
-                digest = compute_checksum(file->fullpath, &file->st.st_mode, type);
+                digest = compute_checksum(file->fullpath, &file->st_mode, type);
 
                 if (!strcmp(pentry->digest, digest)) {
                     matched = true;

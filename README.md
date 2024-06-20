@@ -45,13 +45,6 @@ following environments:
 | [Oracle Linux](https://www.oracle.com/linux/)          | 8 | [![Oracle Linux](https://github.com/rpminspect/rpminspect/actions/workflows/oraclelinux.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/oraclelinux.yml) |
 | [FreeBSD](https://www.freebsd.org/)                    | 13.x | [![FreeBSD](https://github.com/rpminspect/rpminspect/actions/workflows/freebsd.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/freebsd.yml) |
 
-In addition to the above test runs, rpminspect is built for Fedora Linux on these platforms:
-
-| Platform | Status |
-|:-------------------|----:|
-| [aarch64](https://en.wikipedia.org/wiki/AArch64)      | [![Fedora Linux aarch64](https://github.com/rpminspect/rpminspect/actions/workflows/fedora-aarch64.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/fedora-aarch64.yml) |
-| [ppc64le](https://en.wikipedia.org/wiki/Ppc64)        | [![Fedora Linux ppc64le](https://github.com/rpminspect/rpminspect/actions/workflows/fedora-ppc64le.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/fedora-ppc64le.yml) |
-| [s390x](https://en.wikipedia.org/wiki/Linux_on_IBM_Z) | [![Fedora Linux s390x](https://github.com/rpminspect/rpminspect/actions/workflows/fedora-s390x.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/fedora-s390x.yml) |
 
 Documentation
 -------------

@@ -53,7 +53,7 @@ static bool build_contains(const struct rpminspect *ri, const char *working_path
         }
 
         TAILQ_FOREACH(file, peer->after_files, items) {
-            if (S_ISDIR(file->st.st_mode) && !strcmp(file->localpath, working_path)) {
+            if (S_ISDIR(file->st_mode) && !strcmp(file->localpath, working_path)) {
                 return true;
             }
         }
@@ -222,7 +222,7 @@ static bool runpath_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Only perform checks on regular files */
-    if (!S_ISREG(file->st.st_mode)) {
+    if (!S_ISREG(file->st_mode)) {
         return true;
     }
 

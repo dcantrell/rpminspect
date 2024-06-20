@@ -1,5 +1,7 @@
 include/compat/queue.h
 include/constants.h
+include/helpers.h
+include/i18n.h
 include/init.h
 include/inspect.h
 include/internal/callbacks.h
@@ -8,7 +10,7 @@ include/output.h
 include/parser.h
 include/queue.h
 include/readelf.h
-include/results.h
+include/remedy.h
 include/rpminspect.h
 include/secrules.h
 include/types.h
@@ -107,6 +109,7 @@ lib/readelf.c
 lib/readfile.c
 lib/rebase.c
 lib/release.c
+lib/remedy.c
 lib/results.c
 lib/rmtree.c
 lib/rpm.c
@@ -116,4 +119,5 @@ lib/strfuncs.c
 lib/tty.c
 lib/uncompress.c
 lib/unpack.c
+lib/xalloc.c
 src/rpminspect.c

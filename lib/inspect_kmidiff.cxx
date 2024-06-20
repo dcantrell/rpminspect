@@ -164,7 +164,7 @@ static bool kmidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* skip anything that is not an ELF file */
-    if (!S_ISREG(file->st.st_mode) || !is_elf(file)) {
+    if (!S_ISREG(file->st_mode) || !is_elf(file)) {
         return true;
     }
 

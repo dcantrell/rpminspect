@@ -677,6 +677,11 @@ bool inspect_annocheck(struct rpminspect *ri)
     }
 #endif
 
+    /* Prevent debuginfod from fetching debuginfo packages. */
+    if (unsetenv("DEBUGINFOD_URLS") == -1) {
+        warn("*** unsetenv");
+    }
+
     /* run the annocheck tests across all ELF files */
     result = foreach_peer_file(ri, NAME_ANNOCHECK, annocheck_driver);
 

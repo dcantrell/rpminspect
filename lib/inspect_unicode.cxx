@@ -215,8 +215,7 @@ static char *rpm_prep_source(struct rpminspect *ri, const rpmfile_entry_t *file,
         }
 
         /* run through the %prep stage */
-        ba = (BTA_t) calloc(1, sizeof(*ba));
-        assert(ba != NULL);
+        ba = xalloc(sizeof(*ba));
         ba->buildAmount |= RPMBUILD_PREP;
 
         ts = rpmtsCreate();
@@ -268,8 +267,7 @@ static char *rpm_prep_source(struct rpminspect *ri, const rpmfile_entry_t *file,
 
         free(*details);
         *details = NULL;
-        buf = (char *) calloc(1, n);
-        assert(buf != NULL);
+        buf = xalloc(n);
 
         while (getline(&buf, &n, reader) != -1) {
             *details = strappend(*details, buf, NULL);
@@ -306,8 +304,7 @@ static char *rpm_prep_source(struct rpminspect *ri, const rpmfile_entry_t *file,
             tail[strcspn(tail, "\n")] = 0;
         }
 
-        *details = (char *) realloc(*details, strlen(*details) + 1);
-        assert(*details != NULL);
+        *details = xrealloc(*details, strlen(*details) + 1);
     }
 
     return build;
@@ -504,8 +501,7 @@ static int validate_file(const char *fpath, __attribute__((unused)) const struct
         return 0;
     }
 
-    line = (UChar *) calloc(sz, sizeof(*line));
-    assert(line != NULL);
+    line = xcalloc(sz, sizeof(*line));
     linenum = 1;
 
     while (!u_feof(src)) {
@@ -516,20 +512,11 @@ static int validate_file(const char *fpath, __attribute__((unused)) const struct
                 sz *= 2;
                 errno = 0;
 #ifdef _HAVE_REALLOCARRAY
-                line_new = (UChar *) reallocarray(line, sz, sizeof(*line));
+                line_new = xreallocarray(line, sz, sizeof(*line));
 #else
-                line_new = realloc(line, sz * sizeof(*line));
+                line_new = xrealloc(line, sz * sizeof(*line));
 #endif
-
-                if (errno == ENOMEM) {
-                    warn("*** realloc");
-                }
-
                 line = line_new;
-
-                if (line == NULL) {
-                    return 0;
-                }
             }
         }
 
@@ -610,8 +597,7 @@ static bool unicode_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     globalarch = get_rpm_header_arch(file->rpm_header);
     assert(globalarch != NULL);
 
-    globalfile = (rpmfile_entry_t *) calloc(1, sizeof(*globalfile));
-    assert(globalfile != NULL);
+    globalfile = xalloc(sizeof(*globalfile));
     globalfile->rpm_header = file->rpm_header;
     assert(globalfile->rpm_header != NULL);
 
@@ -709,13 +695,11 @@ bool inspect_unicode(struct rpminspect *ri)
     /* only run if there are forbidden code points */
     if (ri->unicode_forbidden_codepoints != NULL && !TAILQ_EMPTY(ri->unicode_forbidden_codepoints)) {
         /* convert code points to UChar values */
-        forbidden = (UChar32_list_t *) calloc(1, sizeof(*forbidden));
-        assert(forbidden != NULL);
+        forbidden = xalloc(sizeof(*forbidden));
         TAILQ_INIT(forbidden);
 
         TAILQ_FOREACH(sentry, ri->unicode_forbidden_codepoints, items) {
-            entry = (UChar32_entry_t *) calloc(1, sizeof(*entry));
-            assert(entry != NULL);
+            entry = xalloc(sizeof(*entry));
             errno = 0;
             entry->data = strtol(sentry->data, NULL, 16);
 

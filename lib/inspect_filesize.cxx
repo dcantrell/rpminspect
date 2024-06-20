@@ -43,7 +43,7 @@ static bool filesize_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Only run this check on regular files */
-    if (!S_ISREG(file->st.st_mode) && !S_ISREG(file->peer_file->st.st_mode)) {
+    if (!S_ISREG(file->st_mode) && !S_ISREG(file->peer_file->st_mode)) {
         return true;
     }
 
@@ -56,7 +56,7 @@ static bool filesize_driver(struct rpminspect *ri, rpmfile_entry_t *file)
      * stat(2) in to the rpmfile_entry_t so it can be used by other
      * inspections.
      */
-    if ((file->st.st_nlink > 1) && (file->st.st_size == 0)) {
+    if ((file->st_nlink > 1) && (file->st_size == 0)) {
         errno = 0;
         r = stat(file->fullpath, &sb);
 
@@ -64,10 +64,10 @@ static bool filesize_driver(struct rpminspect *ri, rpmfile_entry_t *file)
             warn("*** stat");
         }
 
-        file->st.st_size = sb.st_size;
+        file->st_size = sb.st_size;
     }
 
-    if ((file->peer_file->st.st_nlink > 1) && (file->peer_file->st.st_size == 0)) {
+    if ((file->peer_file->st_nlink > 1) && (file->peer_file->st_size == 0)) {
         errno = 0;
         r = stat(file->peer_file->fullpath, &sb);
 
@@ -75,11 +75,11 @@ static bool filesize_driver(struct rpminspect *ri, rpmfile_entry_t *file)
             warn("*** stat");
         }
 
-        file->peer_file->st.st_size = sb.st_size;
+        file->peer_file->st_size = sb.st_size;
     }
 
     /* Nothing to do if the sizes are the same */
-    if (file->st.st_size == file->peer_file->st.st_size) {
+    if (file->st_size == file->peer_file->st_size) {
         return true;
     }
 
@@ -96,7 +96,7 @@ static bool filesize_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     params.verb = VERB_OK;
 
     /* Size checks and messaging */
-    if (file->st.st_size > 0 && file->peer_file->st.st_size == 0) {
+    if (file->st_size > 0 && file->peer_file->st_size == 0) {
         /* became non-empty */
         xasprintf(&params.msg, _("%s became a non-empty file on %s"), file->localpath, arch);
         params.severity = RESULT_VERIFY;
@@ -105,7 +105,7 @@ static bool filesize_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         params.noun = _("non-empty ${FILE} on ${ARCH}");
         params.remedy = get_remedy(REMEDY_FILESIZE_BECAME_NOT_EMPTY);
         result = false;
-    } else if (file->st.st_size == 0 && file->peer_file->st.st_size > 0) {
+    } else if (file->st_size == 0 && file->peer_file->st_size > 0) {
         /* became empty */
         xasprintf(&params.msg, _("%s became an empty file on %s"), file->localpath, arch);
         params.severity = RESULT_VERIFY;
@@ -115,7 +115,7 @@ static bool filesize_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         params.remedy = get_remedy(REMEDY_FILESIZE_BECAME_EMPTY);
         result = false;
     } else {
-        change = ((file->st.st_size - file->peer_file->st.st_size) * 100 / file->peer_file->st.st_size);
+        change = ((file->st_size - file->peer_file->st_size) * 100 / file->peer_file->st_size);
         params.severity = RESULT_INFO;
         params.waiverauth = NOT_WAIVABLE;
 

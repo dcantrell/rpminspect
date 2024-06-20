@@ -32,8 +32,7 @@ jobs:
         # Set up the matrix of distributions to test
         strategy:
             matrix:
-                container: ["quay.io/centos/centos:stream9",
-                            "quay.io/centos/centos:stream8"]
+                container: ["quay.io/centos/centos:stream9"]
 
         # CentOS images come from quay.io now
         container:
@@ -52,9 +51,6 @@ jobs:
                       *stream9)
                           dnf install -y 'dnf-command(config-manager)'
                           dnf config-manager --set-enabled crb
-                          dnf install -y epel-release git
-                          ;;
-                      *stream8)
                           dnf install -y epel-release git
                           ;;
                   esac

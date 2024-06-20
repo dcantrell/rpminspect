@@ -455,8 +455,7 @@ static bool inspect_elf_execstack(struct rpminspect *ri, Elf *after_elf, Elf *be
 
     if (after_execstack && !is_execstack_valid(after_elf, execstack_flags)) {
         if (elf_type == ET_REL) {
-            flaglist = (string_list_t *) calloc(1, sizeof(*flaglist));
-            assert(flaglist != NULL);
+            flaglist = xalloc(sizeof(*flaglist));
             TAILQ_INIT(flaglist);
 
             if (execstack_flags & SHF_WRITE) {
@@ -860,7 +859,7 @@ static bool elf_driver(struct rpminspect *ri, rpmfile_entry_t *after)
     }
 
     /* Skip anything that isn't a regular file */
-    if (!after->fullpath || !S_ISREG(after->st.st_mode)) {
+    if (!after->fullpath || !S_ISREG(after->st_mode)) {
         return true;
     }
 

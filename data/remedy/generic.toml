@@ -52,6 +52,12 @@ case-insensitive.  It is only the boolean terms that must be in all
 capital letters.
 """
 
+mixed_license_tags = """
+The License tag contains mixed used of SPDX and legacy license
+identifiers.  You must use either all SPDX license identifiers or all
+legacy license identifiers; you cannot mix the two systems.
+"""
+
 elf_textrel = """
 Ensure all object files are compiled with -fPIC.
 """

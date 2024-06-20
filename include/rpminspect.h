@@ -103,7 +103,7 @@ bool init_rebaseable(struct rpminspect *);
 bool init_politics(struct rpminspect *ri);
 bool init_security(struct rpminspect *ri);
 bool init_icons(struct rpminspect *ri);
-struct rpminspect *calloc_rpminspect(struct rpminspect *);
+struct rpminspect *xalloc_rpminspect(struct rpminspect *);
 struct rpminspect *init_rpminspect(struct rpminspect *, const char *, const char *);
 
 /* free.c */
@@ -322,6 +322,9 @@ void dump_cfg(const struct rpminspect *);
 void *read_file_bytes(const char *path, off_t *len);
 string_list_t *read_file(const char *);
 
+/* io.c */
+ssize_t full_write(int fd, const void *buf, size_t len);
+
 /* release.c */
 char *read_release(const rpmfile_t *);
 const char *get_before_rel(struct rpminspect *);
@@ -525,6 +528,14 @@ char *joinpath(const char *path, ...);
 
 /* array.c */
 void array(parser_plugin *p, parser_context *ctx, const char *key1, const char *key2, string_list_t **list);
+
+/* xalloc.c */
+void *xcalloc(size_t n, size_t s);
+void *xalloc(size_t s);
+void *xrealloc(void *p, size_t s);
+#ifdef _HAVE_REALLOCARRAY
+void *xreallocarray(void *p, size_t n, size_t s);
+#endif
 
 #endif
 

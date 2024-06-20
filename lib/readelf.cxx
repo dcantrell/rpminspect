@@ -394,8 +394,7 @@ bool get_dynamic_tags(Elf *elf, const Elf64_Sxword tag, GElf_Dyn **out, size_t *
                  * alloc one more GElf_Dyn worth of memory and
                  * add to the end of the array
                  */
-                dyn_tmp = realloc(*out, ((*out_size) + 1) * (sizeof(GElf_Dyn)));
-                assert(dyn_tmp != NULL);
+                dyn_tmp = xrealloc(*out, ((*out_size) + 1) * (sizeof(GElf_Dyn)));
                 memmove(dyn_tmp + *out_size, &dyn, sizeof(GElf_Dyn));
                 *out = dyn_tmp;
                 (*out_size)++;

@@ -1,4 +1,0 @@
-cpp-coveralls
-rpmfluff
-gcovr
-PyYAML

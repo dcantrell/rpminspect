@@ -456,29 +456,87 @@ class ValidCompoundSPDXLicenseExpressionKoji(TestKoji):
         self.waiver_auth = "Not Waivable"
 
 
-# Invalid compound SPDX license expression (BAD)
-class InvalidCompoundSPDXLicenseExpressionSRPM(TestSRPM):
+# Valid compound license expression using lowercase boolean (INFO)
+# These are dual SPDX and legacy license identifiers, so do not
+# enforce the uppercase boolean rule.
+class ValidCompoundSPDXLicenseExpressionLowercaseSRPM(TestSRPM):
     def setUp(self):
         super().setUp()
         self.rpm.addLicense("MIT and ISC")
+        self.inspection = "license"
+        self.result = "INFO"
+        self.waiver_auth = "Not Waivable"
+
+
+class ValidCompoundSPDXLicenseExpressionLowercaseRPMs(TestRPMs):
+    def setUp(self):
+        super().setUp()
+        self.rpm.addLicense("MIT and ISC")
+        self.inspection = "license"
+        self.result = "INFO"
+        self.waiver_auth = "Not Waivable"
+
+
+class ValidCompoundSPDXLicenseExpressionLowercaseKoji(TestKoji):
+    def setUp(self):
+        super().setUp()
+        self.rpm.addLicense("MIT and ISC")
+        self.inspection = "license"
+        self.result = "INFO"
+        self.waiver_auth = "Not Waivable"
+
+
+# Invalid compound license expression mixing legacy and SPDX (BAD)
+class InvalidCompoundLicenseExpressionSRPM(TestSRPM):
+    def setUp(self):
+        super().setUp()
+        self.rpm.addLicense("(GPL+ or Artistic) and BSD-3-Clause")
         self.inspection = "license"
         self.result = "BAD"
         self.waiver_auth = "Not Waivable"
 
 
-class InvalidCompoundSPDXLicenseExpressionRPMs(TestRPMs):
+class InvalidCompoundLicenseExpressionRPMs(TestRPMs):
     def setUp(self):
         super().setUp()
-        self.rpm.addLicense("MIT and ISC")
+        self.rpm.addLicense("GPLv3+ and BSD-3-Clause")
         self.inspection = "license"
         self.result = "BAD"
         self.waiver_auth = "Not Waivable"
 
 
-class InvalidCompoundSPDXLicenseExpressionKoji(TestKoji):
+class InvalidCompoundLicenseExpressionKoji(TestKoji):
     def setUp(self):
         super().setUp()
-        self.rpm.addLicense("MIT and ISC")
+        self.rpm.addLicense("GPLv3+ and BSD-3-Clause")
         self.inspection = "license"
         self.result = "BAD"
+        self.waiver_auth = "Not Waivable"
+
+
+# Valid compound license expression mixing dual and SPDX (INFO)
+class ValidCompoundSPDXLicenseExpressionDualSRPM(TestSRPM):
+    def setUp(self):
+        super().setUp()
+        self.rpm.addLicense("Python-2.0.1 AND CC0-1.0 AND MIT")
+        self.inspection = "license"
+        self.result = "INFO"
+        self.waiver_auth = "Not Waivable"
+
+
+class ValidCompoundSPDXLicenseExpressionDualRPMs(TestRPMs):
+    def setUp(self):
+        super().setUp()
+        self.rpm.addLicense("Python-2.0.1 AND CC0-1.0 AND MIT")
+        self.inspection = "license"
+        self.result = "INFO"
+        self.waiver_auth = "Not Waivable"
+
+
+class ValidCompoundSPDXLicenseExpressionDualKoji(TestKoji):
+    def setUp(self):
+        super().setUp()
+        self.rpm.addLicense("Python-2.0.1 AND CC0-1.0 AND MIT")
+        self.inspection = "license"
+        self.result = "INFO"
         self.waiver_auth = "Not Waivable"

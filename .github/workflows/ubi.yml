@@ -43,7 +43,7 @@ jobs:
             - name: git clone requirements
               run: |
                   case "${{ matrix.container }}" in
-                      *ubi9)
+                      *ubi9*)
                           # UBI by itself does not contain every BR we
                           # need, so supplement with CentOS Stream 9
                           if [ -d /etc/yum.repos.d ]; then
@@ -56,11 +56,13 @@ jobs:
                               echo "[c9s-${c}]" >> /etc/yum.repos.d/ubi.repo
                               echo "name = CentOS Stream 9 - ${c}" >> /etc/yum.repos.d/ubi.repo
                               echo "baseurl = https://mirror.stream.centos.org/9-stream/${c}/\$basearch/os/" >> /etc/yum.repos.d/ubi.repo
-                              echo "cost = 100" >> /etc/yum.repos.d/ubi.repo
                               echo "enabled = 1" >> /etc/yum.repos.d/ubi.repo
                               echo "gpgcheck = 0" >> /etc/yum.repos.d/ubi.repo
                               echo >> /etc/yum.repos.d/ubi.repo
                           done
+
+                          # Avoid package conflicts
+                          rpm -e --nodeps openssl-fips-provider
 
                           # Upgrade things
                           dnf upgrade -y

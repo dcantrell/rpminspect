@@ -13,6 +13,8 @@ Contributors
 
 - Caolán McNamara <caolanm@redhat.com>
 
+- Charalampos Stratakis <cstratak@redhat.com>
+
 - Danilo C. L. de Paula <ddepaula@redhat.com>
 
 - Davide Cavalca <dcavalca@fb.com>
@@ -52,6 +54,8 @@ Contributors
 - Pino Toscano <ptoscano@redhat.com>
 
 - Preston Watson <prwatson@redhat.com>
+
+- Rafael Fontenelle <rafaelff@gnome.org>
 
 - Robbie Harwood <rharwood@redhat.com>
 

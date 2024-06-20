@@ -53,8 +53,7 @@ char *joinpath(const char *path, ...)
     assert(path != NULL);
 
     /* Allocate a large buffer to use for building the path. */
-    built = (char *) calloc(1, PATH_MAX + 1);
-    assert(built != NULL);
+    built = xalloc(PATH_MAX + 1);
 
     /* Make sure the full path starts with a slash. */
     if (*path == '/') {
@@ -124,7 +123,7 @@ char *joinpath(const char *path, ...)
     }
 
     /* shrink memory allocation */
-    tmp = (char *) realloc(built, strlen(built) + 1);
+    tmp = xrealloc(built, strlen(built) + 1);
     built = tmp;
 
     return built;

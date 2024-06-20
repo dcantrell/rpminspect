@@ -176,12 +176,7 @@ char *compute_checksum(const char *filename, mode_t *st_mode, int type)
     }
 
     /* this is our human readable digest, caller must free */
-    ret = (char *) calloc(len + 1, sizeof(char *));
-
-    if (ret == NULL) {
-        warn("*** calloc");
-        return NULL;
-    }
+    ret = xcalloc(len + 1, sizeof(char *));
 
     for (i = 0; i < len; ++i) {
         sprintf(&ret[i*2], "%02x", (unsigned int) digest[i]);
@@ -212,6 +207,6 @@ char *checksum(rpmfile_entry_t *file)
         return file->checksum;
     }
 
-    file->checksum = compute_checksum(file->fullpath, &file->st.st_mode, DEFAULT_MESSAGE_DIGEST);
+    file->checksum = compute_checksum(file->fullpath, &file->st_mode, DEFAULT_MESSAGE_DIGEST);
     return file->checksum;
 }

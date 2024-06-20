@@ -43,15 +43,14 @@ static void add_header_path(const char *root, const char *arch, pair_list_t **he
 
     if (stat(incpath, &sb) == 0 && S_ISDIR(sb.st_mode)) {
         if (!pair_contains_key(*headers, incpath)) {
-            entry = (pair_entry_t *) calloc(1, sizeof(*entry));
+            entry = xalloc(sizeof(*entry));
             entry->key = strdup(incpath);
             assert(entry->key != NULL);
             entry->value = strdup(arch);
             assert(entry->value != NULL);
 
             if (*headers == NULL) {
-                *headers = (pair_list_t *) calloc(1, sizeof(**headers));
-                assert(*headers != NULL);
+                *headers = xalloc(sizeof(**headers));
                 TAILQ_INIT(*headers);
             }
 
@@ -179,7 +178,7 @@ static bool abidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* skip anything that is not an ELF shared library file.  */
-    if (!S_ISREG(file->st.st_mode) || !is_elf_file(file)) {
+    if (!S_ISREG(file->st_mode) || !is_elf_file(file)) {
         return true;
     }
 

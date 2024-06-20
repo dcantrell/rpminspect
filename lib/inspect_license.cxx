@@ -27,9 +27,23 @@
 #include "rpminspect.h"
 
 /* Globals */
+static bool result = true;
 static const char *srpm = NULL;
 static int nspdx = 0;
+static int nlegacy = 0;
+static int ndual = 0;
 string_list_t *booleans = NULL;
+string_list_t *dual = NULL;
+
+/* Helper to determine overall inspection result */
+static bool get_result(const bool result, const severity_t sev)
+{
+    if (sev >= RESULT_VERIFY) {
+        return false;
+    }
+
+    return result;
+}
 
 /* Local helper functions */
 static parser_plugin *read_licensedb(struct rpminspect *ri, const char *db, parser_context **context_out)
@@ -60,28 +74,18 @@ static parser_plugin *read_licensedb(struct rpminspect *ri, const char *db, pars
     return p;
 }
 
-/* lambda; checks against an entry in the license database. */
-static bool lic_cb(const char *license_name, void *cb_data)
+/* another callback for dual_cb() and lic_cb() to get the actual strings */
+static bool get_db_strings(const char *license_name, void *cb_data, char **spdx_abbrev, string_list_t **fedora_abbrev, string_list_t **fedora_name, bool *approved)
 {
-    lic_cb_data *data = (lic_cb_data *) cb_data;
-    const char *lic = data->lic;
+    lic_cb_data *data = cb_data;
     parser_plugin *p = data->p;
     parser_context *db = data->db;
     parser_context *cont = NULL;
     json_object *block = NULL;
     string_list_t *slist = NULL;
-    string_entry_t *entry = NULL;
-    string_list_t *fedora_abbrev = NULL;
-    string_list_t *fedora_name = NULL;
     string_list_t *exceptions = NULL;
-    char *spdx_abbrev = NULL;
-    bool approved = false;
+    string_entry_t *entry = NULL;
     char *t = NULL;
-
-    if (data->valid) {
-        /* Already decided; no need to check further. */
-        return false;
-    }
 
     if (strlen(license_name) == 0) {
         return false;
@@ -96,18 +100,18 @@ static bool lic_cb(const char *license_name, void *cb_data)
     if (json_object_is_type(block, json_type_object)) {
         cont = (parser_context *) block;
 
-        array(p, cont, "fedora", "legacy-abbreviation", &fedora_abbrev);
-        array(p, cont, "fedora", "legacy-name", &fedora_name);
-        spdx_abbrev = p->getstr(cont, "license", "expression");
+        array(p, cont, "fedora", "legacy-abbreviation", fedora_abbrev);
+        array(p, cont, "fedora", "legacy-name", fedora_name);
+        *spdx_abbrev = p->getstr(cont, "license", "expression");
 
-        approved = false;
+        *approved = false;
         array(p, cont, "license", "status", &slist);
         array(p, cont, "license", "packages_with_exceptions", &exceptions);
 
         if (list_len(slist)) {
             TAILQ_FOREACH(entry, slist, items) {
                 if (!strcmp(entry->data, "allowed") || strprefix(entry->data, "allowed-") || (!strcmp(entry->data, "not-allowed") && list_contains(exceptions, srpm))) {
-                    approved = true;
+                    *approved = true;
                     break;
                 }
            }
@@ -118,40 +122,95 @@ static bool lic_cb(const char *license_name, void *cb_data)
     }
 
     /* new format failed, fall back on previous format */
-    if (spdx_abbrev == NULL) {
-        list_free(fedora_abbrev, free);
-        list_free(fedora_name, free);
-        approved = false;
+    if (*spdx_abbrev == NULL) {
+        list_free(*fedora_abbrev, free);
+        list_free(*fedora_name, free);
+        *approved = false;
 
         /* the new API format failed, fall back on the legacy format */
         t = p->getstr(db, license_name, "fedora_abbrev");
-        fedora_abbrev = list_add(fedora_abbrev, t);
+        *fedora_abbrev = list_add(*fedora_abbrev, t);
         free(t);
 
         t = p->getstr(db, license_name, "fedora_name");
-        fedora_name = list_add(fedora_name, t);
+        *fedora_name = list_add(*fedora_name, t);
         free(t);
 
-        spdx_abbrev = p->getstr(db, license_name, "spdx_abbrev");
+        *spdx_abbrev = p->getstr(db, license_name, "spdx_abbrev");
 
         t = p->getstr(db, license_name, "approved");
 
         if (t && (!strcasecmp(t, "yes") || !strcasecmp(t, "true"))) {
-            approved = true;
+            *approved = true;
         } else {
-            approved = false;
+            *approved = false;
         }
 
         free(t);
     }
 
     /* Handle "commented out" fields - not proper JSON, but I'm not a cop. */
-    fedora_abbrev = list_trim(fedora_abbrev, "#");
-    fedora_name = list_trim(fedora_name, NULL);
+    *fedora_abbrev = list_trim(*fedora_abbrev, "#");
+    *fedora_name = list_trim(*fedora_name, NULL);
 
-    if (spdx_abbrev && *spdx_abbrev == '#') {
-        free(spdx_abbrev);
-        spdx_abbrev = NULL;
+    if (spdx_abbrev && *spdx_abbrev && **spdx_abbrev == '#') {
+        free(*spdx_abbrev);
+        *spdx_abbrev = NULL;
+    }
+
+    return true;
+}
+
+/* lambda; finds dual legacy and SPDX license expressions */
+static bool dual_cb(const char *license_name, void *cb_data)
+{
+    string_list_t *fedora_abbrev = NULL;
+    string_list_t *fedora_name = NULL;
+    char *spdx_abbrev = NULL;
+    bool approved = false;
+
+    if (!get_db_strings(license_name, cb_data, &spdx_abbrev, &fedora_abbrev, &fedora_name, &approved)) {
+        return false;
+    }
+
+    /* no SPDX expression or not approved? done */
+    if (spdx_abbrev == NULL || !approved) {
+        goto done;
+    }
+
+    /* collect any dual licenses */
+    if (approved && spdx_abbrev && list_contains(fedora_abbrev, spdx_abbrev)) {
+        dual = list_add(dual, spdx_abbrev);
+    }
+
+done:
+    list_free(fedora_abbrev, free);
+    list_free(fedora_name, free);
+    free(spdx_abbrev);
+
+    /*
+     * you may think this should be return true, but it can't be
+     * otherwise the parse_json() loopity loop will stop
+     */
+    return false;
+}
+
+/* lambda; checks against an entry in the license database. */
+static bool lic_cb(const char *license_name, void *cb_data)
+{
+    lic_cb_data *data = cb_data;
+    string_list_t *fedora_abbrev = NULL;
+    string_list_t *fedora_name = NULL;
+    char *spdx_abbrev = NULL;
+    bool approved = false;
+
+    if (data->valid) {
+        /* Already decided; no need to check further. */
+        return false;
+    }
+
+    if (!get_db_strings(license_name, cb_data, &spdx_abbrev, &fedora_abbrev, &fedora_name, &approved)) {
+        return false;
     }
 
     /* No full tag match and no abbreviations; license entry invalid. */
@@ -168,13 +227,23 @@ static bool lic_cb(const char *license_name, void *cb_data)
     if (!approved) {
         /* invalid - do nothing */
         goto done;
-    } else if (spdx_abbrev && !strcasecmp(lic, spdx_abbrev)) {
-        /* SPDX identifier matched */
-        data->valid = true;
-        nspdx++;
-    } else if (list_contains(fedora_abbrev, lic) || (list_len(fedora_abbrev) == 0 && spdx_abbrev == NULL && list_contains(fedora_name, lic))) {
+    }
+
+    if (spdx_abbrev && !strcasecmp(data->lic, spdx_abbrev)) {
+        if (list_contains(dual, data->lic)) {
+            /* license token is valid under the legacy system and SPDX */
+            data->valid = true;
+            ndual++;
+        } else {
+            /* SPDX identifier matched */
+            data->valid = true;
+            nspdx++;
+        }
+    } else if ((list_contains(fedora_abbrev, data->lic) && !list_contains(dual, data->lic))
+               || (list_len(fedora_abbrev) == 0 && spdx_abbrev == NULL && list_contains(fedora_name, data->lic))) {
         /* Old Fedora abbreviation matches -or- there are no Fedora abbreviations but a Fedora name matches */
         data->valid = true;
+        nlegacy++;
     }
 
 done:
@@ -182,7 +251,27 @@ done:
     list_free(fedora_name, free);
     free(spdx_abbrev);
 
+    /*
+     * you may think this should be return true, but it can't be
+     * otherwise the parse_json() loopity loop will stop
+     */
     return false;
+}
+
+/*
+ * Gathers all approved licenses with the same abbreviation for the
+ * SPDX expression and the legacy name.
+ */
+static void gather_dual_licenses(parser_plugin *p, parser_context *db)
+{
+    lic_cb_data data = { p, db, NULL, false };
+
+    if (p->keymap(db, NULL, NULL, dual_cb, &data)) {
+        warnx(_("*** problem gathering dual SPDX/legacy license identifiers"));
+        return;
+    }
+
+    return;
 }
 
 /*
@@ -207,8 +296,7 @@ static void token_add(string_map_t **tags, const char *token)
 
     assert(token != NULL);
 
-    tag_entry = (string_map_t *) calloc(1, sizeof(*tag_entry));
-    assert(tag_entry != NULL);
+    tag_entry = xalloc(sizeof(*tag_entry));
     tag_entry->key = strdup(token);
     assert(tag_entry->key != NULL);
     tag_entry->value = NULL;
@@ -326,17 +414,12 @@ static string_list_t *get_paren_expressions(const char *license)
         end = strchr(start, ')');
 
         if ((end - start) > 0) {
-            entry = (string_entry_t *) calloc(1, sizeof(*entry));
-            assert(entry != NULL);
-
-            entry->data = (char *) calloc(1, end - start + 1);
-            assert(entry->data != NULL);
-
+            entry = xalloc(sizeof(*entry));
+            entry->data = xalloc(end - start + 1);
             entry->data = strncpy(entry->data, start, end - start);
 
             if (list == NULL) {
-                list = (string_list_t *) calloc(1, sizeof(*list));
-                assert(list != NULL);
+                list = xalloc(sizeof(*list));
                 TAILQ_INIT(list);
             }
 
@@ -527,6 +610,7 @@ static bool is_valid_license(struct rpminspect *ri, struct result_params *params
 
                 xasprintf(&params->msg, _("Unapproved license in %s: %s"), nevra, tagtoken->key);
                 add_result(ri, params);
+                result = get_result(result, params->severity);
                 free(params->msg);
 
                 /*
@@ -544,7 +628,7 @@ static bool is_valid_license(struct rpminspect *ri, struct result_params *params
     free(wlicense);
 
     /* for SPDX tags found, ensure booleans are all uppercase */
-    if (nspdx > 0 && (booleans && !TAILQ_EMPTY(booleans))) {
+    if (nlegacy == 0 && ndual == 0 && nspdx > 0 && (booleans && !TAILQ_EMPTY(booleans))) {
         TAILQ_FOREACH(entry, booleans, items) {
             if ((!strcasecmp(entry->data, "AND") && strcmp(entry->data, "AND"))
                 || (!strcasecmp(entry->data, "OR") && strcmp(entry->data, "OR"))) {
@@ -552,11 +636,28 @@ static bool is_valid_license(struct rpminspect *ri, struct result_params *params
 
                 params->severity = RESULT_BAD;
                 params->remedy = get_remedy(REMEDY_INVALID_BOOLEAN);
-                xasprintf(&params->msg, _("SPDX license expressions in use, but an invalid boolean was found: %s; when using SPDX expression the booleans must be in all caps."), entry->data);
+                xasprintf(&params->msg, _("SPDX license expressions in use in %s, but an invalid boolean was found: %s; when using SPDX expression the booleans must be in all caps."), nevra, entry->data);
+                xasprintf(&params->details, _("License: %s"), license);
                 add_result(ri, params);
+                result = get_result(result, params->severity);
                 free(params->msg);
+                free(params->details);
+                params->details = NULL;
             }
         }
+    }
+
+    /* mixed SPDX and legacy tags are forbidden */
+    if (nlegacy > 0 && nspdx > 0 && ndual == 0) {
+        params->severity = RESULT_BAD;
+        params->remedy = get_remedy(REMEDY_MIXED_LICENSE_TAGS);
+        xasprintf(&params->msg, _("Mixed SPDX and legacy license identifiers found in %s."), nevra);
+        xasprintf(&params->details, _("License: %s"), license);
+        add_result(ri, params);
+        result = get_result(result, params->severity);
+        free(params->msg);
+        free(params->details);
+        params->details = NULL;
     }
 
     return r;
@@ -588,6 +689,7 @@ static int check_peer_license(struct rpminspect *ri, struct result_params *param
         params->verb = VERB_FAILED;
         params->noun = _("missing License tag in ${FILE}");
         add_result(ri, params);
+        result = get_result(result, params->severity);
         free(params->msg);
         ret = 1;
     } else {
@@ -603,6 +705,7 @@ static int check_peer_license(struct rpminspect *ri, struct result_params *param
             params->file = NULL;
             params->arch = NULL;
             add_result(ri, params);
+            result = get_result(result, params->severity);
             free(params->msg);
             ret = 1;
         }
@@ -615,6 +718,7 @@ static int check_peer_license(struct rpminspect *ri, struct result_params *param
             params->verb = VERB_FAILED;
             params->noun = _("unprofessional language in License tag in ${FILE}");
             add_result(ri, params);
+            result = get_result(result, params->severity);
             free(params->msg);
             ret = 1;
         }
@@ -623,7 +727,12 @@ static int check_peer_license(struct rpminspect *ri, struct result_params *param
     free(nevra);
     list_free(booleans, free);
     booleans = NULL;
+
+    /* reset the abbreviation counters for the next package */
+    nlegacy = 0;
+    ndual = 0;
     nspdx = 0;
+
     return ret;
 }
 
@@ -641,8 +750,10 @@ bool inspect_license(struct rpminspect *ri)
 {
     int good = 0;
     int seen = 0;
-    bool result = false;
     rpmpeer_entry_t *peer = NULL;
+    parser_plugin *p = NULL;
+    parser_context *db = NULL;
+    string_entry_t *entry = NULL;
     struct result_params params;
 
     assert(ri != NULL);
@@ -661,6 +772,7 @@ bool inspect_license(struct rpminspect *ri)
         params.file = NULL;
         params.arch = NULL;
         add_result(ri, &params);
+        result = get_result(result, params.severity);
         free(params.msg);
         return false;
     }
@@ -675,8 +787,22 @@ bool inspect_license(struct rpminspect *ri)
             srpm = headerGetString(peer->after_hdr, RPMTAG_NAME);
             assert(srpm != NULL);
             break;
-        } else {
         }
+    }
+
+    /* Gather all of the dual SPDX/legacy license expressions */
+    TAILQ_FOREACH(entry, ri->licensedb, items) {
+        /* read in this license database */
+        p = read_licensedb(ri, entry->data, &db);
+
+        if (p == NULL) {
+            continue;
+        }
+
+        gather_dual_licenses(p, db);
+
+        /* close this db */
+        p->fini(db);
     }
 
     /*
@@ -701,8 +827,9 @@ bool inspect_license(struct rpminspect *ri)
         params.severity = RESULT_OK;
         params.verb = VERB_OK;
         add_result(ri, &params);
-        result = true;
+        result = get_result(result, params.severity);
     }
 
+    list_free(dual, free);
     return result;
 }

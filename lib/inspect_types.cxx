@@ -38,7 +38,7 @@ static bool types_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Only run this check on regular files */
-    if (!S_ISREG(file->st.st_mode) && !S_ISREG(file->peer_file->st.st_mode)) {
+    if (!S_ISREG(file->st_mode) && !S_ISREG(file->peer_file->st_mode)) {
         return true;
     }
 

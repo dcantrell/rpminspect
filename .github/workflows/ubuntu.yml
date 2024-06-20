@@ -43,8 +43,8 @@ jobs:
             # Requirements before the git clone can happen
             - name: git clone requirements
               run: |
-                  apt-get update
-                  apt-get install -y git
+                  env DEBIAN_FRONTEND=noninteractive apt-get update
+                  env DEBIAN_FRONTEND=noninteractive apt-get install -y git
 
             # This means clone the git repo
             - uses: actions/checkout@v4
@@ -54,7 +54,7 @@ jobs:
             - name: Build and run the test suite
               run: |
                   # Install make(1) so we can use the instreqs target
-                  apt-get install -y make
+                  env DEBIAN_FRONTEND=noninteractive apt-get install -y make
 
                   # Install build dependencies and set up the target
                   make instreqs

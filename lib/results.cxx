@@ -35,8 +35,7 @@ results_t *init_results(void)
 {
     results_t *results = NULL;
 
-    results = calloc(1, sizeof(*results));
-    assert(results != NULL);
+    results = xalloc(sizeof(*results));
     TAILQ_INIT(results);
     return results;
 }
@@ -146,8 +145,7 @@ void add_result_entry(results_t **results, struct result_params *params)
         *results = init_results();
     }
 
-    entry = calloc(1, sizeof(*entry));
-    assert(entry != NULL);
+    entry = xalloc(sizeof(*entry));
 
     entry->severity = params->severity;
     entry->waiverauth = params->waiverauth;

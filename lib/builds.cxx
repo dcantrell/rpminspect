@@ -375,8 +375,7 @@ static int download_build(struct rpminspect *ri, const struct koji_build *build)
                 }
 
                 /* Initialize a string list. */
-                filter = (string_list_t *) calloc(1, sizeof(*filter));
-                assert(filter != NULL);
+                filter = xalloc(sizeof(*filter));
                 TAILQ_INIT(filter);
 
                 if (p->strarray_foreach(ctx, "filter", "rpms", filter_cb, filter)) {
@@ -588,7 +587,7 @@ static int download_task(struct rpminspect *ri, struct koji_task *task)
                 }
 
                 len = strlen(dst);
-                dst = (char *) realloc(dst, len + strlen(pkg) + 2);
+                dst = xrealloc(dst, len + strlen(pkg) + 2);
                 tail = dst + len;
                 tail = stpcpy(tail, "/");
                 (void) stpcpy(tail, pkg);

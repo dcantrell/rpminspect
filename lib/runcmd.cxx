@@ -232,8 +232,7 @@ char *run_cmd_vp(int *exitcode, const char *workdir, char **argv)
         }
 
         output = NULL;
-        buf = calloc(1, n);
-        assert(buf != NULL);
+        buf = xalloc(n);
 
         while (getline(&buf, &n, reader) != -1) {
             xasprintf(&tail, "%s%s", (output == NULL) ? "" : output, buf);
@@ -321,8 +320,7 @@ char *run_cmd(int *exitcode, const char *workdir, const char *cmd, ...)
     assert(cmd != NULL);
 
     /* convert varargs to a string array */
-    argv = calloc(2, sizeof(*argv));
-    assert(argv != NULL);
+    argv = xcalloc(2, sizeof(*argv));
 
     /* add the command */
     argv[i] = strdup(cmd);
@@ -335,9 +333,7 @@ char *run_cmd(int *exitcode, const char *workdir, const char *cmd, ...)
 
     while ((element = va_arg(ap, char *)) != NULL) {
         i++;
-        argv = realloc(argv, sizeof(*argv) * (i + 1));
-        assert(argv != NULL);
-
+        argv = xrealloc(argv, sizeof(*argv) * (i + 1));
         argv[i - 1] = strdup(element);
         assert(argv[i - 1] != NULL);
         argv[i] = NULL;
@@ -373,9 +369,7 @@ char **build_argv(const char *cmd)
     assert(list != NULL);
 
     TAILQ_FOREACH(entry, list, items) {
-        r = realloc(r, sizeof(*r) * (i + 2));
-        assert(r != NULL);
-
+        r = xrealloc(r, sizeof(*r) * (i + 2));
         r[i] = strdup(entry->data);
         assert(r[i] != NULL);
         r[i + 1] = NULL;

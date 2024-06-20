@@ -5,6 +5,7 @@ install_headers(
     'init.h',
     'inspect.h',
     'output.h',
+    'parallel.h',
     'parser.h',
     'queue.h',
     'readelf.h',

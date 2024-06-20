@@ -132,8 +132,8 @@ static bool check_class_file(struct rpminspect *ri, const char *fullpath, const 
         add_result(ri, &params);
         free(params.msg);
         return false;
-    } else if (major > supported_major) {
-        xasprintf(&params.msg, _("File %s (%s), Java byte code version %d greater than supported major version %d for product release %s"), localpath, container, major, supported_major, ri->product_release);
+    } else if (major < supported_major) {
+        xasprintf(&params.msg, _("File %s (%s), Java byte code version %d is less than the minimum supported major version %d for product release %s"), localpath, container, major, supported_major, ri->product_release);
         params.noun = _("Java byte code version too new in ${FILE}");
         add_result(ri, &params);
         free(params.msg);
@@ -180,11 +180,14 @@ static int jar_walker(const char *fpath, __attribute__((unused)) const struct st
 /*
  * Main driver for the inspection.
  */
-static bool javabytecode_driver(struct rpminspect *ri, rpmfile_entry_t *file, const char *container)
+static bool javabytecode_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 {
     bool result;
     char *tmppath = NULL;
+    const char *container = NULL;
     int jarstatus = 0;
+
+    container = headerGetString(file->rpm_header, RPMTAG_NAME);
 
     if (strsuffix(file->fullpath, JAR_FILENAME_EXTENSION)) {
         /* if we have a possible jar file, try to unpack and walk it */
@@ -239,9 +242,6 @@ static bool javabytecode_driver(struct rpminspect *ri, rpmfile_entry_t *file, co
 bool inspect_javabytecode(struct rpminspect *ri)
 {
     bool result = true;
-    rpmpeer_entry_t *peer = NULL;
-    rpmfile_entry_t *file = NULL;
-    char *container = NULL;
     string_map_t *hentry = NULL;
     struct result_params params;
 
@@ -285,20 +285,7 @@ bool inspect_javabytecode(struct rpminspect *ri)
      * The minimum bytecode version data comes from the configuration
      * file and varies by vendor product release.
      */
-    TAILQ_FOREACH(peer, ri->peers, items) {
-        /* Disappearing subpackages are caught by INSPECT_EMPTYRPM */
-        if (peer->after_files == NULL || TAILQ_EMPTY(peer->after_files)) {
-            continue;
-        }
-
-        container = basename(peer->after_rpm);
-
-        TAILQ_FOREACH(file, peer->after_files, items) {
-            if (!javabytecode_driver(ri, file, container)) {
-                result = false;
-            }
-        }
-    }
+    result = foreach_peer_file(ri, NAME_JAVABYTECODE, javabytecode_driver);
 
     if (result) {
         init_result_params(&params);

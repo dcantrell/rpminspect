@@ -222,8 +222,7 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
             goto cleanup;
         }
 
-        path_entry = (struct file_data *) calloc(1, sizeof(*path_entry));
-        assert(path_entry != NULL);
+        path_entry = xalloc(sizeof(*path_entry));
         path_entry->path = strdup(rpm_path);
         path_entry->index = i;
         HASH_ADD_KEYPTR(hh, path_table, path_entry->path, strlen(path_entry->path), path_entry);
@@ -252,8 +251,7 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
     }
 
     /* Allocate space for the return value */
-    file_list = (rpmfile_t *)  calloc(1, sizeof(rpmfile_t));
-    assert(file_list != NULL);
+    file_list = xalloc(sizeof(rpmfile_t));
     TAILQ_INIT(file_list);
 
     while ((archive_result = archive_read_next_header(archive, &entry)) != ARCHIVE_EOF) {
@@ -282,8 +280,7 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         }
 
         /* Create a new rpmfile_entry_t for this file */
-        file_entry = (rpmfile_entry_t *) calloc(1, sizeof(rpmfile_entry_t));
-        assert(file_entry != NULL);
+        file_entry = xalloc(sizeof(rpmfile_entry_t));
 
         file_entry->rpm_header = hdr;
         file_entry->idx = path_entry->index;
@@ -297,15 +294,14 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         file_entry->cap = NULL;
 #endif
 
-        memset(&(file_entry->st), 0, sizeof(file_entry->st));
-        file_entry->st.st_mode = get_rpm_header_num_array_value(file_entry, RPMTAG_FILEMODES);
-        file_entry->st.st_size = archive_entry_size(entry);
-        file_entry->st.st_nlink = archive_entry_nlink(entry);
+        file_entry->st_mode = get_rpm_header_num_array_value(file_entry, RPMTAG_FILEMODES);
+        file_entry->st_size = archive_entry_size(entry);
+        file_entry->st_nlink = archive_entry_nlink(entry);
 
         TAILQ_INSERT_TAIL(file_list, file_entry, items);
 
         /* Are we extracting this file? */
-        if (!(S_ISREG(file_entry->st.st_mode) || S_ISDIR(file_entry->st.st_mode) || S_ISLNK(file_entry->st.st_mode))) {
+        if (!(S_ISREG(file_entry->st_mode) || S_ISDIR(file_entry->st_mode) || S_ISLNK(file_entry->st_mode))) {
             continue;
         }
 
@@ -338,14 +334,14 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         archive_perm |= S_IRUSR | S_IWUSR;
         archive_perm &= ~S_IWOTH;
 
-        if (S_ISDIR(file_entry->st.st_mode)) {
+        if (S_ISDIR(file_entry->st_mode)) {
             archive_perm |= S_IXUSR;
         }
 
         archive_entry_set_perm(entry, archive_perm);
 
         /* If this is a hard link, update the hardlink destination path */
-        if (file_entry->st.st_nlink > 1) {
+        if (file_entry->st_nlink > 1) {
             xasprintf(&hardlinkpath, "%s/%s", *output_dir, archive_entry_hardlink(entry));
             archive_entry_set_link(entry, hardlinkpath);
             free(hardlinkpath);
@@ -445,8 +441,7 @@ static struct file_data *files_to_table(rpmfile_t *list)
     assert(iter);
 
     TAILQ_FOREACH(iter, list, items) {
-        fentry = (struct file_data *) calloc(1, sizeof(*fentry));
-        assert(fentry != NULL);
+        fentry = xalloc(sizeof(*fentry));
         fentry->path = iter->localpath;
         fentry->rpmfile = iter;
         HASH_ADD_KEYPTR(hh, table, fentry->path, strlen(fentry->path), fentry);
@@ -790,7 +785,7 @@ static void find_one_peer(struct rpminspect *ri, rpmfile_entry_t *file, rpmfile_
     }
 
     /* See if this file peer moved */
-    if (file->peer_file == NULL && S_ISREG(file->st.st_mode)) {
+    if (file->peer_file == NULL && S_ISREG(file->st_mode)) {
         /* .build-id files can be ignored, they always move */
         if (strstr(file->localpath, BUILD_ID_DIR)) {
             return;
@@ -837,7 +832,7 @@ static void find_one_peer(struct rpminspect *ri, rpmfile_entry_t *file, rpmfile_
                     file->peer_file->moved_subpackage = true;
                     return;
                 }
-            } else if ((S_ISREG(file->st.st_mode) && S_ISREG(after_file->st.st_mode))
+            } else if ((S_ISREG(file->st_mode) && S_ISREG(after_file->st_mode))
                        || (is_elf(file) && is_elf(after_file))) {
                 /*
                  * Try to match libraries that have changed versions.

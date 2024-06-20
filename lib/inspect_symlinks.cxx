@@ -126,7 +126,7 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* only applies to symbolic links */
-    if (!S_ISLNK(file->st.st_mode)) {
+    if (!S_ISLNK(file->st_mode)) {
         return true;
     }
 
@@ -202,7 +202,7 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
                 target += 2;
             } else if (strprefix(target, "../") && !strcmp(reltarget, "")) {
                 /* relative symlink cannot be resolved */
-                xasprintf(&params.msg, _("%s %s has too many levels of redirects and cannot be resolved in %s on %s"), strtype(file->st.st_mode), params.file, name, params.arch);
+                xasprintf(&params.msg, _("%s %s has too many levels of redirects and cannot be resolved in %s on %s"), strtype(file->st_mode), params.file, name, params.arch);
                 xasprintf(&params.details, "%s -> %s", params.file, linktarget);
                 params.severity = RESULT_VERIFY;
                 params.verb = VERB_FAILED;
@@ -275,12 +275,12 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* check for things becoming symlinks to guard RPM */
-    if (file->fullpath && file->peer_file && !S_ISLNK(file->peer_file->st.st_mode)) {
+    if (file->fullpath && file->peer_file && !S_ISLNK(file->peer_file->st_mode)) {
         /* get the localpath link destination */
         len = readlink(file->fullpath, localpath, sizeof(localpath) - 1);
         localpath[len] = '\0';
 
-        if (S_ISDIR(file->peer_file->st.st_mode)) {
+        if (S_ISDIR(file->peer_file->st_mode)) {
             /* Some RPM versions cannot handle this on an upgrade */
             params.remedy = get_remedy(REMEDY_SYMLINKS_DIRECTORY);
             xasprintf(&params.msg, _("Directory %s became a symbolic link (to %s) in %s on %s; this is not allowed!"), file->peer_file->localpath, localpath, name, params.arch);
@@ -290,11 +290,11 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         } else {
             /* just report this change as information */
             if (is_linkdest_reachable(ri->peers, target, params.arch, NULL)) {
-                xasprintf(&params.msg, _("%s %s became a symbolic link (to %s) in %s on %s; and the link destination is reachable"), strtype(file->peer_file->st.st_mode), file->peer_file->localpath, localpath, name, params.arch);
+                xasprintf(&params.msg, _("%s %s became a symbolic link (to %s) in %s on %s; and the link destination is reachable"), strtype(file->peer_file->st_mode), file->peer_file->localpath, localpath, name, params.arch);
                 params.severity = RESULT_INFO;
                 params.waiverauth = NOT_WAIVABLE;
             } else {
-                xasprintf(&params.msg, _("%s %s became a symbolic link (to %s) in %s on %s; and the link destination is unreachable"), strtype(file->peer_file->st.st_mode), file->peer_file->localpath, localpath, name, params.arch);
+                xasprintf(&params.msg, _("%s %s became a symbolic link (to %s) in %s on %s; and the link destination is unreachable"), strtype(file->peer_file->st_mode), file->peer_file->localpath, localpath, name, params.arch);
                 params.severity = RESULT_VERIFY;
                 params.waiverauth = WAIVABLE_BY_ANYONE;
                 params.remedy = get_remedy(REMEDY_SYMLINKS);
@@ -311,9 +311,9 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     /* linkdest unreachable?  report */
     if (file->localpath && !is_linkdest_reachable(ri->peers, target, params.arch, &linkerr)) {
         if (file->peer_file) {
-            xasprintf(&params.msg, _("%s %s became a dangling symbolic link in %s on %s"), strtype(file->st.st_mode), file->localpath, name, params.arch);
+            xasprintf(&params.msg, _("%s %s became a dangling symbolic link in %s on %s"), strtype(file->st_mode), file->localpath, name, params.arch);
         } else {
-            xasprintf(&params.msg, _("%s %s is a dangling symbolic link in %s on %s"), strtype(file->st.st_mode), file->localpath, name, params.arch);
+            xasprintf(&params.msg, _("%s %s is a dangling symbolic link in %s on %s"), strtype(file->st_mode), file->localpath, name, params.arch);
         }
 
         if (linkerr == ELOOP || linkerr == ENAMETOOLONG) {

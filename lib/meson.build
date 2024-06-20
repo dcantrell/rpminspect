@@ -77,6 +77,7 @@ librpminspect_sources = [
     'inspect_upstream.cxx',
     'inspect_virus.cxx',
     'inspect_xml.cxx',
+    'io.cxx',
     'joinpath.cxx',
     'koji.cxx',
     'listfuncs.cxx',
@@ -91,6 +92,7 @@ librpminspect_sources = [
     'output_text.cxx',
     'output_xunit.cxx',
     'ownership.cxx',
+    'parallel.cxx',
     'parse_dson.cxx',
     'parse_json.cxx',
     'parse_yaml.cxx',
@@ -112,6 +114,7 @@ librpminspect_sources = [
     'tty.cxx',
     'uncompress.cxx',
     'unpack.cxx',
+    'xalloc.cxx',
 ]
 
 deps = [

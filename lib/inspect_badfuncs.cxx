@@ -96,7 +96,7 @@ static bool badfuncs_driver(struct rpminspect *ri, rpmfile_entry_t *after)
         return true;
     }
 
-    if (!after->fullpath || !S_ISREG(after->st.st_mode)) {
+    if (!after->fullpath || !S_ISREG(after->st_mode)) {
         return true;
     }
 

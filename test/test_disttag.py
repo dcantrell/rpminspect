@@ -9,19 +9,30 @@ import shutil
 import subprocess
 import tempfile
 import unittest
-from distutils.version import LooseVersion
 from baseclass import TestSRPM, TestRPMs, TestKoji
 from baseclass import RequiresRpminspect, check_results
 
-# Older versions of rpm require a Group tag
 proc = subprocess.Popen(
     ["rpmbuild", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
 )
 (out, err) = proc.communicate()
-if LooseVersion(out.split()[2].decode("utf-8")) <= LooseVersion("4.0.4"):
-    have_old_rpm = True
-else:
-    have_old_rpm = False
+have_old_rpm = False
+
+# Starting with Python 3.10, distutils emits DeprecationWarnings and
+# more recent Python releases have simply removed distutils entirely.
+# Try the modern replacement before falling back on distutils.  This
+# should allow the test suite to work across a range of Python 3.x
+# releases.
+try:
+    from packaging.version import Version, parse
+
+    if parse(out.split()[2].decode("utf-8")) <= Version("4.0.4"):
+        have_old_rpm = True
+except ImportError:
+    from distutils.version import LooseVersion
+
+    if LooseVersion(out.split()[2].decode("utf-8")) < LooseVersion("4.0.4"):
+        have_old_rpm = True
 
 specdir = os.path.realpath(
     os.path.join(os.environ["RPMINSPECT_TEST_DATA_PATH"], "SPECS")

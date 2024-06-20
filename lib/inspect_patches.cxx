@@ -501,8 +501,8 @@ static bool patches_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
         if (params.details) {
             /* more than whitespace changed */
-            oldsize = file->peer_file->st.st_size;
-            newsize = file->st.st_size;
+            oldsize = file->peer_file->st_size;
+            newsize = file->st_size;
             xasprintf(&params.msg, _("%s changed (%ld bytes -> %ld bytes)"), file->localpath, oldsize, newsize);
             params.severity = RESULT_INFO;
             params.waiverauth = NOT_WAIVABLE;
@@ -667,8 +667,7 @@ bool inspect_patches(struct rpminspect *ri)
             /* get patch numbers unless automacro is in use */
             if (automacro) {
                 TAILQ_FOREACH(patch, patchfiles, items) {
-                    hentry = (patches_t *) calloc(1, sizeof(*hentry));
-                    assert(hentry != NULL);
+                    hentry = xalloc(sizeof(*hentry));
                     hentry->patch = strdup(patch->data);
                     hentry->num = -1;                       /* automacro == true */
                     HASH_ADD_KEYPTR(hh, patches, hentry->patch, strlen(hentry->patch), hentry);
@@ -742,8 +741,7 @@ bool inspect_patches(struct rpminspect *ri)
                         }
 
                         /* add a new patch entry to the hash table */
-                        hentry = (patches_t *) calloc(1, sizeof(*hentry));
-                        assert(hentry != NULL);
+                        hentry = xalloc(sizeof(*hentry));
                         hentry->patch = strdup(patchfile);
                         errno = 0;
                         hentry->num = strtoll(buf, NULL, 10);
@@ -829,8 +827,7 @@ bool inspect_patches(struct rpminspect *ri)
                             continue;
                         }
 
-                        aentry = (patches_t *) calloc(1, sizeof(*aentry));
-                        assert(aentry != NULL);
+                        aentry = xalloc(sizeof(*aentry));
                         errno = 0;
                         aentry->num = strtoll(buf, NULL, 10);
 

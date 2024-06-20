@@ -102,6 +102,7 @@ struct remedy remedies[] = {
     { REMEDY_VENDOR, "vendor", NULL },
     { REMEDY_VIRUS, "virus", NULL },
     { REMEDY_XML, "xml", NULL },
+    { REMEDY_MIXED_LICENSE_TAGS, "mixed_license_tags", NULL },
     { 0, NULL, NULL }
 };
 
@@ -196,6 +197,7 @@ void init_remedy_strings(void)
     remedies[REMEDY_VENDOR].remedy = _("Change the string specified on the 'Vendor:' line in the spec file.");
     remedies[REMEDY_VIRUS].remedy = _("ClamAV has found a virus in the named file.  This may be a false positive, but you should manually inspect the file in question to ensure it is clean.  This may be a problem with the ClamAV database or detection.  If you are sure the file in question is clean, please file a bug with rpminspect for further help.");
     remedies[REMEDY_XML].remedy = _("Correct the reported errors in the XML document.");
+    remedies[REMEDY_MIXED_LICENSE_TAGS].remedy = _("The License tag contains mixed used of SPDX and legacy license identifiers.  You must use either all SPDX license identifiers or all legacy license identifiers; you cannot mix the two systems.");
 
     return;
 }

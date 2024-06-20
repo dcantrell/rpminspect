@@ -390,6 +390,16 @@ int main(int argc, char **argv)
     /* Be friendly to "rpminspect ... 2>&1 | tee" use case */
     setlinebuf(stdout);
 
+    /* clamav uses rand() to generate random temporary file names,
+     * call srand() to avoid name collisions.
+     * (In fact, source of clamav I examined isn't that bad, it calls
+     * srand itself once: "srand(curtime_microsec + clock() + rand())"
+     * but just to be safe, make sure _this_ call to rand() ^^^^^^^^
+     * isn't deterministic).
+     * Mixing in PID ensures that even two simultaneously
+     * started rpminspect instances get differing seeds */
+    srand(time(NULL) ^ getpid());
+
     /* SIGABRT handler since we use abort() in some failure cases */
     abrt.sa_handler = sigabrt_handler;
     sigemptyset(&abrt.sa_mask);
@@ -601,7 +611,7 @@ int main(int argc, char **argv)
     }
 
     /* Set up the main program data structure */
-    ri = calloc_rpminspect(ri);
+    ri = xalloc_rpminspect(ri);
     ri->progname = strdup(argv[0]);
     ri->verbose = verbose;
     ri->rebase_detection = rebase_detection;
@@ -881,7 +891,7 @@ int main(int argc, char **argv)
         cmdlen += strlen(argv[i]) + 1;
     }
 
-    params.details = calloc(1, cmdlen + 1);
+    params.details = xalloc(cmdlen + 1);
     assert(params.details != NULL);
     tail = params.details;
 

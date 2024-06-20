@@ -78,8 +78,7 @@ Header get_rpm_header(struct rpminspect *ri, const char *pkg)
         return NULL;
     }
 
-    hentry = calloc(1, sizeof(*hentry));
-    assert(hentry != NULL);
+    hentry = xalloc(sizeof(*hentry));
     hentry->pkg = strdup(bpkg);
     assert(hentry->pkg != NULL);
 
@@ -416,9 +415,7 @@ char *extract_rpm_payload(const char *rpm)
 
     /* iterate over every entry in the payload */
     entry = archive_entry_new();
-
-    buf = calloc(1, BUFSIZ);
-    assert(buf != NULL);
+    buf = xalloc(BUFSIZ);
 
     while (rc >= 0) {
         rc = rpmfiNext(fi);

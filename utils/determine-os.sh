@@ -29,7 +29,7 @@ if [ -r /etc/fedora-release ] && [ "${ID}" = "fedora" ]; then
     fi
 elif [ -r /etc/centos-release ] && [ "${ID}" = "centos" ]; then
     case "${VERSION_ID}" in
-        7|8|9)
+        7|9)
             echo "${ID}${VERSION_ID}"
             ;;
         *)

@@ -192,7 +192,7 @@ static bool addedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         peer_new = false;
     }
 
-    if (ri->security_path_prefix && S_ISREG(file->st.st_mode) && peer_new) {
+    if (ri->security_path_prefix && S_ISREG(file->st_mode) && peer_new) {
         TAILQ_FOREACH(entry, ri->security_path_prefix, items) {
             subpath = entry->data;
 

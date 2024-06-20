@@ -414,8 +414,7 @@ char *strxmlescape(const char *s)
 
     /* allocate a buffer for the new string */
     len = BUFSIZ;
-    result = calloc(1, len);
-    assert(result != NULL);
+    result = xalloc(len);
 
     /* go through the string to build the new string */
     tmp = result;
@@ -440,8 +439,7 @@ char *strxmlescape(const char *s)
         if ((len - strlen(result)) <= 8) {
             /* grow the result string */
             len += BUFSIZ;
-            result = realloc(result, len);
-            assert(result != NULL);
+            result = xrealloc(result, len);
 
             /* reset the tmp pointer to the end of the new string */
             tmp = result;
@@ -453,8 +451,7 @@ char *strxmlescape(const char *s)
     }
 
     /* shrink down the buffer to just the size we need */
-    result = realloc(result, strlen(result) + 1);
-    assert(result != NULL);
+    result = xrealloc(result, strlen(result) + 1);
 
     return result;
 }
@@ -477,8 +474,7 @@ char *strappend(char *dest, ...)
             dest = strdup(s);
             assert(dest != NULL);
         } else {
-            dest = realloc(dest, strlen(dest) + strlen(s) + 1);
-            assert(dest != NULL);
+            dest = xrealloc(dest, strlen(dest) + strlen(s) + 1);
             dest = strcat(dest, s);
         }
     }
@@ -587,8 +583,7 @@ char *strshorten(const char *s, size_t width)
     }
 
     /* allocate the buffer for the shortened string */
-    r = calloc(1, width + 1);
-    assert(r != NULL);
+    r = xalloc(width + 1);
     tail = r;
 
     /* compute width of each half */

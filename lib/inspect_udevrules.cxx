@@ -33,7 +33,7 @@ static bool is_udev_rules_file(struct rpminspect *ri, const rpmfile_entry_t *fil
     }
 
     /* Is this a regular file? */
-    if (!file->fullpath || !S_ISREG(file->st.st_mode)) {
+    if (!file->fullpath || !S_ISREG(file->st_mode)) {
         return false;
     }
 

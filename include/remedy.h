@@ -100,6 +100,7 @@ extern "C"
 #define REMEDY_VENDOR                    84
 #define REMEDY_VIRUS                     85
 #define REMEDY_XML                       86
+#define REMEDY_MIXED_LICENSE_TAGS        87
 
 /* Initialize default remedy strings */
 void init_remedy_strings(void);

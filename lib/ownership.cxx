@@ -155,7 +155,7 @@ bool check_ownership(struct rpminspect *ri, const rpmfile_entry_t *file, const c
 
                 /* Handle if CAP_SETUID is present or not */
                 if (have_setuid == CAP_SET) {
-                    if ((file->st.st_mode & S_IXOTH)
+                    if ((file->st_mode & S_IXOTH)
                         && ((ri->tests & INSPECT_OWNERSHIP) || force_non_security_checks)) {
                         params.severity = get_secrule_result_severity(ri, file, SECRULE_SETUID);
 
@@ -172,7 +172,7 @@ bool check_ownership(struct rpminspect *ri, const rpmfile_entry_t *file, const c
                         }
                     }
 
-                    if (file->st.st_mode & S_IWGRP) {
+                    if (file->st_mode & S_IWGRP) {
                         params.severity = get_secrule_result_severity(ri, file, SECRULE_SETUID);
 
                         if (params.severity != RESULT_NULL && params.severity != RESULT_SKIP) {

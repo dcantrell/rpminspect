@@ -24,30 +24,6 @@
 #    define dprintf(...)
 #endif
 
-/* Always 0-initialized, unless the compiler disagrees. */
-static inline void *xalloc(size_t s)
-{
-    void *ret = NULL;
-
-    ret = calloc(1, s);
-    assert(ret != NULL);
-    return ret;
-}
-
-/* Note that xrealloc(NULL, ...) works the way you'd want. */
-static inline void *xrealloc(void *p, size_t s)
-{
-    void *ret;
-
-    if (p == NULL) {
-        return xalloc(s);
-    }
-
-    ret = realloc(p, s);
-    assert(ret);
-    return ret;
-}
-
 /*
  * Not only do they not give a method for this awfulness, and not only
  * do they put enums in their public headers, but they can't even be

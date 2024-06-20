@@ -270,7 +270,7 @@ static bool manpage_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Is this a man page? */
-    if (!file->fullpath || !S_ISREG(file->st.st_mode)) {
+    if (!file->fullpath || !S_ISREG(file->st_mode)) {
         return true;
     }
 

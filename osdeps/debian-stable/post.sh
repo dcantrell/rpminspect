@@ -1,5 +1,5 @@
 #!/bin/sh
-PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+PATH=/usr/bin:/usr/sbin
 CWD="$(pwd)"
 
 # Debian Linux stable does not define an RPM dist tag

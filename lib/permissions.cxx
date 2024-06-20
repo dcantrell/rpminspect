@@ -61,11 +61,11 @@ bool check_permissions(struct rpminspect *ri, const rpmfile_entry_t *file, const
     params.file = file->localpath;
 
     /* Local working copies for display */
-    after_mode = file->st.st_mode & 0777;
+    after_mode = file->st_mode & 0777;
 
     /* Compare the modes */
     if (file->peer_file) {
-        before_mode = file->peer_file->st.st_mode & 0777;
+        before_mode = file->peer_file->st_mode & 0777;
     } else {
         memset(&before_mode, 0, sizeof(before_mode));
     }
@@ -77,7 +77,7 @@ bool check_permissions(struct rpminspect *ri, const rpmfile_entry_t *file, const
     id_bit = (!(before_mode & (S_ISUID|S_ISGID)) && (after_mode & (S_ISUID|S_ISGID)));
 
     /* have permissions been relaxed in cases we want to verify? */
-    relaxed = (S_ISDIR(file->st.st_mode) && !S_ISLNK(file->st.st_mode)) && (((mode_diff & S_ISVTX) && !(after_mode & S_ISVTX)) || ((after_mode & mode_diff) != 0));
+    relaxed = (S_ISDIR(file->st_mode) && !S_ISLNK(file->st_mode)) && (((mode_diff & S_ISVTX) && !(after_mode & S_ISVTX)) || ((after_mode & mode_diff) != 0));
 
     if (id_bit) {
         ignore = false;
@@ -90,7 +90,7 @@ bool check_permissions(struct rpminspect *ri, const rpmfile_entry_t *file, const
             params.severity = RESULT_VERIFY;
         }
 
-        if (S_ISDIR(file->st.st_mode) && !S_ISDIR(file->peer_file->st.st_mode)) {
+        if (S_ISDIR(file->st_mode) && !S_ISDIR(file->peer_file->st_mode)) {
             if (id_bit) {
                 if (relaxed) {
                     xasprintf(&params.msg, _("%s changed setuid/setgid; became a directory; permissions relaxed"), file->localpath);
@@ -104,7 +104,7 @@ bool check_permissions(struct rpminspect *ri, const rpmfile_entry_t *file, const
                     xasprintf(&params.msg, _("%s became a directory; permissions changed"), file->localpath);
                 }
             }
-        } else if (S_ISCHR(file->st.st_mode) && !S_ISCHR(file->peer_file->st.st_mode)) {
+        } else if (S_ISCHR(file->st_mode) && !S_ISCHR(file->peer_file->st_mode)) {
             if (id_bit) {
                 if (relaxed) {
                     xasprintf(&params.msg, _("%s changed setuid/setgid; became a character device; permissions relaxed"), file->localpath);
@@ -118,7 +118,7 @@ bool check_permissions(struct rpminspect *ri, const rpmfile_entry_t *file, const
                     xasprintf(&params.msg, _("%s became a character device; permissions changed"), file->localpath);
                 }
             }
-        } else if (S_ISBLK(file->st.st_mode) && !S_ISBLK(file->peer_file->st.st_mode)) {
+        } else if (S_ISBLK(file->st_mode) && !S_ISBLK(file->peer_file->st_mode)) {
             if (id_bit) {
                 if (relaxed) {
                     xasprintf(&params.msg, _("%s changed setuid/setgid; became a block device; permissions relaxed"), file->localpath);
@@ -132,7 +132,7 @@ bool check_permissions(struct rpminspect *ri, const rpmfile_entry_t *file, const
                     xasprintf(&params.msg, _("%s became a block device; permissions changed"), file->localpath);
                 }
             }
-        } else if (S_ISREG(file->st.st_mode) && !S_ISREG(file->peer_file->st.st_mode)) {
+        } else if (S_ISREG(file->st_mode) && !S_ISREG(file->peer_file->st_mode)) {
             if (id_bit) {
                 if (relaxed) {
                     xasprintf(&params.msg, _("%s changed setuid/setgid; became a regular file; permissions relaxed"), file->localpath);
@@ -146,7 +146,7 @@ bool check_permissions(struct rpminspect *ri, const rpmfile_entry_t *file, const
                     xasprintf(&params.msg, _("%s became a regular file; permissions changed"), file->localpath);
                 }
             }
-        } else if (S_ISFIFO(file->st.st_mode) && !S_ISFIFO(file->peer_file->st.st_mode)) {
+        } else if (S_ISFIFO(file->st_mode) && !S_ISFIFO(file->peer_file->st_mode)) {
             if (id_bit) {
                 if (relaxed) {
                     xasprintf(&params.msg, _("%s changed setuid/setgid; became a FIFO; permissions relaxed"), file->localpath);
@@ -160,7 +160,7 @@ bool check_permissions(struct rpminspect *ri, const rpmfile_entry_t *file, const
                     xasprintf(&params.msg, _("%s became a FIFO; permissions changed"), file->localpath);
                 }
             }
-        } else if (S_ISLNK(file->st.st_mode) && !S_ISLNK(file->peer_file->st.st_mode)) {
+        } else if (S_ISLNK(file->st_mode) && !S_ISLNK(file->peer_file->st_mode)) {
             if (id_bit) {
                 if (relaxed) {
                     xasprintf(&params.msg, _("%s changed setuid/setgid; became a symbolic link; permissions relaxed"), file->localpath);
@@ -174,7 +174,7 @@ bool check_permissions(struct rpminspect *ri, const rpmfile_entry_t *file, const
                     xasprintf(&params.msg, _("%s became a symbolic link; permissions changed"), file->localpath);
                 }
             }
-        } else if (S_ISSOCK(file->st.st_mode) && !S_ISSOCK(file->peer_file->st.st_mode)) {
+        } else if (S_ISSOCK(file->st_mode) && !S_ISSOCK(file->peer_file->st_mode)) {
             if (id_bit) {
                 if (relaxed) {
                     xasprintf(&params.msg, _("%s changed setuid/setgid; became a socket; permissions relaxed"), file->localpath);
@@ -190,8 +190,6 @@ bool check_permissions(struct rpminspect *ri, const rpmfile_entry_t *file, const
             }
         }
 
-        assert(params.msg != NULL);
-
         if (params.severity >= RESULT_VERIFY) {
             if (id_bit) {
                 params.waiverauth = WAIVABLE_BY_SECURITY;
@@ -202,7 +200,7 @@ bool check_permissions(struct rpminspect *ri, const rpmfile_entry_t *file, const
             result = false;
         }
 
-        xasprintf(&change, _("%s from %04o to %04o on %s"), params.msg, before_mode, after_mode, arch);
+        xasprintf(&change, _("%s from %04o to %04o on %s"), (params.msg == NULL) ? file->localpath : params.msg, before_mode, after_mode, arch);
         assert(change != NULL);
         free(params.msg);
         params.msg = change;
@@ -218,7 +216,7 @@ bool check_permissions(struct rpminspect *ri, const rpmfile_entry_t *file, const
     }
 
     /* check for world-writability */
-    if (!allowed && !S_ISLNK(file->st.st_mode) && ((after_mode & (S_IWOTH|S_ISVTX)) || (after_mode & S_IWOTH))) {
+    if (!allowed && !S_ISLNK(file->st_mode) && ((after_mode & (S_IWOTH|S_ISVTX)) || (after_mode & S_IWOTH))) {
         params.severity = get_secrule_result_severity(ri, file, SECRULE_WORLDWRITABLE);
 
         if (params.severity != RESULT_NULL && params.severity != RESULT_SKIP) {
