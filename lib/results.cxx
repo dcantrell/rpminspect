@@ -35,7 +35,7 @@ results_t *init_results(void)
 {
     results_t *results = NULL;
 
-    results = xalloc(sizeof(*results));
+    results = (results_t *) xalloc(sizeof(*results));
     TAILQ_INIT(results);
     return results;
 }
@@ -145,7 +145,7 @@ void add_result_entry(results_t **results, struct result_params *params)
         *results = init_results();
     }
 
-    entry = xalloc(sizeof(*entry));
+    entry = (results_entry_t *) xalloc(sizeof(*entry));
 
     entry->severity = params->severity;
     entry->waiverauth = params->waiverauth;

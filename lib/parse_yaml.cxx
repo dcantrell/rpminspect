@@ -176,8 +176,8 @@ static y_value *p_value(context *context)
                    || token.type == YAML_FLOW_MAPPING_START_TOKEN) {
             ret = (y_value *) xalloc(sizeof(*ret));
             ret->type = Y_DICT;
-            ret->v.dict.keys = xalloc(sizeof(ret->v.dict.keys));
-            ret->v.dict.values = xalloc(sizeof(ret->v.dict.values));
+            ret->v.dict.keys = (char **) xalloc(sizeof(ret->v.dict.keys));
+            ret->v.dict.values = (y_value **) xalloc(sizeof(ret->v.dict.values));
 
             while (1) {
                 yaml_token_delete(&token);

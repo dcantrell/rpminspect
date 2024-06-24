@@ -232,7 +232,7 @@ char *run_cmd_vp(int *exitcode, const char *workdir, char **argv)
         }
 
         output = NULL;
-        buf = xalloc(n);
+        buf = (char *) xalloc(n);
 
         while (getline(&buf, &n, reader) != -1) {
             xasprintf(&tail, "%s%s", (output == NULL) ? "" : output, buf);

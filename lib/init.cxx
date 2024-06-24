@@ -76,12 +76,12 @@ static int add_regex(const char *pattern, regex_t **regex_out)
     assert(regex_out);
 
     free_regex(*regex_out);
-    *regex_out = xalloc(sizeof(regex_t));
+    *regex_out = (regex_t *) xalloc(sizeof(regex_t));
 
     if ((reg_result = regcomp(*regex_out, pattern, REG_EXTENDED)) != 0) {
         /* Get the size needed for the error message */
         errbuf_size = regerror(reg_result, *regex_out, NULL, 0);
-        errbuf = xalloc(errbuf_size);
+        errbuf = (char *) xalloc(errbuf_size);
 
         regerror(reg_result, *regex_out, errbuf, errbuf_size);
         warnx("*** %s", errbuf);
@@ -111,7 +111,7 @@ static void add_string_list_map_entry(string_list_map_t **table, const char *key
 
     if (mapentry == NULL) {
         /* start a new entry for this inspection */
-        mapentry = xalloc(sizeof(*mapentry));
+        mapentry = (string_list_map_t *) xalloc(sizeof(*mapentry));
         mapentry->key = strdup(key);
         mapentry->value = list_add(mapentry->value, value);
         HASH_ADD_KEYPTR(hh, *table, mapentry->key, strlen(mapentry->key), mapentry);
@@ -165,7 +165,7 @@ static void process_table(const char *key, const char *value, const bool require
             warnx("*** missing key `%s', unable to append `%s'", key, value);
         } else {
             /* add the new key/value pair to the table */
-            entry = xalloc(sizeof(*entry));
+            entry = (string_map_t *) xalloc(sizeof(*entry));
             entry->key = strdup(key);
             entry->value = strdup(value);
             HASH_ADD_KEYPTR(hh, *table, entry->key, strlen(entry->key), entry);
@@ -469,7 +469,7 @@ static bool rpmdeps_cb(const char *key, const char *value, void *cb_data)
 
     /* overwrite existing entry, otherwise create new one */
     if (drentry == NULL) {
-        drentry = xalloc(sizeof(*drentry));
+        drentry = (deprule_ignore_map_t *) xalloc(sizeof(*drentry));
         drentry->type = depkey;
         drentry->pattern = strdup(value);
 
@@ -549,7 +549,7 @@ static void process_desktop_skips(desktop_skips_t **desktop_skips, string_list_t
         HASH_FIND_STR(*desktop_skips, sentry->data, ds);
 
         if (ds == NULL) {
-            ds = xalloc(sizeof(*ds));
+            ds = (desktop_skips_t *) xalloc(sizeof(*ds));
             ds->path = strdup(sentry->data);
             assert(ds->path != NULL);
             ds->flags |= flag;
@@ -1101,7 +1101,7 @@ bool init_fileinfo(struct rpminspect *ri)
     }
 
     /* initialize the list */
-    ri->fileinfo = xalloc(sizeof(*(ri->fileinfo)));
+    ri->fileinfo = (fileinfo_t *) xalloc(sizeof(*(ri->fileinfo)));
     TAILQ_INIT(ri->fileinfo);
 
     /* add all the entries to the fileinfo list */
@@ -1120,7 +1120,7 @@ bool init_fileinfo(struct rpminspect *ri)
         }
 
         /* initialize a new list entry */
-        fientry = xalloc(sizeof(*fientry));
+        fientry = (fileinfo_entry_t *) xalloc(sizeof(*fientry));
 
         /* read the fields */
         while ((token = strsep(&line, " \t")) != NULL) {
@@ -1218,7 +1218,7 @@ bool init_caps(struct rpminspect *ri)
     }
 
     /* initialize the list */
-    ri->caps = xalloc(sizeof(*(ri->caps)));
+    ri->caps = (caps_t *) xalloc(sizeof(*(ri->caps)));
     TAILQ_INIT(ri->caps);
 
     /* add all the entries to the caps list */
@@ -1261,15 +1261,15 @@ bool init_caps(struct rpminspect *ri)
 
                 if (TAILQ_EMPTY(ri->caps) || files == NULL) {
                     /* new package for the list */
-                    centry = xalloc(sizeof(*centry));
+                    centry = (caps_entry_t *) xalloc(sizeof(*centry));
                     centry->pkg = strdup(token);
-                    centry->files = xalloc(sizeof(*centry->files));
+                    centry->files = (caps_filelist_t *) xalloc(sizeof(*centry->files));
                     TAILQ_INIT(centry->files);
                     TAILQ_INSERT_TAIL(ri->caps, centry, items);
                     files = centry->files;
                 }
 
-                filelist_entry = xalloc(sizeof(*filelist_entry));
+                filelist_entry = (caps_filelist_entry_t *) xalloc(sizeof(*filelist_entry));
                 field = FILEPATH;
             } else if (field == FILEPATH && filelist_entry->path == NULL) {
                 filelist_entry->path = strdup(token);
@@ -1348,7 +1348,7 @@ bool init_rebaseable(struct rpminspect *ri)
     }
 
     /* initialize the list */
-    ri->rebaseable = xalloc(sizeof(*(ri->rebaseable)));
+    ri->rebaseable = (string_list_t *) xalloc(sizeof(*(ri->rebaseable)));
     TAILQ_INIT(ri->rebaseable);
 
     /* add all the entries to the rebaseable list */
@@ -1407,7 +1407,7 @@ bool init_politics(struct rpminspect *ri)
     }
 
     /* initialize the list */
-    ri->politics = xalloc(sizeof(*(ri->politics)));
+    ri->politics = (politics_list_t *) xalloc(sizeof(*(ri->politics)));
     TAILQ_INIT(ri->politics);
 
     /* add all the entries to the politics list */
@@ -1426,7 +1426,7 @@ bool init_politics(struct rpminspect *ri)
         }
 
         /* initialize a new list entry */
-        pentry = xalloc(sizeof(*pentry));
+        pentry = (politics_entry_t *) xalloc(sizeof(*pentry));
 
         /* read the fields */
         while ((token = strsep(&line, " \t")) != NULL) {
@@ -1506,7 +1506,7 @@ bool init_security(struct rpminspect *ri)
     if (ri->security_initialized) {
         return true;
     } else {
-        ri->security = xalloc(sizeof(*ri->security));
+        ri->security = (security_list_t *) xalloc(sizeof(*ri->security));
         TAILQ_INIT(ri->security);
         ri->security_initialized = true;
     }
@@ -1564,7 +1564,7 @@ bool init_security(struct rpminspect *ri)
         /* add the entry */
         if (path && pkg && ver && rel && rules) {
             /* allocate a new entry */
-            sentry = xalloc(sizeof(*sentry));
+            sentry = (security_entry_t *) xalloc(sizeof(*sentry));
 
             /* the main values of a rule */
             sentry->path = strdup(path);
@@ -1616,7 +1616,7 @@ bool init_security(struct rpminspect *ri)
                 HASH_FIND_INT(sentry->rules, &stype, rule_entry);
 
                 if (rule_entry == NULL) {
-                    rule_entry = xalloc(sizeof(*rule_entry));
+                    rule_entry = (secrule_t *) xalloc(sizeof(*rule_entry));
                     rule_entry->type = stype;
                     rule_entry->severity = severity;
                     HASH_ADD_INT(sentry->rules, type, rule_entry);
@@ -1679,7 +1679,7 @@ bool init_icons(struct rpminspect *ri)
     }
 
     /* initialize the list */
-    ri->icons = xalloc(sizeof(*(ri->icons)));
+    ri->icons = (string_list_t *) xalloc(sizeof(*(ri->icons)));
     TAILQ_INIT(ri->icons);
 
     /* add all the entries to the icons list */
@@ -1716,7 +1716,7 @@ struct rpminspect *xalloc_rpminspect(struct rpminspect *ri)
     }
 
     /* Only initialize if we were given NULL for ri */
-    ri = xalloc(sizeof(*ri));
+    ri = (struct rpminspect *) xalloc(sizeof(*ri));
 
     /* Initialize the struct before reading files */
     ri->workdir = strdup(DEFAULT_WORKDIR);
@@ -1752,7 +1752,7 @@ struct rpminspect *xalloc_rpminspect(struct rpminspect *ri)
 
     /* Store full paths to all config files read */
     if (ri->cfgfiles == NULL) {
-        ri->cfgfiles = xalloc(sizeof(*ri->cfgfiles));
+        ri->cfgfiles = (string_list_t *) xalloc(sizeof(*ri->cfgfiles));
         TAILQ_INIT(ri->cfgfiles);
     }
 
@@ -1788,7 +1788,7 @@ struct rpminspect *init_rpminspect(struct rpminspect *ri, const char *cfgfile, c
 
     /* Read in the config file */
     if (cfgfile) {
-        cfg = xalloc(sizeof(*cfg));
+        cfg = (string_entry_t *) xalloc(sizeof(*cfg));
         cfg->data = realpath(cfgfile, NULL);
 
         /* In case we have a missing configuration file */

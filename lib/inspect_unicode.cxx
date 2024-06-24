@@ -215,7 +215,7 @@ static char *rpm_prep_source(struct rpminspect *ri, const rpmfile_entry_t *file,
         }
 
         /* run through the %prep stage */
-        ba = xalloc(sizeof(*ba));
+        ba = (BTA_t) xalloc(sizeof(*ba));
         ba->buildAmount |= RPMBUILD_PREP;
 
         ts = rpmtsCreate();
@@ -267,7 +267,7 @@ static char *rpm_prep_source(struct rpminspect *ri, const rpmfile_entry_t *file,
 
         free(*details);
         *details = NULL;
-        buf = xalloc(n);
+        buf = (char *) xalloc(n);
 
         while (getline(&buf, &n, reader) != -1) {
             *details = strappend(*details, buf, NULL);
@@ -597,7 +597,7 @@ static bool unicode_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     globalarch = get_rpm_header_arch(file->rpm_header);
     assert(globalarch != NULL);
 
-    globalfile = xalloc(sizeof(*globalfile));
+    globalfile = (rpmfile_entry_t *) xalloc(sizeof(*globalfile));
     globalfile->rpm_header = file->rpm_header;
     assert(globalfile->rpm_header != NULL);
 
@@ -695,11 +695,11 @@ bool inspect_unicode(struct rpminspect *ri)
     /* only run if there are forbidden code points */
     if (ri->unicode_forbidden_codepoints != NULL && !TAILQ_EMPTY(ri->unicode_forbidden_codepoints)) {
         /* convert code points to UChar values */
-        forbidden = xalloc(sizeof(*forbidden));
+        forbidden = (UChar32_list_t *) xalloc(sizeof(*forbidden));
         TAILQ_INIT(forbidden);
 
         TAILQ_FOREACH(sentry, ri->unicode_forbidden_codepoints, items) {
-            entry = xalloc(sizeof(*entry));
+            entry = (UChar32_entry_t *) xalloc(sizeof(*entry));
             errno = 0;
             entry->data = strtol(sentry->data, NULL, 16);
 

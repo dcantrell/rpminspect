@@ -176,7 +176,7 @@ char *compute_checksum(const char *filename, mode_t *st_mode, int type)
     }
 
     /* this is our human readable digest, caller must free */
-    ret = xcalloc(len + 1, sizeof(char *));
+    ret = (char *) xcalloc(len + 1, sizeof(char *));
 
     for (i = 0; i < len; ++i) {
         sprintf(&ret[i*2], "%02x", (unsigned int) digest[i]);

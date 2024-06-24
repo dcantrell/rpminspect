@@ -39,7 +39,7 @@ static int fill_mmfile(mmfile_t *mf, const char *file)
 
     /* extra byte for the \0 */
     size = sb.st_size;
-    buf = xalloc(size + 1);
+    buf = (char *) xalloc(size + 1);
     mf->ptr = buf;
     mf->ptr[size] = '\0';
     mf->size = size;
@@ -99,15 +99,15 @@ static int delta_out(void *priv, mmbuffer_t *mb, int nbuf)
         }
 
         /* capture the line */
-        entry = xalloc(sizeof(*entry));
+        entry = (string_entry_t *) xalloc(sizeof(*entry));
 
         if ((mb[i].size > 1) && mb[i].ptr != NULL) {
             if (prefix) {
-                entry->data = xalloc(strlen(prefix) + mb[i].size + 1);
+                entry->data = (char *) xalloc(strlen(prefix) + mb[i].size + 1);
                 end = stpcpy(entry->data, prefix);
                 end = strncpy(end, mb[i].ptr, mb[i].size);
             } else {
-                entry->data = xalloc(mb[i].size + 1);
+                entry->data = (char *) xalloc(mb[i].size + 1);
 
                 entry->data = strncpy(entry->data, mb[i].ptr, mb[i].size);
             }
@@ -117,7 +117,7 @@ static int delta_out(void *priv, mmbuffer_t *mb, int nbuf)
 
         assert(entry->data != NULL);
         entry->data[strcspn(entry->data, "\n")] = '\0';
-        entry->data = xrealloc(entry->data, strlen(entry->data) + 1);
+        entry->data = (char *) xrealloc(entry->data, strlen(entry->data) + 1);
         TAILQ_INSERT_TAIL(list, entry, items);
         prefix = NULL;
     }
@@ -155,7 +155,7 @@ char *get_file_delta(const char *a, const char *b)
     memset(&xecfg, 0, sizeof(xecfg));
     memset(&ecb, 0, sizeof(ecb));
 
-    list = xalloc(sizeof(*list));
+    list = (string_list_t *) xalloc(sizeof(*list));
     TAILQ_INIT(list);
 
     xpp.flags = 0;

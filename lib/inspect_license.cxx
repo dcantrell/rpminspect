@@ -77,7 +77,7 @@ static parser_plugin *read_licensedb(struct rpminspect *ri, const char *db, pars
 /* another callback for dual_cb() and lic_cb() to get the actual strings */
 static bool get_db_strings(const char *license_name, void *cb_data, char **spdx_abbrev, string_list_t **fedora_abbrev, string_list_t **fedora_name, bool *approved)
 {
-    lic_cb_data *data = cb_data;
+    lic_cb_data *data = (lic_cb_data *) cb_data;
     parser_plugin *p = data->p;
     parser_context *db = data->db;
     parser_context *cont = NULL;
@@ -198,7 +198,7 @@ done:
 /* lambda; checks against an entry in the license database. */
 static bool lic_cb(const char *license_name, void *cb_data)
 {
-    lic_cb_data *data = cb_data;
+    lic_cb_data *data = (lic_cb_data *) cb_data;
     string_list_t *fedora_abbrev = NULL;
     string_list_t *fedora_name = NULL;
     char *spdx_abbrev = NULL;
@@ -296,7 +296,7 @@ static void token_add(string_map_t **tags, const char *token)
 
     assert(token != NULL);
 
-    tag_entry = xalloc(sizeof(*tag_entry));
+    tag_entry = (string_map_t *) xalloc(sizeof(*tag_entry));
     tag_entry->key = strdup(token);
     assert(tag_entry->key != NULL);
     tag_entry->value = NULL;
@@ -414,12 +414,12 @@ static string_list_t *get_paren_expressions(const char *license)
         end = strchr(start, ')');
 
         if ((end - start) > 0) {
-            entry = xalloc(sizeof(*entry));
-            entry->data = xalloc(end - start + 1);
+            entry = (string_entry_t *) xalloc(sizeof(*entry));
+            entry->data = (char *) xalloc(end - start + 1);
             entry->data = strncpy(entry->data, start, end - start);
 
             if (list == NULL) {
-                list = xalloc(sizeof(*list));
+                list = (string_list_t *) xalloc(sizeof(*list));
                 TAILQ_INIT(list);
             }
 

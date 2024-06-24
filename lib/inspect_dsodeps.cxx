@@ -114,7 +114,7 @@ static bool dsodeps_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
     /* Gather the DT_NEEDED entries */
     if (get_dynamic_tags(after_elf, DT_NEEDED, &dyn, &sz, &shdr)) {
-        after_needed = xalloc(sizeof(*after_needed));
+        after_needed = (string_list_t *) xalloc(sizeof(*after_needed));
         TAILQ_INIT(after_needed);
 
         for (i = 0; i < sz; i++) {
@@ -125,7 +125,7 @@ static bool dsodeps_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     if (get_dynamic_tags(before_elf, DT_NEEDED, &dyn, &sz, &shdr)) {
-        before_needed = xalloc(sizeof(*before_needed));
+        before_needed = (string_list_t *) xalloc(sizeof(*before_needed));
         TAILQ_INIT(before_needed);
 
         for (i = 0; i < sz; i++) {

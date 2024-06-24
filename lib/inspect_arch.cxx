@@ -27,10 +27,10 @@ bool inspect_arch(struct rpminspect *ri)
 
     assert(ri != NULL);
 
-    before_arches = xalloc(sizeof(*before_arches));
+    before_arches = (string_list_t *) xalloc(sizeof(*before_arches));
     TAILQ_INIT(before_arches);
 
-    after_arches = xalloc(sizeof(*after_arches));
+    after_arches = (string_list_t *) xalloc(sizeof(*after_arches));
     TAILQ_INIT(after_arches);
 
     init_result_params(&params);

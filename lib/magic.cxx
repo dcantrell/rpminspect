@@ -81,7 +81,7 @@ const char *mime_type(struct rpminspect *ri, const char *file)
 
         if (entry == NULL) {
             /* start a new entry for this type */
-            entry = xalloc(sizeof(*entry));
+            entry = (string_hash_t *) xalloc(sizeof(*entry));
             entry->data = strdup(type);
             HASH_ADD_KEYPTR(hh, ri->magic_types, entry->data, strlen(entry->data), entry);
         }

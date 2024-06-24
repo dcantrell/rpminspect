@@ -455,7 +455,7 @@ static bool inspect_elf_execstack(struct rpminspect *ri, Elf *after_elf, Elf *be
 
     if (after_execstack && !is_execstack_valid(after_elf, execstack_flags)) {
         if (elf_type == ET_REL) {
-            flaglist = xalloc(sizeof(*flaglist));
+            flaglist = (string_list_t *) xalloc(sizeof(*flaglist));
             TAILQ_INIT(flaglist);
 
             if (execstack_flags & SHF_WRITE) {

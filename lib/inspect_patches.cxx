@@ -667,7 +667,7 @@ bool inspect_patches(struct rpminspect *ri)
             /* get patch numbers unless automacro is in use */
             if (automacro) {
                 TAILQ_FOREACH(patch, patchfiles, items) {
-                    hentry = xalloc(sizeof(*hentry));
+                    hentry = (patches_t *) xalloc(sizeof(*hentry));
                     hentry->patch = strdup(patch->data);
                     hentry->num = -1;                       /* automacro == true */
                     HASH_ADD_KEYPTR(hh, patches, hentry->patch, strlen(hentry->patch), hentry);
@@ -741,7 +741,7 @@ bool inspect_patches(struct rpminspect *ri)
                         }
 
                         /* add a new patch entry to the hash table */
-                        hentry = xalloc(sizeof(*hentry));
+                        hentry = (patches_t *) xalloc(sizeof(*hentry));
                         hentry->patch = strdup(patchfile);
                         errno = 0;
                         hentry->num = strtoll(buf, NULL, 10);
@@ -827,7 +827,7 @@ bool inspect_patches(struct rpminspect *ri)
                             continue;
                         }
 
-                        aentry = xalloc(sizeof(*aentry));
+                        aentry = (applied_patches_t *) xalloc(sizeof(*aentry));
                         errno = 0;
                         aentry->num = strtoll(buf, NULL, 10);
 

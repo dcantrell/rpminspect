@@ -49,11 +49,11 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
     assert(progver != NULL);
 
     /* initialize a new list */
-    list = xalloc(sizeof(*list));
+    list = (string_list_t *) xalloc(sizeof(*list));
     TAILQ_INIT(list);
 
     /* start by adding info about ourself */
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "%s version %s", progname, progver);
     TAILQ_INSERT_TAIL(list, entry, items);
 
@@ -63,35 +63,35 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
      */
 
     /* zlib */
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "zlib version %s", zlibVersion());
     TAILQ_INSERT_TAIL(list, entry, items);
 
 #ifdef _HAVE_MAGIC_VERSION
     /* libmagic */
     /* older versions of libmagic lack this function */
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "libmagic version %d", magic_version());
     TAILQ_INSERT_TAIL(list, entry, items);
 #endif
 
     /* libclamav */
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "libclamav version %s", cl_retver());
     TAILQ_INSERT_TAIL(list, entry, items);
 
     /* librpm */
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "librpm version %s", RPMVERSION);
     TAILQ_INSERT_TAIL(list, entry, items);
 
     /* libxml */
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "libxml version %s", xmlParserVersion);
     TAILQ_INSERT_TAIL(list, entry, items);
 
     /* json-c */
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "json-c version %s", json_c_version());
     TAILQ_INSERT_TAIL(list, entry, items);
 
@@ -109,7 +109,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
     tmp = list_to_string(details, " ");                     /* rejoin remaining details */
     list_free(details, free);
 
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "libcurl version %s (%s)", ver, tmp);
     TAILQ_INSERT_TAIL(list, entry, items);
 
@@ -131,27 +131,27 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
     tmp = list_to_string(details, " ");
     list_free(details, free);
 
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "libarchive version %s (%s)", ver, tmp);
     TAILQ_INSERT_TAIL(list, entry, items);
 
     free(ver);
     free(tmp);
 #elif _HAVE_ARCHIVE_VERSION_STRING
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "%s", archive_version_string());
     TAILQ_INSERT_TAIL(list, entry, items);
 #endif
 
     /* libyaml */
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "libyaml version %s", yaml_get_version_string());
     TAILQ_INSERT_TAIL(list, entry, items);
 
 #ifndef NO_OPENSSL_VERSION_FUNCTION
     /* openssl */
     tmp = strreplace(OpenSSL_version(OPENSSL_VERSION), "OpenSSL ", "OpenSSL version ");
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "%s", tmp);
     TAILQ_INSERT_TAIL(list, entry, items);
     free(tmp);
@@ -159,13 +159,13 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
 
     /* xmlrpc-c */
     xmlrpc_client_version(&major, &minor, &update);
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "xmlrpc-c version %u.%u.%u", major, minor, update);
     TAILQ_INSERT_TAIL(list, entry, items);
 
 #ifdef _WITH_LIBANNOCHECK
     /* libannocheck */
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
     xasprintf(&entry->data, "libannocheck version %u", libannocheck_get_version());
     TAILQ_INSERT_TAIL(list, entry, items);
 #endif
@@ -199,7 +199,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
             assert(ver != NULL);
         }
 
-        entry = xalloc(sizeof(*entry));
+        entry = (string_entry_t *) xalloc(sizeof(*entry));
         xasprintf(&entry->data, "%s", ver);
         TAILQ_INSERT_TAIL(list, entry, items);
 
@@ -231,7 +231,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
             assert(ver != NULL);
         }
 
-        entry = xalloc(sizeof(*entry));
+        entry = (string_entry_t *) xalloc(sizeof(*entry));
         xasprintf(&entry->data, "%s", ver);
         TAILQ_INSERT_TAIL(list, entry, items);
 
@@ -263,7 +263,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
             assert(ver != NULL);
         }
 
-        entry = xalloc(sizeof(*entry));
+        entry = (string_entry_t *) xalloc(sizeof(*entry));
         xasprintf(&entry->data, "%s", ver);
         TAILQ_INSERT_TAIL(list, entry, items);
 
@@ -294,7 +294,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
             assert(ver != NULL);
         }
 
-        entry = xalloc(sizeof(*entry));
+        entry = (string_entry_t *) xalloc(sizeof(*entry));
         xasprintf(&entry->data, "%s", ver);
         TAILQ_INSERT_TAIL(list, entry, items);
 
@@ -325,7 +325,7 @@ string_list_t *gather_diags(struct rpminspect *ri, const char *progname, const c
             assert(ver != NULL);
         }
 
-        entry = xalloc(sizeof(*entry));
+        entry = (string_entry_t *) xalloc(sizeof(*entry));
         xasprintf(&entry->data, "udevadm version %s", ver);
         TAILQ_INSERT_TAIL(list, entry, items);
 

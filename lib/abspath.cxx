@@ -38,7 +38,7 @@ char *abspath(const char *path)
     assert(tokens != NULL);
 
     /* our new path elements */
-    newpath = xalloc(sizeof(*newpath));
+    newpath = (string_list_t *) xalloc(sizeof(*newpath));
     TAILQ_INIT(newpath);
 
     /* handle each part of the path */

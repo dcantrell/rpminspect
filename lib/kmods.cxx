@@ -24,9 +24,9 @@
 static string_list_t * modinfo_to_list(const struct kmod_list *list, modinfo_to_entries convert)
 {
     const struct kmod_list *iter = NULL;
-    string_list_t *result;
+    string_list_t *result = NULL;
 
-    result = xalloc(sizeof(*result));
+    result = (string_list_t *) xalloc(sizeof(*result));
     TAILQ_INIT(result);
 
     kmod_list_foreach(iter, list) {
@@ -39,10 +39,10 @@ static string_list_t * modinfo_to_list(const struct kmod_list *list, modinfo_to_
 /* Helper for compare_parameters */
 static void convert_module_parameters(string_list_t *list, const struct kmod_list *modinfo)
 {
-    const char *key;
-    const char *value;
-    char *tmp;
-    string_entry_t *entry;
+    const char *key = NULL;
+    const char *value = NULL;
+    char *tmp = NULL;
+    string_entry_t *entry = NULL;
 
     key = kmod_module_info_get_key(modinfo);
 
@@ -50,7 +50,7 @@ static void convert_module_parameters(string_list_t *list, const struct kmod_lis
         return;
     }
 
-    entry = xalloc(sizeof(*entry));
+    entry = (string_entry_t *) xalloc(sizeof(*entry));
 
     /* The value is of the form <name>:<description>. Drop the description */
     value = kmod_module_info_get_value(modinfo);
@@ -249,7 +249,7 @@ kernel_alias_data_t *gather_module_aliases(const char *module_name, const struct
         HASH_FIND_STR(r, value, kentry);
 
         if (kentry == NULL) {
-            kentry = xalloc(sizeof(*kentry));
+            kentry = (kernel_alias_data_t *) xalloc(sizeof(*kentry));
 
             kentry->alias = strdup(value);
             assert(kentry->alias != NULL);

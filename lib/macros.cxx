@@ -137,7 +137,7 @@ int get_specfile_macros(struct rpminspect *ri, const char *specfile)
 
         /* initialize the macros list if necessary */
         if (ri->macros == NULL) {
-            ri->macros = xalloc(sizeof(*ri->macros));
+            ri->macros = (pair_list_t *) xalloc(sizeof(*ri->macros));
             TAILQ_INIT(ri->macros);
         }
 
@@ -165,7 +165,7 @@ int get_specfile_macros(struct rpminspect *ri, const char *specfile)
         entry = TAILQ_FIRST(fields);
 
         /* add the macro */
-        pair = xalloc(sizeof(*pair));
+        pair = (pair_entry_t *) xalloc(sizeof(*pair));
 
         /* the macro key */
         TAILQ_REMOVE(fields, entry, items);

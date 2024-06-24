@@ -16,7 +16,7 @@ rpmpeer_t *init_peers(void)
 {
     rpmpeer_t *peers = NULL;
 
-    peers = xalloc(sizeof(*(peers)));
+    peers = (rpmpeer_t *) xalloc(sizeof(*(peers)));
     TAILQ_INIT(peers);
     return peers;
 }
@@ -104,7 +104,7 @@ void add_peer(rpmpeer_t **peers, deprule_ignore_map_t *ignores, int whichbuild, 
 
     /* Add the peer if it doesn't already exist, otherwise add it */
     if (!found) {
-        peer = xalloc(sizeof(*peer));
+        peer = (rpmpeer_entry_t *) xalloc(sizeof(*peer));
     }
 
     if (whichbuild == BEFORE_BUILD) {

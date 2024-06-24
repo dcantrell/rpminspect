@@ -414,7 +414,7 @@ char *strxmlescape(const char *s)
 
     /* allocate a buffer for the new string */
     len = BUFSIZ;
-    result = xalloc(len);
+    result = (char *) xalloc(len);
 
     /* go through the string to build the new string */
     tmp = result;
@@ -583,7 +583,7 @@ char *strshorten(const char *s, size_t width)
     }
 
     /* allocate the buffer for the shortened string */
-    r = xalloc(width + 1);
+    r = (char *) xalloc(width + 1);
     tail = r;
 
     /* compute width of each half */

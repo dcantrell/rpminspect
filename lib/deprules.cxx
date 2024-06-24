@@ -106,7 +106,7 @@ static deprule_list_t *gather_deprules_by_type(deprule_list_t *rules, Header hdr
 
     if (headerGet(hdr, rtag, req, flags) && headerGet(hdr, otag, op, flags) && headerGet(hdr, vtag, ver, flags)) {
         if (deprules == NULL) {
-            deprules = xalloc(sizeof(*deprules));
+            deprules = (deprule_list_t *) xalloc(sizeof(*deprules));
             TAILQ_INIT(deprules);
         }
 
@@ -145,7 +145,7 @@ static deprule_list_t *gather_deprules_by_type(deprule_list_t *rules, Header hdr
 
             v = rpmtdGetString(ver);
 
-            deprule_entry = xalloc(sizeof(*deprule_entry));
+            deprule_entry = (deprule_entry_t *) xalloc(sizeof(*deprule_entry));
             deprule_entry->type = type;
             deprule_entry->requirement = strdup(r);
             assert(deprule_entry->requirement != NULL);

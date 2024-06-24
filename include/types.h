@@ -291,7 +291,7 @@ enum koji_build_type_t {
 /*
  * fileinfo for a product release. Used by some of the inspections.
  */
-enum fileinfo_field_t {
+enum class fileinfo_field_t : int {
     MODE = 0,
     OWNER = 1,
     GROUP = 2,

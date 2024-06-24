@@ -222,7 +222,7 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
             goto cleanup;
         }
 
-        path_entry = xalloc(sizeof(*path_entry));
+        path_entry = (struct file_data *) xalloc(sizeof(*path_entry));
         path_entry->path = strdup(rpm_path);
         path_entry->index = i;
         HASH_ADD_KEYPTR(hh, path_table, path_entry->path, strlen(path_entry->path), path_entry);
@@ -251,7 +251,7 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
     }
 
     /* Allocate space for the return value */
-    file_list = xalloc(sizeof(rpmfile_t));
+    file_list = (rpmfile_t *) xalloc(sizeof(rpmfile_t));
     TAILQ_INIT(file_list);
 
     while ((archive_result = archive_read_next_header(archive, &entry)) != ARCHIVE_EOF) {
@@ -280,7 +280,7 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         }
 
         /* Create a new rpmfile_entry_t for this file */
-        file_entry = xalloc(sizeof(rpmfile_entry_t));
+        file_entry = (rpmfile_entry_t *) xalloc(sizeof(rpmfile_entry_t));
 
         file_entry->rpm_header = hdr;
         file_entry->idx = path_entry->index;
@@ -441,7 +441,7 @@ static struct file_data *files_to_table(rpmfile_t *list)
     assert(iter);
 
     TAILQ_FOREACH(iter, list, items) {
-        fentry = xalloc(sizeof(*fentry));
+        fentry = (struct file_data *) xalloc(sizeof(*fentry));
         fentry->path = iter->localpath;
         fentry->rpmfile = iter;
         HASH_ADD_KEYPTR(hh, table, fentry->path, strlen(fentry->path), fentry);

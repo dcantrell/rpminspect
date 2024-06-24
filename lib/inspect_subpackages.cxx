@@ -26,22 +26,22 @@ bool inspect_subpackages(struct rpminspect *ri)
 
     assert(ri != NULL);
 
-    before_pkgs = xalloc(sizeof(*before_pkgs));
+    before_pkgs = (string_list_t *) xalloc(sizeof(*before_pkgs));
     TAILQ_INIT(before_pkgs);
 
-    after_pkgs = xalloc(sizeof(*after_pkgs));
+    after_pkgs = (string_list_t *) xalloc(sizeof(*after_pkgs));
     TAILQ_INIT(after_pkgs);
 
     /* Gather up all the package names */
     TAILQ_FOREACH(peer, ri->peers, items) {
         if (peer->before_hdr) {
-            entry = xalloc(sizeof(*entry));
+            entry = (string_entry_t *) xalloc(sizeof(*entry));
             xasprintf(&entry->data, "%s %s", headerGetString(peer->before_hdr, RPMTAG_NAME), get_rpm_header_arch(peer->before_hdr));
             TAILQ_INSERT_TAIL(before_pkgs, entry, items);
         }
 
         if (peer->after_hdr) {
-            entry = xalloc(sizeof(*entry));
+            entry = (string_entry_t *) xalloc(sizeof(*entry));
             xasprintf(&entry->data, "%s %s", headerGetString(peer->after_hdr, RPMTAG_NAME), get_rpm_header_arch(peer->after_hdr));
             TAILQ_INSERT_TAIL(after_pkgs, entry, items);
         }
