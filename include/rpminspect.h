@@ -107,6 +107,7 @@ struct rpminspect *xalloc_rpminspect(struct rpminspect *);
 struct rpminspect *init_rpminspect(struct rpminspect *, const char *, const char *);
 
 /* free.c */
+void free_string_hash(string_hash_t *hash);
 void free_string_map(string_map_t *table);
 void free_regex(regex_t *regex);
 void free_rpminspect(struct rpminspect *);

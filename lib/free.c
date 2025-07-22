@@ -9,24 +9,6 @@
 #include "queue.h"
 #include "rpminspect.h"
 
-static void free_string_hash(string_hash_t *hash)
-{
-    string_hash_t *entry = NULL;
-    string_hash_t *tmp_entry = NULL;
-
-    if (hash == NULL) {
-        return;
-    }
-
-    HASH_ITER(hh, hash, entry, tmp_entry) {
-        HASH_DEL(hash, entry);
-        free(entry->data);
-        free(entry);
-    }
-
-    return;
-}
-
 static void free_string_list_map(string_list_map_t *table)
 {
     string_list_map_t *entry = NULL;
@@ -59,6 +41,24 @@ static void free_deprule_ignore_map(deprule_ignore_map_t *table)
         HASH_DEL(table, entry);
         free_regex(entry->ignore);
         free(entry->pattern);
+        free(entry);
+    }
+
+    return;
+}
+
+void free_string_hash(string_hash_t *hash)
+{
+    string_hash_t *entry = NULL;
+    string_hash_t *tmp_entry = NULL;
+
+    if (hash == NULL) {
+        return;
+    }
+
+    HASH_ITER(hh, hash, entry, tmp_entry) {
+        HASH_DEL(hash, entry);
+        free(entry->data);
         free(entry);
     }
 

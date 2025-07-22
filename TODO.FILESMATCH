@@ -1,0 +1,37 @@
+- Need to get all the macros defined in the spec file read in and
+  substituted.  This is in the disttag inspection so could be moved to
+  a common function in macros.c.
+
+- Define %{name} since that's really common
+- Need to skip %else
+- Need to handle %dir (it will just a glob wildcard)
+- %exclude is a unique one, we could have a separate list of things we
+   know about that should not be in a package.
+- %{_docdir} is also defined sometimes
+- Ignore %ghost entries (those are for removal but are not in the package)
+- Need to handle %config
+- Some %files line uses {,} comma list syntax which is a
+  bash-expansion thing.  Need to handle this somehow.
+- Need to skip %verify (but spaces are allowed, so skip to the closing paren)
+- Comments are allowed using shell syntax; ignore
+- Also need to skip %defattr()
+
+- Macros to define:
+  - %{pkgname}
+  - %{sysmodprobedir}
+  - %{_firmwarepath}
+  - %{alsacfgdir}
+  - ${python3_sitearch}
+  - %{llvm_plugin_dir}
+  - %{clang_plugin_dir}
+  - %{ANNOBIN_GCC_PLUGIN_DIR}
+  - %{annobin_source_dir}
+  - %{ansible_roles_dir}
+  - %{ansible_collection_files}
+  - %{collection_name}
+  - %{collection_version}
+  - %{_pkglicensedir}
+  - %{ant_home}
+  - %{pkg}
+  - %{aprver}
+  - %{apuver}
