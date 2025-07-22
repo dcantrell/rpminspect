@@ -56,7 +56,7 @@ static parser_plugin *read_licensedb(struct rpminspect *ri, const char *db, pars
     assert(db != NULL);
 
     /* build path to license db if necessary */
-    if (db && db[0] == '/') {
+    if (db && db[0] == PATH_SEP) {
         actualdb = strdup(db);
         assert(actualdb != NULL);
     } else {

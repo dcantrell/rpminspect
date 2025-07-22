@@ -423,7 +423,7 @@ static bool check_explicit_lib_deps(struct rpminspect *ri, Header h, deprule_lis
                      * contains the potential_prov's package name.
                      */
                     TAILQ_FOREACH(verify, after_deps, items) {
-                        if (verify->type == TYPE_REQUIRES && *verify->requirement != '/'
+                        if (verify->type == TYPE_REQUIRES && *verify->requirement != PATH_SEP
                             && !strprefix(verify->requirement, SHARED_LIB_PREFIX) && !strstr(verify->requirement, SHARED_LIB_SUFFIX)) {
                             isareq = remove_isa_substring(verify->requirement);
                             assert(isareq != NULL);
@@ -452,7 +452,7 @@ static bool check_explicit_lib_deps(struct rpminspect *ri, Header h, deprule_lis
                                     if (!strcmp(tn, entry->data)) {
                                         TAILQ_FOREACH(verify, peer->after_deprules, items) {
                                             if (verify->type == TYPE_REQUIRES
-                                                && *verify->requirement != '/'
+                                                && *verify->requirement != PATH_SEP
                                                 && !strprefix(verify->requirement, SHARED_LIB_PREFIX) && !strstr(verify->requirement, SHARED_LIB_SUFFIX)) {
                                                 isareq = remove_isa_substring(verify->requirement);
                                                 assert(isareq != NULL);

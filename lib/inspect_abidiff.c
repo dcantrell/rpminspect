@@ -37,7 +37,7 @@ static void add_header_path(const char *root, const char *arch, pair_list_t **he
     assert(root != NULL);
     assert(arch != NULL);
 
-    incpath = joinpath(root, INCLUDE_DIR, NULL);
+    incpath = joindelim(PATH_SEP, root, INCLUDE_DIR, NULL);
     assert(incpath != NULL);
     memset(&sb, 0, sizeof(sb));
 
@@ -120,7 +120,7 @@ static severity_t check_abi(const severity_t sev, const long int threshold, cons
         } else {
             /* do specific matching on the DSO name */
             TAILQ_FOREACH(dsoentry, entry->dsos, items) {
-                if ((dsoentry->data[0] == '/') && strprefix(path, dsoentry->data)) {
+                if ((dsoentry->data[0] == PATH_SEP) && strprefix(path, dsoentry->data)) {
                     return RESULT_INFO;
                 } else {
                     /* do a soft match against the file basename */
@@ -205,7 +205,7 @@ static bool abidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* debug dir1 args */
-    tmp = joinpath(ri->worksubdir, ROOT_SUBDIR, BEFORE_SUBDIR, arch, DEBUG_PATH, NULL);
+    tmp = joindelim(PATH_SEP, ri->worksubdir, ROOT_SUBDIR, BEFORE_SUBDIR, arch, DEBUG_PATH, NULL);
     assert(tmp != NULL);
     cmd = strappend(cmd, " ", ABI_DEBUG_INFO_DIR1, " ", tmp, NULL);
     assert(cmd != NULL);
@@ -222,7 +222,7 @@ static bool abidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* debug dir2 args */
-    tmp = joinpath(ri->worksubdir, ROOT_SUBDIR, AFTER_SUBDIR, arch, DEBUG_PATH, NULL);
+    tmp = joindelim(PATH_SEP, ri->worksubdir, ROOT_SUBDIR, AFTER_SUBDIR, arch, DEBUG_PATH, NULL);
     assert(tmp != NULL);
     cmd = strappend(cmd, " ", ABI_DEBUG_INFO_DIR2, " ", tmp, NULL);
     assert(cmd != NULL);

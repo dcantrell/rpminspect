@@ -727,6 +727,17 @@ bool inspect_debuginfo(struct rpminspect *ri);
  */
 bool inspect_udevrules(struct rpminspect *ri);
 
+/**
+ * @brief Perform the 'filesmatch' inspection.
+ *
+ * Perform path glob matching for every file in binary RPMs with the
+ * glob patterns specified in the %files section(s) of the spec file.
+ *
+ * @param ri Pointer to the struct rpminspect for the program.
+ * @return True if the inspection passed, false otherwise.
+ */
+bool inspect_filesmatch(struct rpminspect *ri);
+
 /** @} */
 
 /**
@@ -1031,6 +1042,12 @@ bool inspect_udevrules(struct rpminspect *ri);
  */
 #define INSPECT_UDEVRULES                   (((uint64_t) 1) << 46)
 
+/**
+ * @def INSPECT_FILESMATCH
+ * 'filesmatch' inspection ID.
+ */
+#define INSPECT_FILESMATCH                  (((uint64_t) 1) << 47)
+
 /** @} */
 
 /**
@@ -1331,6 +1348,12 @@ bool inspect_udevrules(struct rpminspect *ri);
  */
 #define NAME_UDEVRULES                      "udevrules"
 
+/**
+ * @def NAME_FILESMATCH
+ * The string "filesmatch"
+ */
+#define NAME_FILESMATCH                     "filesmatch"
+
 /** @} */
 
 /**
@@ -1624,6 +1647,12 @@ bool inspect_udevrules(struct rpminspect *ri);
  * The description for the 'udevrules' inspection.
  */
 #define DESC_UDEVRULES _("Perform syntax check on udev rules files using udevadm verify.")
+
+/**
+ * @def DESC_FILESMATCH
+ * The description for the 'filesmatch' inspection.
+ */
+#define DESC_FILESMATCH _("Match every file path glob(7) specified in the %%files section(s) of the spec file against every file found in the binary RPMs.  Report any discrepancies as a failure.")
 
 /** @} */
 

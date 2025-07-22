@@ -464,7 +464,7 @@ static int validate_file(const char *fpath, __attribute__((unused)) const struct
         localpath += strlen(build);
 
         /* trim the leading slash */
-        while (*localpath == '/' && *localpath != '\0') {
+        while (*localpath == PATH_SEP && *localpath != '\0') {
             localpath++;
         }
 
@@ -482,7 +482,7 @@ static int validate_file(const char *fpath, __attribute__((unused)) const struct
     }
 
     if (localpath) {
-        while (*localpath == '/' && *localpath != '\0') {
+        while (*localpath == PATH_SEP && *localpath != '\0') {
             localpath++;
         }
     }

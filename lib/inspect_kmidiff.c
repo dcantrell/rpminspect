@@ -207,13 +207,13 @@ static bool kmidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* debug dir args */
-    tmp = joinpath(ri->worksubdir, ROOT_SUBDIR, BEFORE_SUBDIR, arch, DEBUG_PATH, NULL);
+    tmp = joindelim(PATH_SEP, ri->worksubdir, ROOT_SUBDIR, BEFORE_SUBDIR, arch, DEBUG_PATH, NULL);
     assert(tmp != NULL);
     cmd = strappend(cmd, " ", ABI_DEBUG_INFO_DIR1, " ", tmp, NULL);
     assert(cmd != NULL);
     free(tmp);
 
-    tmp = joinpath(ri->worksubdir, ROOT_SUBDIR, AFTER_SUBDIR, arch, DEBUG_PATH, NULL);
+    tmp = joindelim(PATH_SEP, ri->worksubdir, ROOT_SUBDIR, AFTER_SUBDIR, arch, DEBUG_PATH, NULL);
     assert(tmp != NULL);
     cmd = strappend(cmd, " ", ABI_DEBUG_INFO_DIR2, " ", tmp, NULL);
     assert(cmd != NULL);

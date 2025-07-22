@@ -186,7 +186,7 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
     assert(subdir != NULL);
 
     /* Create an output directory for the rpm payload. */
-    *output_dir = joinpath(ri->worksubdir, ROOT_SUBDIR, subdir, get_rpm_header_arch(hdr), NULL);
+    *output_dir = joindelim(PATH_SEP, ri->worksubdir, ROOT_SUBDIR, subdir, get_rpm_header_arch(hdr), NULL);
     assert(*output_dir != NULL);
 
     if (mkdirp(*output_dir, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == -1) {
@@ -285,8 +285,8 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         file_entry->rpm_header = hdr;
         file_entry->idx = path_entry->index;
 
-        if (headerIsSource(hdr) && strrchr(archive_path, '/') != NULL) {
-            file_entry->localpath = strdup(strrchr(archive_path, '/'));
+        if (headerIsSource(hdr) && strrchr(archive_path, PATH_SEP) != NULL) {
+            file_entry->localpath = strdup(strrchr(archive_path, PATH_SEP));
         } else {
             file_entry->localpath = strdup(archive_path);
         }
@@ -318,7 +318,7 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
             if (strprefix(archive_path, "/")) {
                 div = "";
 
-                while (*tmp == '/' && *tmp != '\0') {
+                while (*tmp == PATH_SEP && *tmp != '\0') {
                     tmp++;
                 }
             } else {

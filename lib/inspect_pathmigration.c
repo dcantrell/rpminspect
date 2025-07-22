@@ -33,7 +33,7 @@ static bool pathmigration_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         }
 
         TAILQ_FOREACH(entry, ri->pathmigration_excluded_paths, items) {
-            /* ensure the path prefixes end with '/' */
+            /* ensure the path prefixes end with PATH_SEP */
             if (strsuffix(entry->data, "/")) {
                 old = strdup(entry->data);
             } else {

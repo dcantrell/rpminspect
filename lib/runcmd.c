@@ -51,8 +51,8 @@ char *find_cmd(const char *cmd)
         return NULL;
     }
 
-    /* if cmd contains a '/', use as-is */
-    if (strchr(cmd, '/')) {
+    /* if cmd contains a PATH_SEP, use as-is */
+    if (strchr(cmd, PATH_SEP)) {
         r = strdup(cmd);
         assert(r != NULL);
         return r;
@@ -95,7 +95,7 @@ char *find_cmd(const char *cmd)
     /* iterate over PATH elements looking for the command */
     TAILQ_FOREACH(entry, path, items) {
         /* try the first directory */
-        candidate = joinpath(entry->data, cmd, NULL);
+        candidate = joindelim(PATH_SEP, entry->data, cmd, NULL);
         assert(candidate != NULL);
 
         /* where is it really? */

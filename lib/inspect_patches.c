@@ -192,78 +192,6 @@ static bool is_patch(const rpmfile_entry_t *file)
 }
 
 /*
- * Given a patch filename, expand any RPM macros that may be in the
- * name.  Function returns a newly allocated string that the caller
- * must free.
- */
-static char *expand_patchname_macros(struct rpminspect *ri, const rpmfile_entry_t *specfile, const char *patchname)
-{
-    char *r = NULL;
-    char *tmp = NULL;
-    Header hdr;
-    int nmacros = 0;
-    pair_entry_t *pair = NULL;
-    char *macro = NULL;
-    string_list_t *macros = NULL;
-    string_entry_t *entry = NULL;
-
-    assert(ri != NULL);
-    assert(specfile != NULL);
-    assert(patchname != NULL);
-
-    hdr = specfile->rpm_header;
-    assert(hdr != NULL);
-
-    r = strdup(patchname);
-    assert(r != NULL);
-
-    /* collect macros */
-    macros = get_macros(patchname);
-
-    /* no macros in the name, return a copy of the name */
-    if (macros == NULL || TAILQ_EMPTY(macros)) {
-        return r;
-    }
-
-    /* replace macros we are set to handle */
-    TAILQ_FOREACH(entry, macros, items) {
-        if (!strcmp(entry->data, "version")) {
-            tmp = strreplace(r, "%{version}", headerGetString(hdr, RPMTAG_VERSION));
-            assert(tmp != NULL);
-        } else if (!strcmp(entry->data, "name")) {
-            tmp = strreplace(r, "%{name}", headerGetString(hdr, RPMTAG_NAME));
-            assert(tmp != NULL);
-        } else {
-            /* read in spec file macros */
-            nmacros = get_specfile_macros(ri, specfile->fullpath);
-
-            /* try to sub in any spec file defined macros */
-            if (nmacros > 0) {
-                TAILQ_FOREACH(pair, ri->macros, items) {
-                    if (!strcmp(entry->data, pair->key)) {
-                        xasprintf(&macro, "%%{%s}", pair->key);
-                        assert(macro != NULL);
-                        tmp = strreplace(r, macro, pair->value);
-                        assert(tmp != NULL);
-                        free(macro);
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (tmp) {
-            free(r);
-            r = tmp;
-            tmp = NULL;
-        }
-    }
-
-    list_free(macros, free);
-    return r;
-}
-
-/*
  * Compute number of files and lines changed in a patch.
  */
 static patchstat_t get_patch_stats(const char *patch)
@@ -380,7 +308,7 @@ static bool patches_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         /* patches are defined without leading directories */
         buf = file->localpath;
 
-        while (*buf == '/' && *buf != '\0') {
+        while (*buf == PATH_SEP && *buf != '\0') {
             buf++;
         }
 
@@ -594,7 +522,6 @@ bool inspect_patches(struct rpminspect *ri)
     patches_t *hentry = NULL;
     applied_patches_t *aentry = NULL;
     char *patchfile = NULL;
-    char *patchhead = NULL;
     char *buf = NULL;
     size_t len = 0;
     size_t tl = 0;
@@ -674,25 +601,14 @@ bool inspect_patches(struct rpminspect *ri)
                     HASH_ADD_KEYPTR(hh, patches, hentry->patch, strlen(hentry->patch), hentry);
                 }
             } else {
-                /* read in the spec file */
-                speclines = read_file(file->fullpath);
+                /* read in the spec file with macros expanded */
+                speclines = read_spec(file->fullpath);
 
                 if (speclines == NULL) {
                     err(RI_PROGRAM_ERROR, "*** read_file");
                 }
 
                 TAILQ_FOREACH(specentry, speclines, items) {
-                    fields = NULL;
-
-                    /* no more patch files to check */
-                    if (patchfiles == NULL || TAILQ_EMPTY(patchfiles)) {
-                        break;
-                    }
-
-                    /* trim the spec file line of leading and trailing whitespace */
-                    specentry->data = strtrim(specentry->data);
-                    assert(specentry->data != NULL);
-
                     /* nothing from the changelog on */
                     if (strprefix(specentry->data, SPEC_SECTION_CHANGELOG)) {
                         break;
@@ -713,9 +629,8 @@ bool inspect_patches(struct rpminspect *ri)
                         entry = TAILQ_LAST(fields, string_entry_s);
                         assert(entry != NULL);
 
-                        /* the patch file may contain macros, so try to replace those */
-                        patchhead = expand_patchname_macros(ri, specfile, entry->data);
-                        patchfile = basename(patchhead);
+                        /* get just the patch file name */
+                        patchfile = basename(entry->data);
                         assert(patchfile != NULL);
 
                         /* see if we have this patch */
@@ -752,8 +667,31 @@ bool inspect_patches(struct rpminspect *ri)
                         }
 
                         HASH_ADD_KEYPTR(hh, patches, hentry->patch, strlen(hentry->patch), hentry);
-                        free(patchhead);
-                    } else if (strprefix(specentry->data, SPEC_MACRO_PATCH)) {
+                    }
+                }
+
+                /* clean up */
+                list_free(speclines, free);
+
+                /* read in the spec file without macros expanded */
+                speclines = read_file(file->fullpath);
+
+                if (speclines == NULL) {
+                    err(RI_PROGRAM_ERROR, "*** read_file");
+                }
+
+                TAILQ_FOREACH(specentry, speclines, items) {
+                    /* trim the spec file line of leading and trailing whitespace */
+                    specentry->data = strtrim(specentry->data);
+                    assert(specentry->data != NULL);
+
+                    /* nothing from the changelog on */
+                    if (strprefix(specentry->data, SPEC_SECTION_CHANGELOG)) {
+                        break;
+                    }
+
+                    /* read patch lines */
+                    if (strprefix(specentry->data, SPEC_MACRO_PATCH)) {
                         /* split the line - first field is %patch, second and beyond (optional) is opts */
                         fields = strsplit(specentry->data, " \t");
                         patch = TAILQ_FIRST(fields);
@@ -849,10 +787,10 @@ bool inspect_patches(struct rpminspect *ri)
                         }
 
                         HASH_ADD_INT(applied, num, aentry);
-                    }
 
-                    /* clean up */
-                    list_free(fields, free);
+                        /* clean up */
+                        list_free(fields, free);
+                    }
                 }
 
                 /* clean up the spec file we read in */
