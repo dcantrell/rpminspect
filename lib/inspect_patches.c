@@ -192,78 +192,6 @@ static bool is_patch(const rpmfile_entry_t *file)
 }
 
 /*
- * Given a patch filename, expand any RPM macros that may be in the
- * name.  Function returns a newly allocated string that the caller
- * must free.
- */
-static char *expand_patchname_macros(struct rpminspect *ri, const rpmfile_entry_t *specfile, const char *patchname)
-{
-    char *r = NULL;
-    char *tmp = NULL;
-    Header hdr;
-    int nmacros = 0;
-    pair_entry_t *pair = NULL;
-    char *macro = NULL;
-    string_list_t *macros = NULL;
-    string_entry_t *entry = NULL;
-
-    assert(ri != NULL);
-    assert(specfile != NULL);
-    assert(patchname != NULL);
-
-    hdr = specfile->rpm_header;
-    assert(hdr != NULL);
-
-    r = strdup(patchname);
-    assert(r != NULL);
-
-    /* collect macros */
-    macros = get_macros(patchname);
-
-    /* no macros in the name, return a copy of the name */
-    if (macros == NULL || TAILQ_EMPTY(macros)) {
-        return r;
-    }
-
-    /* replace macros we are set to handle */
-    TAILQ_FOREACH(entry, macros, items) {
-        if (!strcmp(entry->data, "version")) {
-            tmp = strreplace(r, "%{version}", headerGetString(hdr, RPMTAG_VERSION));
-            assert(tmp != NULL);
-        } else if (!strcmp(entry->data, "name")) {
-            tmp = strreplace(r, "%{name}", headerGetString(hdr, RPMTAG_NAME));
-            assert(tmp != NULL);
-        } else {
-            /* read in spec file macros */
-            nmacros = get_specfile_macros(ri, specfile->fullpath);
-
-            /* try to sub in any spec file defined macros */
-            if (nmacros > 0) {
-                TAILQ_FOREACH(pair, ri->macros, items) {
-                    if (!strcmp(entry->data, pair->key)) {
-                        xasprintf(&macro, "%%{%s}", pair->key);
-                        assert(macro != NULL);
-                        tmp = strreplace(r, macro, pair->value);
-                        assert(tmp != NULL);
-                        free(macro);
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (tmp) {
-            free(r);
-            r = tmp;
-            tmp = NULL;
-        }
-    }
-
-    list_free(macros, free);
-    return r;
-}
-
-/*
  * Compute number of files and lines changed in a patch.
  */
 static patchstat_t get_patch_stats(const char *patch)
@@ -714,7 +642,7 @@ bool inspect_patches(struct rpminspect *ri)
                         assert(entry != NULL);
 
                         /* the patch file may contain macros, so try to replace those */
-                        patchhead = expand_patchname_macros(ri, specfile, entry->data);
+                        patchhead = expand_macros(ri, specfile, entry->data, NULL);
                         patchfile = basename(patchhead);
                         assert(patchfile != NULL);
 

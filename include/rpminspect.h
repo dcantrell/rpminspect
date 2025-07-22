@@ -107,6 +107,7 @@ struct rpminspect *xalloc_rpminspect(struct rpminspect *);
 struct rpminspect *init_rpminspect(struct rpminspect *, const char *, const char *);
 
 /* free.c */
+void free_string_hash(string_hash_t *hash);
 void free_string_map(string_map_t *table);
 void free_regex(regex_t *regex);
 void free_rpminspect(struct rpminspect *);
@@ -341,6 +342,7 @@ int gather_builds(struct rpminspect *, bool);
 void load_macros(struct rpminspect *ri);
 string_list_t *get_macros(const char *);
 int get_specfile_macros(struct rpminspect *, const char *);
+char *expand_macros(struct rpminspect *ri, const rpmfile_entry_t *specfile, const char *s, const char *failsafe);
 
 /* inspect_elf.c */
 /*

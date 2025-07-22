@@ -135,6 +135,7 @@ static bool disttag_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     /* Read in spec file macros */
     macrocount = get_specfile_macros(ri, file->fullpath);
 
+
     /* Check for the %{?dist} macro in the Release value */
     contents = read_file(file->fullpath);
 
@@ -181,7 +182,7 @@ static bool disttag_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     }
 
     /* Expand macros in the release value */
-    expanded_release = rpmExpand(release, NULL);
+    expanded_release = expand_macros(ri, file, release, NULL);
 
     /* Set up the result parameters */
     init_result_params(&params);

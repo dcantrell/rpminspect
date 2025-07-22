@@ -671,21 +671,21 @@ extern "C"
  *
  * How macros are defined in spec files.
  */
-#define SPEC_MACRO_DEFINE      "%define"
+#define SPEC_MACRO_DEFINE "%define"
 
 /**
  * @def SPEC_MACRO_GLOBAL
  *
  * How global macros are defined in spec files.
  */
-#define SPEC_MACRO_GLOBAL      "%global"
+#define SPEC_MACRO_GLOBAL "%global"
 
 /**
  * @def SPEC_MACRO_PATCH
  *
  * The %patch macro used to apply patches.
  */
-#define SPEC_MACRO_PATCH       "%patch"
+#define SPEC_MACRO_PATCH "%patch"
 
 /**
  * @def SPEC_MACRO_PATCH_P_ARG
@@ -696,13 +696,48 @@ extern "C"
 #define SPEC_MACRO_PATCH_P_ARG "-P"
 
 /**
+ * @def SPEC_MACRO_IF
+ *
+ * The %if construct for conditional macros.
+ */
+#define SPEC_MACRO_IF "%if"
+
+/**
+ * @def SPEC_MACRO_ELSE
+ *
+ * The %else constrict for conditional macros.
+ */
+#define SPEC_MACRO_ELSE "%else"
+
+/**
+ * @def SPEC_MACRO_ENDIF
+ *
+ * The %endif construct for conditional macros.
+ */
+#define SPEC_MACRO_ENDIF "%endif"
+
+/**
+ * @def SPEC_SECTION_DESCRIPTION
+ *
+ * The package description block.
+ */
+#define SPEC_SECTION_DESCRIPTION "%description"
+
+/**
+ * @def SPEC_SECTION_PACKAGE
+ *
+ * The package block.
+ */
+#define SPEC_SECTION_PACKAGE "%package"
+
+/**
  * @def SPEC_SECTION_PREP
  *
  * Command or series of commands to prepare the software to be built,
  * for example, unpacking the archive in Source0. This directive can
  * contain a shell script.
  */
-#define SPEC_SECTION_PREP      "%prep"
+#define SPEC_SECTION_PREP "%prep"
 
 /**
  * @def SPEC_SECTION_BUILD
@@ -711,7 +746,7 @@ extern "C"
  * into machine code (for compiled languages) or byte code (for some
  * interpreted languages).
  */
-#define SPEC_SECTION_BUILD     "%build"
+#define SPEC_SECTION_BUILD "%build"
 
 /**
  * @def SPEC_SECTION_INSTALL
@@ -725,7 +760,7 @@ extern "C"
  * a package, not when the end-user installs the package. See Working
  * with SPEC files for details.
  */
-#define SPEC_SECTION_INSTALL   "%install"
+#define SPEC_SECTION_INSTALL "%install"
 
 /**
  * @def SPEC_SECTION_CHECK
@@ -733,14 +768,49 @@ extern "C"
  * Command or series of commands to test the software. This normally
  * includes things such as unit tests.
  */
-#define SPEC_SECTION_CHECK     "%check"
+#define SPEC_SECTION_CHECK "%check"
+
+/**
+ * @def SPEC_SECTION_PRE
+ *
+ * The %pre scriptlet block.
+ */
+#define SPEC_SECTION_PRE "%pre"
+
+/**
+ * @def SPEC_SECTION_PREUN
+ *
+ * The %preun scriptlet block.
+ */
+#define SPEC_SECTION_PREUN "%preun"
+
+/**
+ * @def SPEC_SECTION_POST
+ *
+ * The %post scriptlet block.
+ */
+#define SPEC_SECTION_POST "%post"
+
+/**
+ * @def SPEC_SECTION_POSTUN
+ *
+ * The %postun scriptlet block.
+ */
+#define SPEC_SECTION_POSTUN "%postun"
+
+/**
+ * @def SPEC_SECTION_TRIGGERUN
+ *
+ * The %triggerun scriptlet block.
+ */
+#define SPEC_SECTION_TRIGGERUN "%triggerun"
 
 /**
  * @def SPEC_SECTION_FILES
  *
  * How file listings are specified in the spec file.
  */
-#define SPEC_SECTION_FILES     "%files"
+#define SPEC_SECTION_FILES "%files"
 
 /**
  * @def SPEC_SECTION_CHANGELOG
@@ -754,14 +824,14 @@ extern "C"
  *
  * The name of RPMTAG_RELEASE in a spec file.
  */
-#define SPEC_TAG_RELEASE       "Release:"
+#define SPEC_TAG_RELEASE "Release:"
 
 /**
  * @def SPEC_TAG_PATCH
  *
  * The leading text of the RPMTAG_PATCH identifier in a spec file.
  */
-#define SPEC_TAG_PATCH         "Patch"
+#define SPEC_TAG_PATCH "Patch"
 
 /**
  * @def SPEC_DISTTAG
@@ -770,7 +840,7 @@ extern "C"
  * strings.  Common in Fedora Linux and related distributions, but may
  * not be consistently defined in other RPM-based distributions.
  */
-#define SPEC_DISTTAG           "%{?dist}"
+#define SPEC_DISTTAG "%{?dist}"
 
 /**
  * @def SPEC_AUTORELEASE
@@ -778,7 +848,91 @@ extern "C"
  * The Release tag in a spec file may contain this token in place of
  * an explicit release value and SPEC_DISTTAG.
  */
-#define SPEC_AUTORELEASE       "%autorelease"
+#define SPEC_AUTORELEASE "%autorelease"
+
+/**
+ * @def SPEC_FILES_DOC
+ *
+ * The documentation file macro for %files entries.
+ */
+#define SPEC_FILES_DOC "%doc"
+
+/**
+ * @def SPEC_FILES_LICENSE
+ *
+ * The license file macro for %files entries.
+ */
+#define SPEC_FILES_LICENSE "%license"
+
+/**
+ * @def SPEC_FILES_DEFATTR
+ *
+ * The %defattr macro for the %files section(s).
+ */
+#define SPEC_FILES_DEFATTR "%defattr"
+
+/**
+ * @def SPEC_FILES_ATTR
+ *
+ * The %attr macro for %files list entries.  Used to specify ownership
+ * and permissions for the packaged file specification.
+ */
+#define SPEC_FILES_ATTR "%attr"
+
+/**
+ * @def SPEC_FILES_CONFIG
+ *
+ * The %config macro for %files list entries.  Used to specify actions
+ * for configuration files.
+ */
+#define SPEC_FILES_CONFIG "%config"
+
+/**
+ * @def SPEC_FILES_GHOST
+ *
+ * A macro to mark ghost files in a package.  These are files not installed
+ * by the package, but are created by the software in the package so when
+ * the package is removed these ghost files should also be removed.
+ */
+#define SPEC_FILES_GHOST "%ghost"
+
+/**
+ * @def SPEC_FILES_VERIFY
+ *
+ * A %files macro that instructs RPM specifically how to verify the named
+ * file at install time, removal time, and check time.
+ */
+#define SPEC_FILES_VERIFY "%verify"
+
+/**
+ * @def SPEC_FILES_LANG
+ *
+ * The %lang macro for %files section entries.
+ */
+#define SPEC_FILES_LANG "%lang"
+
+/**
+ * @def SPEC_FILES_CAPS
+ *
+ * The %caps macro for %files section entries.
+ */
+#define SPEC_FILES_CAPS "%caps"
+
+/**
+ * @def SPEC_FILES_DIR
+ *
+ * A %files macro used to specify a directory and everything in it should
+ * be packaged.
+ */
+#define SPEC_FILES_DIR "%dir"
+
+/**
+ * @def SPEC_FILES_EXCLUDE
+ *
+ * A %files macro used to specify a path glob of known build artifacts
+ * that should not be packaged in the built RPM.
+ */
+#define SPEC_FILES_EXCLUDE "%exclude"
 
 /** @} */
 
@@ -802,49 +956,49 @@ extern "C"
  * The rpmbuild(1) top directory.  The directory where all other
  * rpmbuild(1) subdirectories live.
  */
-#define RPMBUILD_TOPDIR        "rpmbuild"
+#define RPMBUILD_TOPDIR "rpmbuild"
 
 /**
  * @def RPMBUILD_BUILDDIR
  *
  * The BUILD subdirectory name under RPMBUILD_TOPDIR.
  */
-#define RPMBUILD_BUILDDIR      "BUILD"
+#define RPMBUILD_BUILDDIR "BUILD"
 
 /**
  * @def RPMBUILD_BUILDROOTDIR
  *
  * The BUILDROOT subdirectory name under RPMBUILD_TOPDIR.
  */
-#define RPMBUILD_BUILDROOTDIR  "BUILDROOT"
+#define RPMBUILD_BUILDROOTDIR "BUILDROOT"
 
 /**
  * @def RPMBUILD_RPMDIR
  *
  * The RPMS subdirectory name under RPMBUILD_TOPDIR.
  */
-#define RPMBUILD_RPMDIR        "RPMS"
+#define RPMBUILD_RPMDIR "RPMS"
 
 /**
  * @def RPMBUILD_SOURCEDIR
  *
  * The SOURCES subdirectory name under RPMBUILD_TOPDIR.
  */
-#define RPMBUILD_SOURCEDIR     "SOURCES"
+#define RPMBUILD_SOURCEDIR "SOURCES"
 
 /**
  * @def RPMBUILD_SPECDIR
  *
  * The SPECS subdirectory name under RPMBUILD_TOPDIR.
  */
-#define RPMBUILD_SPECDIR       "SPECS"
+#define RPMBUILD_SPECDIR "SPECS"
 
 /**
  * @def RPMBUILD_SRPMSDIR
  *
  * The SRPMS subdirectory name under RPMBUILD_TOPDIR.
  */
-#define RPMBUILD_SRPMDIR       "SRPMS"
+#define RPMBUILD_SRPMDIR "SRPMS"
 
 /** @} */
 

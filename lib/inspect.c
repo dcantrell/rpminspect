@@ -83,7 +83,8 @@ struct inspect inspections[] = {
     { INSPECT_UPSTREAM,      "upstream",      false, false, &inspect_upstream },
     { INSPECT_VIRUS,         "virus",         true,  true,  &inspect_virus },
     { INSPECT_XML,           "xml",           false, true,  &inspect_xml },
-    { 0, NULL, false, false, NULL }
+    { INSPECT_FILESMATCH,    "filesmatch",    false, true,  &inspect_filesmatch },
+    { 0,                     NULL,            false, false, NULL }
 };
 
 /*
@@ -255,6 +256,8 @@ uint64_t inspection_id(const char *name)
         return INSPECT_DEBUGINFO;
     } else if (!strcmp(name, NAME_UDEVRULES)) {
         return INSPECT_UDEVRULES;
+    } else if (!strcmp(name, NAME_FILESMATCH)) {
+        return INSPECT_FILESMATCH;
     } else {
         return INSPECT_NULL;
     }
@@ -366,6 +369,8 @@ const char *inspection_desc(const uint64_t inspection)
             return DESC_DEBUGINFO;
         case INSPECT_UDEVRULES:
             return DESC_UDEVRULES;
+        case INSPECT_FILESMATCH:
+            return DESC_FILESMATCH;
         default:
             return NULL;
     }
@@ -478,6 +483,8 @@ const char *inspection_header_to_desc(const char *header)
         i = INSPECT_DEBUGINFO;
     } else if (!strcmp(header, NAME_UDEVRULES)) {
         i = INSPECT_UDEVRULES;
+    } else if (!strcmp(header, NAME_FILESMATCH)) {
+        i = INSPECT_FILESMATCH;
     }
 
     return inspection_desc(i);

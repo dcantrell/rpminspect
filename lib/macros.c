@@ -33,7 +33,7 @@ void load_macros(struct rpminspect *ri)
     if (ri->macrofiles) {
         macropath = list_to_string(ri->macrofiles, ":");
         mf = rpmGetPath(macropath, NULL);
-        rpmInitMacros(NULL, mf);
+        rpmInitMacros(rpmGlobalMacroContext, mf);
         free(macropath);
         free(mf);
     }
@@ -89,7 +89,7 @@ int get_specfile_macros(struct rpminspect *ri, const char *specfile)
     }
 
     /* Use a regular expression to match macro lines we will break down */
-    xasprintf(&buf, "(%s|%s)", SPEC_MACRO_DEFINE, SPEC_MACRO_GLOBAL);
+    xasprintf(&buf, "^(%s|%s)", SPEC_MACRO_DEFINE, SPEC_MACRO_GLOBAL);
     reg_result = regcomp(&macro_regex, buf, REG_EXTENDED);
     free(buf);
 
@@ -117,16 +117,10 @@ int get_specfile_macros(struct rpminspect *ri, const char *specfile)
         }
 
         /* trim line endings */
-        sl = specline->data;
-        sl[strcspn(sl, "\r\n")] = 0;
-
-        while (isspace(*sl)) {
-            sl++;
-        }
+        sl = strtrim(specline->data);
 
         /* break up fields */
-        DEBUG_PRINT("sl=|%s|\n", sl);
-        fields = strsplit(sl, " ");
+        fields = strsplit(sl, " \t");
 
         if (list_len(fields) != 3) {
             /* not a macro line */
@@ -228,6 +222,11 @@ string_list_t *get_macros(const char *s)
 
     /* collect all the macro names */
     TAILQ_FOREACH(entry, fields, items) {
+        /* we have cracked open a conditional, ignore */
+        if (strstr(entry->data, ":")) {
+            break;
+        }
+
         if (!strcmp(entry->data, "%") || strsuffix(entry->data, "%")) {
             found = true;
             continue;
@@ -250,4 +249,107 @@ string_list_t *get_macros(const char *s)
 
     list_free(fields, free);
     return macros;
+}
+
+/*
+ * Given a string with RPM macros in it, try to expand as many as
+ * possible and return a new string with those macros expanded.  If
+ * the optional failsafe string is not NULL, replace any macro without
+ * a definition with the contents of the failsafe string.  Caller is
+ * responsible for freeing returned string.
+ *
+ * The use case for this is when reading a spec file and needing to
+ * expand macros similar to what rpmbuild would do.
+ *
+ * @param ri The active rpminspect structure object.
+ * @param specfile The spec file we are reading from the SRPM.
+ * @param s The string possibly containing macros to expand.
+ * @param failsafe An optional backup string to expand undefined
+ *                 macros to, or NULL.
+ * @returns Newly allocated string with expanded macros, or NULL.
+ *          Caller must free.
+ */
+char *expand_macros(struct rpminspect *ri, const rpmfile_entry_t *specfile, const char *s, const char *failsafe)
+{
+    char *r = NULL;
+    char *tmp = NULL;
+    Header hdr;
+    int nmacros = 0;
+    pair_entry_t *pair = NULL;
+    char *macro = NULL;
+    string_list_t *macros = NULL;
+    string_entry_t *entry = NULL;
+
+    assert(ri != NULL);
+    assert(specfile != NULL);
+
+    if (s == NULL) {
+        return NULL;
+    }
+
+    hdr = specfile->rpm_header;
+    assert(hdr != NULL);
+
+    /* collect macros from the string */
+    macros = get_macros(s);
+
+    /* no macros? */
+    if (macros == NULL || TAILQ_EMPTY(macros)) {
+        return strdup(s);
+    }
+
+    /* do a first pass expansion of our source string */
+    r = rpmExpand(s, NULL);
+    assert(r != NULL);
+
+    /* read in spec file macros */
+    nmacros = get_specfile_macros(ri, specfile->fullpath);
+
+    /* replace macros */
+    TAILQ_FOREACH(entry, macros, items) {
+        if (!strcmp(entry->data, "version")) {
+            tmp = strreplace(r, "%{version}", headerGetString(hdr, RPMTAG_VERSION));
+            assert(tmp != NULL);
+        } else if (!strcmp(entry->data, "name")) {
+            tmp = strreplace(r, "%{name}", headerGetString(hdr, RPMTAG_NAME));
+            assert(tmp != NULL);
+        } else if (nmacros > 0) {
+            /* try to sub in any spec file defined macros */
+            TAILQ_FOREACH(pair, ri->macros, items) {
+                if (!strcmp(entry->data, pair->key)) {
+                    xasprintf(&macro, "%%{%s}", pair->key);
+                    assert(macro != NULL);
+                    tmp = strreplace(r, macro, pair->value);
+                    assert(tmp != NULL);
+                    free(macro);
+                    break;
+                }
+            }
+        }
+
+        /*
+         * if we are unable to expand the macro, replace it with the
+         * failsafe string
+         */
+        if (tmp == NULL && failsafe != NULL) {
+            xasprintf(&macro, "%%{%s}", entry->data);
+            assert(macro != NULL);
+            tmp = strreplace(r, macro, failsafe);
+            assert(tmp != NULL);
+            free(macro);
+        }
+
+        /* save the string and continue */
+        if (tmp) {
+            free(r);
+            r = tmp;
+            tmp = NULL;
+        }
+    }
+
+    if (nmacros > 0) {
+        list_free(macros, free);
+    }
+
+    return r;
 }
