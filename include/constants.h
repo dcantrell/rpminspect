@@ -696,6 +696,20 @@ extern "C"
 #define SPEC_MACRO_PATCH_P_ARG "-P"
 
 /**
+ * @def SPEC_MACRO_IF
+ *
+ * The %if construct for conditional macros.
+ */
+#define SPEC_MACRO_IF          "%if"
+
+/**
+ * @def SPEC_MACRO_ENDIF
+ *
+ * The %endif construct for conditional macros.
+ */
+#define SPEC_MACRO_ENDIF       "%endif"
+
+/**
  * @def SPEC_SECTION_PREP
  *
  * Command or series of commands to prepare the software to be built,
@@ -779,6 +793,61 @@ extern "C"
  * an explicit release value and SPEC_DISTTAG.
  */
 #define SPEC_AUTORELEASE       "%autorelease"
+
+/**
+ * @def SPEC_FILES_DOC
+ *
+ * The documentation file macro for %files entries.
+ */
+#define SPEC_FILES_DOC         "%doc"
+
+/**
+ * @def SPEC_FILES_LICENSE
+ *
+ * The license file macro for %files entries.
+ */
+#define SPEC_FILES_LICENSE     "%license"
+
+/**
+ * @def SPEC_FILES_ATTR
+ *
+ * The %attr macro for %files list entries.  Used to specify ownership
+ * and permissions for the packaged file specification.
+ */
+#define SPEC_FILES_ATTR        "%attr"
+
+/**
+ * @def SPEC_FILES_CONFIG
+ *
+ * The %config macro for %files list entries.  Used to specify actions
+ * for configuration files.
+ */
+#define SPEC_FILES_CONFIG      "%config"
+
+/**
+ * @def SPEC_FILES_GHOST
+ *
+ * A macro to mark ghost files in a package.  These are files not installed
+ * by the package, but are created by the software in the package so when
+ * the package is removed these ghost files should also be removed.
+ */
+#define SPEC_FILES_GHOST       "%ghost"
+
+/**
+ * @def SPEC_FILES_VERIFY
+ *
+ * A %files macro that instructs RPM specifically how to verify the named
+ * file at install time, removal time, and check time.
+ */
+#define SPEC_FILES_VERIFY      "%verify"
+
+/**
+ * @def SPEC_FILES_DIR
+ *
+ * A %files macro used to specify a directory and everything in it should
+ * be packaged.
+ */
+#define SPEC_FILES_DIR         "%dir"
 
 /** @} */
 
