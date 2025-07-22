@@ -51,13 +51,13 @@ static bool have_forbidden_directory(const rpmfile_entry_t *file, const char *fo
         }
 
         /* back up the path */
-        tmp = strrchr(local, '/');
+        tmp = strrchr(local, PATH_SEP);
 
         if (tmp == local) {
             break;
         } else {
             *tmp = '\0';
-            tmp = strrchr(full, '/');
+            tmp = strrchr(full, PATH_SEP);
             *tmp = '\0';
         }
     }
@@ -139,15 +139,15 @@ static bool addedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
                 subpath = entry->data;
                 localpath = file->localpath;
 
-                /* ensure the paths do not start with '/' */
-                if (*subpath == '/') {
-                    while (*subpath == '/') {
+                /* ensure the paths do not start with PATH_SEP */
+                if (*subpath == PATH_SEP) {
+                    while (*subpath == PATH_SEP) {
                         subpath++;
                     }
                 }
 
-                if (*localpath == '/') {
-                    while (*localpath == '/') {
+                if (*localpath == PATH_SEP) {
+                    while (*localpath == PATH_SEP) {
                         localpath++;
                     }
                 }
@@ -204,7 +204,7 @@ static bool addedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         TAILQ_FOREACH(entry, ri->security_path_prefix, items) {
             subpath = entry->data;
 
-            while (*subpath != '/') {
+            while (*subpath != PATH_SEP) {
                 subpath++;
             }
 

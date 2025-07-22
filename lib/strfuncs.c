@@ -672,6 +672,7 @@ char *strtrim(char *s)
     }
 
     if (s == NULL) {
+        free(r);
         return NULL;
     }
 
@@ -692,6 +693,7 @@ char *strtrim(char *s)
     }
 
     if (s == NULL) {
+        free(r);
         return NULL;
     }
 

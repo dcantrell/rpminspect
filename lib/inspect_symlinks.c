@@ -53,7 +53,7 @@ static bool is_linkdest_reachable(const rpmpeer_t *peers, const char *target, co
         }
 
         /* create the full path to the link destination */
-        tmp = joinpath(peer->after_root, target, NULL);
+        tmp = joindelim(PATH_SEP, peer->after_root, target, NULL);
         assert(tmp != NULL);
 
         if (linkerr != NULL) {
@@ -171,13 +171,13 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
      * Handle absolute symlinks differently so we can check each subpackage.
      * Relative symlinks will be canonicalized in each subpackage.
      */
-    if (*target == '/') {
+    if (*target == PATH_SEP) {
         /* link is absolute */
         /*
          * Trim leading slashes so readlink() can work from the subpackage
          * root directory.
          */
-        while (*target == '/' && *target != '\0') {
+        while (*target == PATH_SEP && *target != '\0') {
             target++;
         }
 
@@ -194,7 +194,7 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         assert(reltarget != NULL);
 
         while (target && *target != '\0') {
-            if (*target == '/') {
+            if (*target == PATH_SEP) {
                 /* ignore the leading slash */
                 target++;
             } else if (strprefix(target, "./")) {
@@ -218,7 +218,7 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
                 return false;
             } else if (strprefix(target, "../")) {
                 /* back up a directory level */
-                tmp = rindex(reltarget, '/');
+                tmp = rindex(reltarget, PATH_SEP);
                 assert(tmp != NULL);
                 *tmp = '\0';
                 tail = tmp;
@@ -235,9 +235,9 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
                  * Find the directory separator and make it end-of-string.
                  * Now 'target' points to the first directory element.
                  * Take care to account for the final path element
-                 * where there is no '/' so index() will give us NULL.
+                 * where there is no PATH_SEP so index() will give us NULL.
                  */
-                tmp = index(target, '/');
+                tmp = index(target, PATH_SEP);
 
                 if (tmp != NULL) {
                     *tmp = '\0';
@@ -253,7 +253,7 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
                 tail = stpcpy(tail, target);
                 assert(tail != NULL);
 
-                /* advance target past the first directory element and '/' */
+                /* advance target past the first directory element and PATH_SEP */
                 target += strlen(target);
 
                 if (tmp != NULL) {
@@ -270,7 +270,7 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     target = reltarget;
 
     /* drop the leading slashes */
-    while (*target == '/' && *target != '\0') {
+    while (*target == PATH_SEP && *target != '\0') {
         target++;
     }
 

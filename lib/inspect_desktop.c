@@ -71,7 +71,7 @@ static int find_file(const char *fpath, __attribute__((unused)) const struct sta
                     continue;
                 }
 
-                if (*entry->data == '/') {
+                if (*entry->data == PATH_SEP) {
                     tmp = strdup(entry->data);
                 } else {
                     /* everything else would be in /usr/bin */

@@ -107,6 +107,7 @@ struct rpminspect *xalloc_rpminspect(struct rpminspect *);
 struct rpminspect *init_rpminspect(struct rpminspect *, const char *, const char *);
 
 /* free.c */
+void free_string_hash(string_hash_t *hash);
 void free_string_map(string_map_t *table);
 void free_regex(regex_t *regex);
 void free_rpminspect(struct rpminspect *);
@@ -341,6 +342,7 @@ int gather_builds(struct rpminspect *, bool);
 void load_macros(struct rpminspect *ri);
 string_list_t *get_macros(const char *);
 int get_specfile_macros(struct rpminspect *, const char *);
+char *expand_macros(struct rpminspect *ri, const rpmfile_entry_t *specfile, const char *s, const char *failsafe);
 
 /* inspect_elf.c */
 /*
@@ -510,25 +512,8 @@ bool is_remote_rpm(const char *url);
  */
 char *human_size(const unsigned long int bytes);
 
-/* joinpath.c */
-/**
- * @brief Join path substrings in to a single allocated and normalized
- * path string.  Caller must free this string.
- *
- * Given a list of path components as separate strings, join them in to a
- * correct (but unverified) Unix path.  Extra slashes are removed.  Spaces
- * and other special characters are not escaped.  This function allocates
- * memory for the returned value.  The caller must free this memory when
- * done.
- *
- * Usage: path = joinpath(a, b, c, ..., NULL);
- * (where a, b, and c are char *)
- *
- * @param path One or more strings that form path components.  These
- *             will be joined together and delimited with slashes.
- * @return Allocated path string that the caller must free.
- */
-char *joinpath(const char *path, ...);
+/* joindelim.c */
+char *joindelim(const char delim, const char *s, ...);
 
 /* array.c */
 void array(parser_plugin *p, parser_context *ctx, const char *key1, const char *key2, string_list_t **list);

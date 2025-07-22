@@ -1059,7 +1059,7 @@ bool init_fileinfo(struct rpminspect *ri)
                 fnpart = token;
 
                 /* trim leading slashes since we compare to localpath later */
-                while (*token != '/' && *token != '\0') {
+                while (*token != PATH_SEP && *token != '\0') {
                     token++;
                 }
 

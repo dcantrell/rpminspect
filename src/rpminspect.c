@@ -141,7 +141,7 @@ static char *match_product(string_map_t *products, const char *candidate)
 /*
  * Get the product release string by grabbing a possible dist tag from
  * the Release value.  Dist tags begin with '.' and go to the end of the
- * Release value.  Trim any trailing '/' characters in case the user is
+ * Release value.  Trim any trailing PATH_SEP characters in case the user is
  * specifying a build from a local path.
  */
 static char *get_product_release(string_map_t *products, const favor_release_t favor_release, const char *before, const char *after)

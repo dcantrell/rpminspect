@@ -112,7 +112,7 @@ const char *get_debuginfo_path(struct rpminspect *ri, const rpmfile_entry_t *fil
             tmp = pattern;
 
             if (strsuffix(DEBUG_PATH, "/")) {
-                while (*tmp == '/' && *tmp != '\0') {
+                while (*tmp == PATH_SEP && *tmp != '\0') {
                     tmp++;
                 }
             }
@@ -222,13 +222,13 @@ bool match_path(const char *pattern, const char *root, const char *path)
         return true;
     }
 
-    /* A pattern ending with '/' will match a path prefix */
+    /* A pattern ending with PATH_SEP will match a path prefix */
     if (strsuffix(pattern, "/") && strprefix(path, pattern)) {
         return true;
     }
 
     /*
-     * Also handle the incredibly common case of the trailing '/'
+     * Also handle the incredibly common case of the trailing PATH_SEP
      * where users specify an asterisk after the slash to mean
      * everything below this directory.
      */
@@ -313,7 +313,7 @@ bool match_path(const char *pattern, const char *root, const char *path)
  * @param ri The struct rpminspect for the program.
  * @param inspection The name of the inspection currently running.
  * @param path The relative path to check (i.e., localpath).
- * @param root The root directory, optional (pass NULL to use '/').
+ * @param root The root directory, optional (pass NULL to use PATH_SEP).
  * @return True if path should be ignored, false otherwise.
  */
 bool ignore_path(const struct rpminspect *ri, const char *inspection, const char *path, const char *root)

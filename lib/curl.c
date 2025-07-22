@@ -47,7 +47,7 @@ static void setup_progress_bar(const char *src)
     /* generate the verbose message string */
     if (src != NULL) {
         /* the basename of the source URL, which is the file name */
-        archive = rindex(src, '/') + 1;
+        archive = rindex(src, PATH_SEP) + 1;
         assert(archive != NULL);
 
         /* we need to shorten the package basename if too wide */
@@ -192,7 +192,7 @@ void curl_get_file(const bool verbose, const char *src, const char *dst)
             curl_easy_setopt(c, CURLOPT_NOPROGRESS, 0L);
             setup_progress_bar(src);
         } else {
-            archive = rindex(src, '/') + 1;
+            archive = rindex(src, PATH_SEP) + 1;
             assert(archive != NULL);
             printf(">>> %s", archive);
         }

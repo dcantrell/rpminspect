@@ -47,7 +47,7 @@ int mkdirp(const char *path, mode_t mode)
     }
 
     /* handle relative vs. explicit paths, we want explicit */
-    if (*path == '/') {
+    if (*path == PATH_SEP) {
         start = p = strdup(path);
     } else {
         if ((cwd = getcwd(NULL, 0)) == NULL) {
@@ -64,12 +64,12 @@ int mkdirp(const char *path, mode_t mode)
 
     /* handle all the parent directories */
     while (*p != '\0') {
-        if (*p == '/') {
+        if (*p == PATH_SEP) {
             *p = '\0';
             r = stat(start, &sb);
 
             if (r == 0 && S_ISDIR(sb.st_mode)) {
-                *p = '/';
+                *p = PATH_SEP;
                 p++;
                 continue;
             } else if (mkdir(start, mode) == -1) {
@@ -78,7 +78,7 @@ int mkdirp(const char *path, mode_t mode)
                 return -1;
             }
 
-            *p = '/';
+            *p = PATH_SEP;
         }
 
         p++;

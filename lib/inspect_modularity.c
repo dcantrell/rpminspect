@@ -74,7 +74,7 @@ static bool get_static_context(const char *subdir, const char *build)
     assert(build != NULL);
 
     /* create the build path */
-    path = joinpath(subdir, build, NULL);
+    path = joindelim(PATH_SEP, subdir, build, NULL);
     assert(path != NULL);
 
     /* find the modulemd.txt file and read /data/static_context */

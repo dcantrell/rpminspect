@@ -38,7 +38,14 @@
 #include <limits.h>
 #include "rpminspect.h"
 
-char *joinpath(const char *path, ...)
+/*
+ * Join all of the strings starting at s with the character delim.
+ * This function preserves a single delim when joining strings, so if
+ * strings passed in start or end with delim, those will be reduced
+ * down to a single delim joining the string.  The typical use case is
+ * for joining path strings.
+ */
+char *joindelim(const char delim, const char *s, ...)
 {
     va_list ap;
     int i = 0;
@@ -50,54 +57,51 @@ char *joinpath(const char *path, ...)
     char *near = NULL;
     char *far = NULL;
 
-    assert(path != NULL);
+    assert(s != NULL);
 
-    /* Allocate a large buffer to use for building the path. */
+    /* Allocate a large buffer to use for building the string. */
     built = xalloc(PATH_MAX + 1);
 
-    /* Make sure the full path starts with a slash. */
-    if (*path == '/') {
-        /* this for loop trims multiple leading slashes down to just one */
-        while (*(path + 1) == '/') path++;
-    }
-
     /* begin our joined path */
-    tail = stpcpy(built, path);
+    tail = stpcpy(built, s);
 
     /* the remaining elements come in this way */
-    va_start(ap, path);
+    va_start(ap, s);
 
     while ((element = va_arg(ap, char *)) != NULL) {
         /* for the trailing NUL */
         needsep = false;
 
-        /* trim any extra trailing slashes */
-        while (*tail == '/') {
+        /* trim any extra trailing delimiters */
+        while (*tail == delim) {
             *tail = '\0';
             tail--;
         }
 
         /*
-         * This loop trims multiple leading slashes down to just one.
-         * If 'i' is 1, it will preserve 1 leading slash.  Actually, set
-         * this to the number of slashes to preserve.
+         * This loop trims multiple leading delims down to just one.
+         * If 'i' is 1, it will preserve 1 leading delim.  Actually, set
+         * this to the number of delims to preserve.
          */
-        if (*element == '/' && *tail != '/') {
+        if (*element == delim && *tail != delim) {
             i = 1;
         } else {
             i = 0;
         }
 
-        while (*(element + i) == '/') element++;
+        while (*(element + i) == delim) element++;
 
-        /* make sure we have at least one slash in case there are none */
-        if (*element != '/' && *tail != '/') {
+        /* make sure we have at least one delim in case there are none */
+        if (*element != delim && *tail != delim) {
             needsep = true;
         }
 
         /* perform the concatenations */
         if (needsep) {
-            tail = stpcpy(tail, "/");
+            xasprintf(&tmp, "%c", delim);
+            assert(tmp != NULL);
+            tail = stpcpy(tail, tmp);
+            free(tmp);
         }
 
         tail = stpcpy(tail, element);
@@ -105,13 +109,13 @@ char *joinpath(const char *path, ...)
 
     va_end(ap);
 
-    /* it's possible there are repeating slashes, eliminate them */
+    /* it's possible there are repeating delims, eliminate them */
     near = built;
     far = built;
 
     while ((*near = *far)) {
-        if (*near == '/') {
-            while (*far == '/') {
+        if (*near == delim) {
+            while (*far == delim) {
                 far++;
             }
 

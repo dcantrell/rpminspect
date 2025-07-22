@@ -29,7 +29,7 @@ static bool is_source(const rpmfile_entry_t *file)
     }
 
     /* The RPM header stores basenames */
-    shortname = rindex(file->fullpath, '/') + 1;
+    shortname = rindex(file->fullpath, PATH_SEP) + 1;
 
     /* See if this file is a Source file */
     if (list_contains(source, shortname)) {

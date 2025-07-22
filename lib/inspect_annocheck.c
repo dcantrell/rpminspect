@@ -77,7 +77,7 @@ static char *build_annocheck_cmd(const char *cmd, const char *opts, const char *
     }
 
     if (debugpath) {
-        tmp = joinpath(debugpath, DEBUG_PATH, NULL);
+        tmp = joindelim(PATH_SEP, debugpath, DEBUG_PATH, NULL);
         r = strappend(r, " --debug-dir=", tmp, NULL);
         free(tmp);
     }

@@ -53,7 +53,7 @@ static char *get_shell(const struct rpminspect *ri, const char *fullpath)
         buf[strcspn(buf, "\n")] = '\0';
 
         /* shift over to start to the shell (skip #! and spaces) */
-        while (*buf != '/' && *buf != ' ' && *buf != '\0') {
+        while (*buf != PATH_SEP && *buf != ' ' && *buf != '\0') {
             buf++;
         }
 

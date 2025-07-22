@@ -145,7 +145,7 @@ static bool changedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     /* Set the waiver type if this is a file of security concern */
     if (ri->security_path_prefix) {
         TAILQ_FOREACH(entry, ri->security_path_prefix, items) {
-            while (*entry->data != '/') {
+            while (*entry->data != PATH_SEP) {
                 entry->data++;
             }
 
@@ -278,8 +278,8 @@ static bool changedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         if (exitcode || params.details) {
             if (type) {
                 /* get a reporting type for the message */
-                if (rindex(type, '/')) {
-                    comptype = rindex(type, '/') + 1;
+                if (rindex(type, PATH_SEP)) {
+                    comptype = rindex(type, PATH_SEP) + 1;
                     assert(comptype != NULL);
                 } else {
                     comptype = type;
