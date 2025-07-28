@@ -41,7 +41,6 @@ following environments:
 | [Alpine Linux](https://www.alpinelinux.org/)           | stable              | [![Alpine Linux](https://github.com/rpminspect/rpminspect/actions/workflows/alpinelinux.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/alpinelinux.yml) |
 | [AlmaLinux](https://almalinux.org/)                    | 8<br />9<br />10    | [![AlmaLinux](https://github.com/rpminspect/rpminspect/actions/workflows/almalinux.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/almalinux.yml) |
 | [Mageia Linux](https://www.mageia.org/)                | stable              | [![Mageia Linux](https://github.com/rpminspect/rpminspect/actions/workflows/mageia.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/mageia.yml) |
-| [Oracle Linux](https://www.oracle.com/linux/)          | 8<br />9<br />10    | [![Oracle Linux](https://github.com/rpminspect/rpminspect/actions/workflows/oraclelinux.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/oraclelinux.yml) |
 | [FreeBSD](https://www.freebsd.org/)                    | 13.x                | [![FreeBSD](https://github.com/rpminspect/rpminspect/actions/workflows/freebsd.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/freebsd.yml) |
 
 
