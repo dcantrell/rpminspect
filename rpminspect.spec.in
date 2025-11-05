@@ -88,9 +88,16 @@ Recommends:     xhtml1-dtds
 Recommends:     html401-dtds
 %endif
 
-# Required to support things like %%autorelease in spec files
-%if 0%{?fedora} >= 33
-Recommends:     rpm_macro(autorelease)
+# Necessary to support preprocessing spec files for parsing.  The
+# package providing this dependency in turn pulls in other packages
+# that define macros.  This is similar to the rpm-build package
+# carrying a Requires on the same package.  It ensures the build
+# environment has all of the necessary macro definitions that the
+# package spec file may use.
+%if 0%{?rhel} >= 8 || 0%{?epel} >= 8 || 0%{?fedora}
+Recommends:     system-rpm-config
+%else
+Requires:       system-rpm-config
 %endif
 
 # These programs are only required for the 'shellsyntax' functionality.
