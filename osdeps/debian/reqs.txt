@@ -1,4 +1,5 @@
 abigail-tools
+bsdextrautils
 clamav
 desktop-file-utils
 elfutils

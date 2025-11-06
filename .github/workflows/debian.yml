@@ -45,6 +45,7 @@ jobs:
             - name: git clone requirements
               run: |
                   apt update
+                  apt upgrade -y
                   apt install -y git
 
             # This means clone the git repo
