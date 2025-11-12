@@ -48,6 +48,9 @@ jobs:
             # Requirements before the git clone can happen
             - name: git clone requirements
               run: |
+                  # Update everything
+                  zypper update -y
+
                   # Need to explicitly install which because git will
                   # pull in busybox-which by default, but rpm-build
                   # wants big which.

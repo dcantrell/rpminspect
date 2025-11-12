@@ -50,5 +50,4 @@ cd "${CWD}" || exit 1
 rm -rf cdson
 
 # Update the clamav database
-service clamav-freshclam stop
 freshclam

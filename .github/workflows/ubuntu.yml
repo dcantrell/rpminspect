@@ -44,6 +44,7 @@ jobs:
             - name: git clone requirements
               run: |
                   env DEBIAN_FRONTEND=noninteractive apt update
+                  env DEBIAN_FRONTEND=noninteractive apt upgrade -y
                   env DEBIAN_FRONTEND=noninteractive apt install -y git
 
             # This means clone the git repo
