@@ -52,7 +52,11 @@ jobs:
                   # https://www.reddit.com/r/Gentoo/comments/1jakhhs/circular_dependency_between_curl_cmake_and/
                   echo 'USE="-http2 -http3 -quic -curl_quic_openssl"' >> /etc/portage/make.conf
 
+                  # update everything first (sometimes the images have things a bit out of sync with portage)
                   emerge-webrsync
+                  emerge -uDN world
+
+                  # need git to get things going
                   emerge dev-vcs/git
 
             # This means clone the git repo
