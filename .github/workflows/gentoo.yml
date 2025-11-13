@@ -54,7 +54,7 @@ jobs:
 
                   # update everything first (sometimes the images have things a bit out of sync with portage)
                   emerge-webrsync
-                  emerge -uDN world
+                  emerge -uD world
 
                   # need git to get things going
                   emerge dev-vcs/git
