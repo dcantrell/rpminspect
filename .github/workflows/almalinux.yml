@@ -19,6 +19,8 @@ on:
             - 'doc/**'
             - 'po/**'
             - 'regress/**'
+            - 'osdeps/**'
+            - '.github/**'
 
 jobs:
     linux:
