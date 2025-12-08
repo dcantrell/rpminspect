@@ -13,6 +13,7 @@ libcap-dev
 libclamav-dev
 libcunit1-dev
 libcurl4-openssl-dev
+libdw-dev
 libelf-dev
 libffi-dev
 libicu-dev
@@ -36,5 +37,6 @@ python3-timeout-decorator
 rc
 rpm
 tcsh
+udev
 valgrind
 zsh

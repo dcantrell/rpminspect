@@ -63,6 +63,20 @@ ninja -C build install
 cd "${CWD}" || exit 1
 rm -rf cdson
 
+# Install gcc plugin dev files needed for annobin
+GCC_VER="$(gcc --version | head -n 1 | rev | cut -d ' ' -f 1 | rev | cut -d '.' -f 1)"
+apt install -y gcc-${GCC_VER}-plugin-dev
+
+# Build and install annocheck
+git clone git://sourceware.org/git/annobin.git
+cd annobin || exit 1
+meson setup -D clang-plugin=false -D llvm-plugin=false -D docs=false -D debuginfod=disabled build
+ninja -C build -v
+ninja -C build install
+install -D -m 0755 "${CWD}"/build/annocheck/annocheck /usr/local/bin/annocheck
+cd "${CWD}" || exit 1
+rm -rf annobin
+
 # This change to /usr/lib/rpm/macros was introduced on 24-Aug-2024 in
 # commit 1a9803d0f8daf15bb706dc17783ab19589906487 to rpm, but it
 # causes problems for the rpminspect test suite.  Undo the change.
