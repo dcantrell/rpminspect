@@ -158,6 +158,7 @@ static struct archive *new_archive_reader(void)
 rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const char *subdir, char **output_dir)
 {
     rpmtd td = NULL;
+    int src = 0;
 
     const char *rpm_path = NULL;
     struct file_data *path_table = NULL;
@@ -184,6 +185,9 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
     assert(pkg != NULL);
     assert(hdr != NULL);
     assert(subdir != NULL);
+
+    /* Capture the RPM header type for use later when creating the tar file */
+    src = headerIsSource(hdr);
 
     /* Create an output directory for the rpm payload. */
     *output_dir = joindelim(PATH_SEP, ri->worksubdir, ROOT_SUBDIR, subdir, get_rpm_header_arch(hdr), NULL);
@@ -270,7 +274,12 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         archive_path = archive_entry_pathname(entry);
 
         if (strprefix(archive_path, "./")) {
+            /* binary RPMs carry a leading slash, source RPMs just have bare files */
             archive_path += 1;
+
+            if (src == 1) {
+                archive_path += 1;
+            }
         }
 
         HASH_FIND_STR(path_table, archive_path, path_entry);
