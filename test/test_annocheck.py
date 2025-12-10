@@ -30,7 +30,7 @@ class AnnocheckHardenedCompareRPMs(TestCompareRPMs):
             self.extra_cfg["annocheck"] = {}
             self.extra_cfg["annocheck"]["jobs"] = [
                 {
-                    "hardened": "--ignore-unknown --verbose --skip-cf-protection --skip-property-note"  # noqa: E501
+                    "hardened": "--ignore-unknown --verbose --skip-cf-protection --skip-property-note --skip-implicit-values"  # noqa: E501
                 }
             ]
 
@@ -55,7 +55,7 @@ class AnnocheckHardenedCompareKoji(TestCompareKoji):
             self.extra_cfg["annocheck"] = {}
             self.extra_cfg["annocheck"]["jobs"] = [
                 {
-                    "hardened": "--ignore-unknown --verbose --skip-cf-protection --skip-property-note"  # noqa: E501
+                    "hardened": "--ignore-unknown --verbose --skip-cf-protection --skip-property-note --skip-implicit-values"  # noqa: E501
                 }
             ]
 
@@ -106,7 +106,7 @@ class AnnocheckHardenedRPMs(TestRPMs):
             self.extra_cfg["annocheck"] = {}
             self.extra_cfg["annocheck"]["jobs"] = [
                 {
-                    "hardened": "--ignore-unknown --verbose --skip-cf-protection --skip-property-note"  # noqa: E501
+                    "hardened": "--ignore-unknown --verbose --skip-cf-protection --skip-property-note --skip-implicit-values"  # noqa: E501
                 }
             ]
 
@@ -130,7 +130,7 @@ class AnnocheckHardenedKoji(TestKoji):
             self.extra_cfg["annocheck"] = {}
             self.extra_cfg["annocheck"]["jobs"] = [
                 {
-                    "hardened": "--ignore-unknown --verbose --skip-cf-protection --skip-property-note"  # noqa: E501
+                    "hardened": "--ignore-unknown --verbose --skip-cf-protection --skip-property-note --skip-implicit-values"  # noqa: E501
                 }
             ]
 
