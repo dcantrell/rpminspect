@@ -39,10 +39,10 @@ static string_list_t * modinfo_to_list(const struct kmod_list *list, modinfo_to_
 /* Helper for compare_parameters */
 static void convert_module_parameters(string_list_t *list, const struct kmod_list *modinfo)
 {
-    const char *key;
-    const char *value;
-    char *tmp;
-    string_entry_t *entry;
+    const char *key = NULL;
+    const char *value = NULL;
+    const char *tmp = NULL;
+    string_entry_t *entry = NULL;
 
     key = kmod_module_info_get_key(modinfo);
 
