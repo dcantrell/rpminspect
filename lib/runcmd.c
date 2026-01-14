@@ -165,6 +165,14 @@ char *run_cmd_vp(int *exitcode, const char *workdir, char **argv)
         }
     }
 
+    /* find the command */
+    cmd = find_cmd(argv[0]);
+
+    if (cmd == NULL) {
+        xasprintf(&output, "%s NOT FOUND", argv[0]);
+        return output;
+    }
+
     /* create pipes to interact with the child */
     if (pipe(pfd) == -1) {
         if (exitcode) {
@@ -193,9 +201,6 @@ char *run_cmd_vp(int *exitcode, const char *workdir, char **argv)
 
         setlinebuf(stdout);
         setlinebuf(stderr);
-
-        /* find the command */
-        cmd = find_cmd(argv[0]);
 
         /* change to the working directory */
         if (chdir(workdir) == -1) {
