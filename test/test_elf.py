@@ -607,7 +607,7 @@ class LostPICCompareRPMs(TestCompareRPMs):
         installPath = "usr/lib/libsimple.a"
 
         self.before_rpm.add_source(rpmfluff.SourceFile("simple.c", test_library_source))
-        self.before_rpm.section_build += "cc -m32 -fPIC -c simple.c\n"
+        self.before_rpm.section_build += "cc -m32 -fPIC -Wl,-z,notext -c simple.c\n"
         self.before_rpm.section_build += "ar -crs libsimple.a simple.o\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
@@ -619,7 +619,7 @@ class LostPICCompareRPMs(TestCompareRPMs):
 
         self.after_rpm.add_source(rpmfluff.SourceFile("simple.c", test_library_source))
         self.after_rpm.section_build += (
-            "cc -m32 -shared -fno-PIC -o simple.o simple.c\n"
+            "cc -m32 -shared -fno-PIC -Wl,-z,notext -o simple.o simple.c\n"
         )
         self.after_rpm.section_build += "chmod 0644 simple.o\n"
         self.after_rpm.section_build += "ar -crs libsimple.a simple.o\n"
@@ -644,7 +644,7 @@ class SecuritySKIPLostPICCompareRPMs(TestCompareRPMs):
         installPath = "usr/lib/libskip.a"
 
         self.before_rpm.add_source(rpmfluff.SourceFile("simple.c", test_library_source))
-        self.before_rpm.section_build += "cc -m32 -fPIC -c simple.c\n"
+        self.before_rpm.section_build += "cc -m32 -fPIC -Wl,-z,notext -c simple.c\n"
         self.before_rpm.section_build += "ar -crs libsimple.a simple.o\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
@@ -656,7 +656,7 @@ class SecuritySKIPLostPICCompareRPMs(TestCompareRPMs):
 
         self.after_rpm.add_source(rpmfluff.SourceFile("simple.c", test_library_source))
         self.after_rpm.section_build += (
-            "cc -m32 -shared -fno-PIC -o simple.o simple.c\n"
+            "cc -m32 -shared -fno-PIC -Wl,-z,notext -o simple.o simple.c\n"
         )
         self.after_rpm.section_build += "chmod 0644 simple.o\n"
         self.after_rpm.section_build += "ar -crs libsimple.a simple.o\n"
@@ -680,7 +680,7 @@ class SecurityINFORMLostPICCompareRPMs(TestCompareRPMs):
         installPath = "usr/lib/libinform.a"
 
         self.before_rpm.add_source(rpmfluff.SourceFile("simple.c", test_library_source))
-        self.before_rpm.section_build += "cc -m32 -fPIC -c simple.c\n"
+        self.before_rpm.section_build += "cc -m32 -fPIC -Wl,-z,notext -c simple.c\n"
         self.before_rpm.section_build += "ar -crs libsimple.a simple.o\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
@@ -692,7 +692,7 @@ class SecurityINFORMLostPICCompareRPMs(TestCompareRPMs):
 
         self.after_rpm.add_source(rpmfluff.SourceFile("simple.c", test_library_source))
         self.after_rpm.section_build += (
-            "cc -m32 -shared -fno-PIC -o simple.o simple.c\n"
+            "cc -m32 -shared -fno-PIC -Wl,-z,notext -o simple.o simple.c\n"
         )
         self.after_rpm.section_build += "chmod 0644 simple.o\n"
         self.after_rpm.section_build += "ar -crs libsimple.a simple.o\n"
@@ -717,7 +717,7 @@ class SecurityVERIFYLostPICCompareRPMs(TestCompareRPMs):
         installPath = "usr/lib/libverify.a"
 
         self.before_rpm.add_source(rpmfluff.SourceFile("simple.c", test_library_source))
-        self.before_rpm.section_build += "cc -m32 -fPIC -c simple.c\n"
+        self.before_rpm.section_build += "cc -m32 -fPIC -Wl,-z,notext -c simple.c\n"
         self.before_rpm.section_build += "ar -crs libsimple.a simple.o\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
@@ -729,7 +729,7 @@ class SecurityVERIFYLostPICCompareRPMs(TestCompareRPMs):
 
         self.after_rpm.add_source(rpmfluff.SourceFile("simple.c", test_library_source))
         self.after_rpm.section_build += (
-            "cc -m32 -shared -fno-PIC -o simple.o simple.c\n"
+            "cc -m32 -shared -fno-PIC -Wl,-z,notext -o simple.o simple.c\n"
         )
         self.after_rpm.section_build += "chmod 0644 simple.o\n"
         self.after_rpm.section_build += "ar -crs libsimple.a simple.o\n"
@@ -754,7 +754,7 @@ class SecurityFAILLostPICCompareRPMs(TestCompareRPMs):
         installPath = "usr/lib/libfail.a"
 
         self.before_rpm.add_source(rpmfluff.SourceFile("simple.c", test_library_source))
-        self.before_rpm.section_build += "cc -m32 -fPIC -c simple.c\n"
+        self.before_rpm.section_build += "cc -m32 -fPIC -Wl,-z,notext -c simple.c\n"
         self.before_rpm.section_build += "ar -crs libsimple.a simple.o\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
@@ -766,7 +766,7 @@ class SecurityFAILLostPICCompareRPMs(TestCompareRPMs):
 
         self.after_rpm.add_source(rpmfluff.SourceFile("simple.c", test_library_source))
         self.after_rpm.section_build += (
-            "cc -m32 -shared -fno-PIC -o simple.o simple.c\n"
+            "cc -m32 -shared -fno-PIC -Wl,-z,notext -o simple.o simple.c\n"
         )
         self.after_rpm.section_build += "chmod 0644 simple.o\n"
         self.after_rpm.section_build += "ar -crs libsimple.a simple.o\n"
@@ -791,7 +791,7 @@ class LostPICCompareKoji(TestCompareKoji):
         installPath = "usr/lib/libsimple.a"
 
         self.before_rpm.add_source(rpmfluff.SourceFile("simple.c", test_library_source))
-        self.before_rpm.section_build += "cc -m32 -fPIC -c simple.c\n"
+        self.before_rpm.section_build += "cc -m32 -fPIC -Wl,-z,notext -c simple.c\n"
         self.before_rpm.section_build += "ar -crs libsimple.a simple.o\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
@@ -803,7 +803,7 @@ class LostPICCompareKoji(TestCompareKoji):
 
         self.after_rpm.add_source(rpmfluff.SourceFile("simple.c", test_library_source))
         self.after_rpm.section_build += (
-            "cc -m32 -shared -fno-PIC -o simple.o simple.c\n"
+            "cc -m32 -shared -fno-PIC -Wl,-z,notext -o simple.o simple.c\n"
         )
         self.after_rpm.section_build += "chmod 0644 simple.o\n"
         self.after_rpm.section_build += "ar -crs libsimple.a simple.o\n"
@@ -830,9 +830,7 @@ class HasTEXTRELRPMs(TestRPMs):
 
         # Can't use rpmfluff here because it always adds -fPIC
         self.rpm.add_source(rpmfluff.SourceFile("simple.c", simple_library_source))
-        self.rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.rpm.create_parent_dirs(installPath)
         self.rpm.section_install += "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
         sub = self.rpm.get_subpackage(None)
@@ -853,9 +851,7 @@ class SecuritySKIPHasTEXTRELRPMs(TestRPMs):
 
         # Can't use rpmfluff here because it always adds -fPIC
         self.rpm.add_source(rpmfluff.SourceFile("simple.c", simple_library_source))
-        self.rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.rpm.create_parent_dirs(installPath)
         self.rpm.section_install += "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
         sub = self.rpm.get_subpackage(None)
@@ -875,9 +871,7 @@ class SecurityINFORMHasTEXTRELRPMs(TestRPMs):
 
         # Can't use rpmfluff here because it always adds -fPIC
         self.rpm.add_source(rpmfluff.SourceFile("simple.c", simple_library_source))
-        self.rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.rpm.create_parent_dirs(installPath)
         self.rpm.section_install += "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
         sub = self.rpm.get_subpackage(None)
@@ -898,9 +892,7 @@ class SecurityVERIFYHasTEXTRELRPMs(TestRPMs):
 
         # Can't use rpmfluff here because it always adds -fPIC
         self.rpm.add_source(rpmfluff.SourceFile("simple.c", simple_library_source))
-        self.rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.rpm.create_parent_dirs(installPath)
         self.rpm.section_install += "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
         sub = self.rpm.get_subpackage(None)
@@ -921,9 +913,7 @@ class SecurityFAILHasTEXTRELRPMs(TestRPMs):
 
         # Can't use rpmfluff here because it always adds -fPIC
         self.rpm.add_source(rpmfluff.SourceFile("simple.c", simple_library_source))
-        self.rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.rpm.create_parent_dirs(installPath)
         self.rpm.section_install += "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
         sub = self.rpm.get_subpackage(None)
@@ -946,9 +936,7 @@ class HasTEXTRELCompareRPMs(TestCompareRPMs):
         self.before_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.before_rpm.section_build += (
-            "cc -m32 -fPIC -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.before_rpm.section_build += "cc -m32 -fPIC -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -960,9 +948,7 @@ class HasTEXTRELCompareRPMs(TestCompareRPMs):
         self.after_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.after_rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.after_rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.after_rpm.create_parent_dirs(installPath)
         self.after_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -987,9 +973,7 @@ class SecuritySKIPHasTEXTRELCompareRPMs(TestCompareRPMs):
         self.before_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.before_rpm.section_build += (
-            "cc -m32 -fPIC -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.before_rpm.section_build += "cc -m32 -fPIC -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1001,9 +985,7 @@ class SecuritySKIPHasTEXTRELCompareRPMs(TestCompareRPMs):
         self.after_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.after_rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.after_rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.after_rpm.create_parent_dirs(installPath)
         self.after_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1027,9 +1009,7 @@ class SecurityINFORMHasTEXTRELCompareRPMs(TestCompareRPMs):
         self.before_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.before_rpm.section_build += (
-            "cc -m32 -fPIC -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.before_rpm.section_build += "cc -m32 -fPIC -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1041,9 +1021,7 @@ class SecurityINFORMHasTEXTRELCompareRPMs(TestCompareRPMs):
         self.after_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.after_rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.after_rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.after_rpm.create_parent_dirs(installPath)
         self.after_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1068,9 +1046,7 @@ class SecurityVERIFYHasTEXTRELCompareRPMs(TestCompareRPMs):
         self.before_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.before_rpm.section_build += (
-            "cc -m32 -fPIC -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.before_rpm.section_build += "cc -m32 -fPIC -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1082,9 +1058,7 @@ class SecurityVERIFYHasTEXTRELCompareRPMs(TestCompareRPMs):
         self.after_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.after_rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.after_rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.after_rpm.create_parent_dirs(installPath)
         self.after_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1109,9 +1083,7 @@ class SecurityFAILHasTEXTRELCompareRPMs(TestCompareRPMs):
         self.before_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.before_rpm.section_build += (
-            "cc -m32 -fPIC -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.before_rpm.section_build += "cc -m32 -fPIC -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1123,9 +1095,7 @@ class SecurityFAILHasTEXTRELCompareRPMs(TestCompareRPMs):
         self.after_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.after_rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.after_rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.after_rpm.create_parent_dirs(installPath)
         self.after_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1150,9 +1120,7 @@ class HasTEXTRELCompareKoji(TestCompareKoji):
         self.before_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.before_rpm.section_build += (
-            "cc -m32 -fPIC -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.before_rpm.section_build += "cc -m32 -fPIC -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1164,9 +1132,7 @@ class HasTEXTRELCompareKoji(TestCompareKoji):
         self.after_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.after_rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.after_rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.after_rpm.create_parent_dirs(installPath)
         self.after_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1191,9 +1157,7 @@ class SecuritySKIPHasTEXTRELCompareKoji(TestCompareKoji):
         self.before_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.before_rpm.section_build += (
-            "cc -m32 -fPIC -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.before_rpm.section_build += "cc -m32 -fPIC -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1205,9 +1169,7 @@ class SecuritySKIPHasTEXTRELCompareKoji(TestCompareKoji):
         self.after_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.after_rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.after_rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.after_rpm.create_parent_dirs(installPath)
         self.after_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1231,9 +1193,7 @@ class SecurityINFORMHasTEXTRELCompareKoji(TestCompareKoji):
         self.before_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.before_rpm.section_build += (
-            "cc -m32 -fPIC -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.before_rpm.section_build += "cc -m32 -fPIC -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1245,9 +1205,7 @@ class SecurityINFORMHasTEXTRELCompareKoji(TestCompareKoji):
         self.after_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.after_rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.after_rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.after_rpm.create_parent_dirs(installPath)
         self.after_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1272,9 +1230,7 @@ class SecurityVERIFYHasTEXTRELCompareKoji(TestCompareKoji):
         self.before_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.before_rpm.section_build += (
-            "cc -m32 -fPIC -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.before_rpm.section_build += "cc -m32 -fPIC -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1286,9 +1242,7 @@ class SecurityVERIFYHasTEXTRELCompareKoji(TestCompareKoji):
         self.after_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.after_rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.after_rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.after_rpm.create_parent_dirs(installPath)
         self.after_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1313,9 +1267,7 @@ class SecurityFAILHasTEXTRELCompareKoji(TestCompareKoji):
         self.before_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.before_rpm.section_build += (
-            "cc -m32 -fPIC -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.before_rpm.section_build += "cc -m32 -fPIC -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.before_rpm.create_parent_dirs(installPath)
         self.before_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
@@ -1327,9 +1279,7 @@ class SecurityFAILHasTEXTRELCompareKoji(TestCompareKoji):
         self.after_rpm.add_source(
             rpmfluff.SourceFile("simple.c", simple_library_source)
         )
-        self.after_rpm.section_build += (
-            "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -o libsimple.so simple.c\n"
-        )
+        self.after_rpm.section_build += "cc -m32 -fno-pic -shared -Wl,-z,noexecstack -Wl,-z,notext -o libsimple.so simple.c\n"
         self.after_rpm.create_parent_dirs(installPath)
         self.after_rpm.section_install += (
             "cp libsimple.so $RPM_BUILD_ROOT/%s\n" % installPath
