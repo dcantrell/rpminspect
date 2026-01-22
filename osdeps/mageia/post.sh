@@ -55,7 +55,7 @@ TAG="$(git tag -l | grep ^libabigail- | grep -v '\.rc' | sort -n | tail -n 1)"
 git checkout -b "${TAG}" "${TAG}"
 autoreconf -f -i -v
 ./configure --prefix=/usr/local
-make
+make V=1
 make install
 
 # cdson is not [yet] in Mageia

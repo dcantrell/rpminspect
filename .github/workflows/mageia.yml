@@ -45,6 +45,7 @@ jobs:
             # Requirements before the git clone can happen
             - name: git clone requirements
               run: |
+                  dnf upgrade -y
                   dnf install -y git
 
             # This means clone the git repo
