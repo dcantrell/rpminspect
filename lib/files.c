@@ -68,7 +68,11 @@ static rpmfileAttrs get_rpmtag_fileflags(const Header h, const int i)
     rpmFlags tdflags = HEADERGET_MINMEM | HEADERGET_EXT | HEADERGET_ARGV;
 
     assert(h != NULL);
-    assert(i >= 0);
+
+    if (i == -1) {
+        /* means a path that we did not find via RPMTAG_FILENAMES */
+        return 0;
+    }
 
     filenames = rpmtdNew();
 
@@ -181,6 +185,9 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
 
     const int archive_flags = ARCHIVE_EXTRACT_SECURE_NODOTDOT | ARCHIVE_EXTRACT_SECURE_SYMLINKS;
 
+    char *tmp_ap = NULL;
+    int len_ap = 0;
+
     assert(ri != NULL);
     assert(pkg != NULL);
     assert(hdr != NULL);
@@ -231,6 +238,8 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         path_entry->index = i;
         HASH_ADD_KEYPTR(hh, path_table, path_entry->path, strlen(path_entry->path), path_entry);
     }
+
+    rpmtdFree(td);
 
     /* Open the file with libarchive */
     archive = new_archive_reader();
@@ -285,7 +294,17 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         HASH_FIND_STR(path_table, archive_path, path_entry);
 
         if (path_entry == NULL) {
-            continue;
+            /*
+             * the RPM header did not provide us with this archive
+             * member, which could be a directory or something else.
+             * add it to the list but with an idx of -1 to indicate we
+             * are not going to try to look for RPMTAG_FILEFLAGS values
+             * for the path.
+             */
+            path_entry = xalloc(sizeof(*path_entry));
+            path_entry->path = strdup(archive_path);
+            path_entry->index = -1;
+            HASH_ADD_KEYPTR(hh, path_table, path_entry->path, strlen(path_entry->path), path_entry);
         }
 
         /* Create a new rpmfile_entry_t for this file */
@@ -294,8 +313,26 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         file_entry->rpm_header = hdr;
         file_entry->idx = path_entry->index;
 
-        if (headerIsSource(hdr) && strrchr(archive_path, PATH_SEP) != NULL) {
-            file_entry->localpath = strdup(strrchr(archive_path, PATH_SEP));
+        if (strrchr(archive_path, PATH_SEP) != NULL) {
+            if (headerIsSource(hdr)) {
+                file_entry->localpath = strdup(strrchr(archive_path, PATH_SEP));
+            } else {
+                /* trim trailing PATH_SEP characters */
+                tmp_ap = strdup(archive_path);
+                assert(tmp_ap != NULL);
+
+                if (strrchr(tmp_ap, PATH_SEP)) {
+                    len_ap = strlen(tmp_ap) - 1;
+
+                    while (len_ap >= 0 && tmp_ap[len_ap] == PATH_SEP) {
+                        tmp_ap[len_ap] = '\0';
+                        len_ap--;
+                    }
+                }
+
+                file_entry->localpath = strdup(tmp_ap);
+                free(tmp_ap);
+            }
         } else {
             file_entry->localpath = strdup(archive_path);
         }
@@ -309,16 +346,17 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         file_entry->cap = NULL;
 #endif
 
-        file_entry->st_mode = get_rpm_header_num_array_value(file_entry, RPMTAG_FILEMODES);
+        if (file_entry->idx == -1) {
+            /* capture the mode from the archive entry rather than the RPM header */
+            file_entry->st_mode = archive_entry_mode(entry);
+        } else {
+            file_entry->st_mode = get_rpm_header_num_array_value(file_entry, RPMTAG_FILEMODES);
+        }
+
         file_entry->st_size = archive_entry_size(entry);
         file_entry->st_nlink = archive_entry_nlink(entry);
 
         TAILQ_INSERT_TAIL(file_list, file_entry, items);
-
-        /* Are we extracting this file? */
-        if (!(S_ISREG(file_entry->st_mode) || S_ISDIR(file_entry->st_mode) || S_ISLNK(file_entry->st_mode))) {
-            continue;
-        }
 
         /* Prepend output_dir to the path name */
         tmp = archive_path;
@@ -386,8 +424,6 @@ cleanup:
 
         free(payload);
     }
-
-    rpmtdFree(td);
 
     return file_list;
 }

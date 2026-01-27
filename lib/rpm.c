@@ -227,7 +227,10 @@ static int _get_rpm_header_array_value_helper(rpmtd *td, const rpmfile_entry_t *
 
     assert(td != NULL);
     assert(file != NULL);
-    assert(file->idx >= 0);
+
+    if (file->idx == -1) {
+        return -1;
+    }
 
     /* new header transaction */
     *td = rpmtdNew();
