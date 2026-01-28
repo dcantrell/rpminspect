@@ -294,7 +294,7 @@ class RequiresRpminspect(unittest.TestCase):
 
         # write the temporary config file for the test suite
         outstream = open(self.conffile, "w")
-        outstream.write(yaml.dump(cfg).replace("- ", "  - "))
+        outstream.write(yaml.dump(cfg, width=float("inf")).replace("- ", "  - "))
         outstream.close()
 
     def tearDown(self):
