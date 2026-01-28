@@ -675,7 +675,13 @@ bool inspect_annocheck(struct rpminspect *ri)
         annocheck_profile = "el9";
     } else if (strprefix(ri->product_release, "el10")) {
         annocheck_profile = "el10";
-    } else if (strprefix(ri->product_release, "fc") || !strcmp(ri->product_release, "rawhide")) {
+    } else if (strprefix(ri->product_release, "rhivos")) {
+        annocheck_profile = "rhivos";
+    } else if (strprefix(ri->product_release, "fc35")) {
+        annocheck_profile = "f35";
+    } else if (strprefix(ri->product_release, "fc")) {
+        annocheck_profile = "fedora";
+    } else if (!strcmp(ri->product_release, "rawhide")) {
         annocheck_profile = "rawhide";
     }
 #endif
