@@ -1,3 +1,5 @@
+#include "helpers.h"
+
 #include "toml.h"
 #include "toml_private.h"
 
@@ -91,7 +93,7 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 
 	default:
 		if (context->list_type && context->list_type != node->type) {
-			asprintf(parse_error,
+			xasprintf(parse_error,
 					"incompatible types list %s this %s line %d\n",
 					toml_type_to_str(context->list_type),
 					toml_type_to_str(node->type), cur_line);
@@ -137,7 +139,7 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 			break;
 
 		default:
-			asprintf(&parse_error, "context error key %.*s line %d\n", namelen + 1, ts, cur_line);
+			xasprintf(&parse_error, "context error key %.*s line %d\n", namelen + 1, ts, cur_line);
 			fbreak;
 		}
 
@@ -148,7 +150,7 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 			if (strncmp(item->node.name, ts, namelen + 1) != 0)
 				continue;
 
-			asprintf(&parse_error, "duplicate key %s line %d\n", item->node.name, cur_line);
+			xasprintf(&parse_error, "duplicate key %s line %d\n", item->node.name, cur_line);
 			fbreak;
 		}
 
@@ -210,7 +212,7 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 		node.value.floating.precision = precision;
 
 		if (!node.value.floating.precision && !exponent) {
-			asprintf(&parse_error, "bad float\n");
+			xasprintf(&parse_error, "bad float\n");
 			fbreak;
 		}
 
@@ -286,7 +288,7 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 		struct toml_stack_item* context = CONTEXT(&context_stack);
 
 		if (context->list_type && context->list_type != TOML_LIST) {
-			asprintf(&parse_error,
+			xasprintf(&parse_error,
 						"incompatible types list %s this %s line %d\n",
 						toml_type_to_str(context->list_type),
 						toml_type_to_str(TOML_BOOLEAN), cur_line);
@@ -348,7 +350,7 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 
 		if (found)
 		{
-			asprintf(&parse_error, "duplicate entry %s\n", tablename);
+			xasprintf(&parse_error, "duplicate entry %s\n", tablename);
 			fbreak;
 		}
 
@@ -461,7 +463,7 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 	}
 
 	action bad_escape {
-		asprintf(&parse_error, "bad escape \\%c", *p);
+		xasprintf(&parse_error, "bad escape \\%c", *p);
 		fbreak;
 	}
 

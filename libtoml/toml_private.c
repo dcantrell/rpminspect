@@ -1,3 +1,5 @@
+#include "helpers.h"
+
 #include "toml_private.h"
 
 #include <ccan/list/list.h>
@@ -119,7 +121,7 @@ SawTable(struct toml_node* place, char* name, struct toml_node** lastTable, char
 		int found = 0;
 
 		if (strcmp(ancestor, "") == 0) {
-			asprintf(err, "empty implicit table");
+			xasprintf(err, "empty implicit table");
 			free(tofree);
 			return 1;
 		}
@@ -155,13 +157,13 @@ SawTable(struct toml_node* place, char* name, struct toml_node** lastTable, char
 	}
 
 	if (!item_added) {
-		asprintf(err, "Duplicate item %s", name);
+		xasprintf(err, "Duplicate item %s", name);
 		free(tofree);
 		return 2;
 	}
 
 	if (place->type != TOML_TABLE) {
-		asprintf(err, "Attempt to overwrite table %s", name);
+		xasprintf(err, "Attempt to overwrite table %s", name);
 		free(tofree);
 		return 3;
 	}
