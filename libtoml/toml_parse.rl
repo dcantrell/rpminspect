@@ -26,6 +26,7 @@ struct toml_stack_item {
 	struct toml_stack_item* context = CONTEXT(&context_stack);	\
 	list_del(&context->list);									\
 	x = context->node;											\
+	free(context);												\
 } while (0)
 
 static size_t
@@ -169,6 +170,8 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 		if (!add_node_to_tree(&context_stack, &node, name, &parse_error, &malloc_error, cur_line))
 			fbreak;
 
+		name = NULL;
+
 		struct toml_stack_item *context = CONTEXT(&context_stack);
 		if (context->node->type == TOML_LIST)
 			fnext list;
@@ -190,6 +193,8 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 
 		if (!add_node_to_tree(&context_stack, &node, name, &parse_error, &malloc_error, cur_line))
 			fbreak;
+
+		name = NULL;
 
 		if (context->node->type == TOML_LIST)
 			fnext list;
@@ -221,6 +226,8 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 		if (!add_node_to_tree(&context_stack, &node, name, &parse_error, &malloc_error, cur_line))
 			fbreak;
 
+		name = NULL;
+
 		struct toml_stack_item *context = CONTEXT(&context_stack);
 		if (context->node->type == TOML_LIST)
 			fnext list;
@@ -247,6 +254,8 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 		if (!add_node_to_tree(&context_stack, &node, name, &parse_error, &malloc_error, cur_line))
 			fbreak;
 
+		name = NULL;
+
 		struct toml_stack_item *context = CONTEXT(&context_stack);
 		if (context->node->type == TOML_LIST)
 			fnext list;
@@ -272,6 +281,8 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 
 		if (!add_node_to_tree(&context_stack, &node, name, &parse_error, &malloc_error, cur_line))
 			fbreak;
+
+		name = NULL;
 
 		struct toml_stack_item *context = CONTEXT(&context_stack);
 		if (context->node->type == TOML_LIST)
@@ -315,6 +326,10 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 
 		/* push this list onto the stack */
 		struct toml_stack_item *stack_item = make_stack_item(node);
+		if (!stack_item) {
+			malloc_error = 1;
+			fbreak;
+		}
 		PUSH_CONTEXT(stack_item);
 	}
 
@@ -366,6 +381,10 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 		list_add_tail(&place->value.map, &item->map);
 
 		context = make_stack_item(&item->node);
+		if (!context) {
+			malloc_error = 1;
+			fbreak;
+		}
 		PUSH_CONTEXT(context);
 
 		free(tablename);
@@ -406,6 +425,10 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 			fbreak;
 
 		context = make_stack_item(new_table);
+		if (!context) {
+			malloc_error = 1;
+			fbreak;
+		}
 		PUSH_CONTEXT(context);
 	}
 
@@ -430,6 +453,10 @@ add_node_to_tree(struct list_head* context_stack, struct toml_node* node, char* 
 			fbreak;
 
 		context = make_stack_item(new_table_array);
+		if (!context) {
+			malloc_error = 1;
+			fbreak;
+		}
 		PUSH_CONTEXT(context);
 	}
 
@@ -724,10 +751,25 @@ make_stack_item(struct toml_node* node)
 	struct toml_stack_item* ret;
 
 	ret = malloc(sizeof(*ret));
+	if (!ret) {
+		return NULL;
+	}
 	ret->list_type = 0;
 	ret->node = node;
 
 	return ret;
+}
+
+static void
+cleanup_context_stack(struct list_head* context_stack)
+{
+	struct toml_stack_item* item;
+	struct toml_stack_item* tmp;
+
+	list_for_each_entry_safe(item, tmp, context_stack, list) {
+		list_del(&item->list);
+		free(item);
+	}
 }
 
 int
@@ -759,6 +801,10 @@ toml_parse(struct toml_node* toml_root, char* buf, int buflen)
 	list_head_init(&context_stack);
 
 	struct toml_stack_item* root = make_stack_item(toml_root);
+	if (!root) {
+		fprintf(stderr, "malloc failed allocating root stack item\n");
+		return 1;
+	}
 
 	PUSH_CONTEXT(root);
 
@@ -773,30 +819,36 @@ toml_parse(struct toml_node* toml_root, char* buf, int buflen)
 
 	if (malloc_error) {
 		fprintf(stderr, "malloc failed, line %d\n", cur_line);
+		cleanup_context_stack(&context_stack);
 		return 1;
 	}
 
 	if (parse_error) {
 		fprintf(stderr, "%s at %d p = %.5s\n", parse_error, cur_line, p);
 		free(parse_error);
+		cleanup_context_stack(&context_stack);
 		return 1;
 	}
 
 	if (in_text) {
 		fprintf(stderr, "not in start, line %d\n", cur_line);
+		cleanup_context_stack(&context_stack);
 		return 1;
 	}
 
 	/* check we have consumed the entire buffer */
 	if (p != pe) {
 		fprintf(stderr, "entire buffer unconsumed, line %d\n", cur_line);
+		cleanup_context_stack(&context_stack);
 		return 1;
 	}
 
 	if (cs == toml_error) {
 		fprintf(stderr, "PARSE_ERROR, line %d, p = '%.5s'", cur_line, p);
+		cleanup_context_stack(&context_stack);
 		return 1;
 	}
 
+	cleanup_context_stack(&context_stack);
 	return 0;
 }
