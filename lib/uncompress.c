@@ -75,7 +75,7 @@ char *uncompress_file(struct rpminspect *ri, const char *infile, const char *sub
     free(outfile);
 
     /* create the output file that will be uncompressed */
-    base = rindex(infile, PATH_SEP) + 1;
+    base = xstrrchr(infile, PATH_SEP) + 1;
     assert(base != NULL);
 
     if (subdir == NULL) {

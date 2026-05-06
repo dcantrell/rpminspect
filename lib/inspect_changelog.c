@@ -43,9 +43,9 @@ static void init_forbidden_regex(const string_list_t *list)
 
         if (add_regex(rentry->src, &rentry->re) != 0) {
             warnx(_("*** error processing forbidden changelog regular expression: %s"), rentry->src);
+        } else {
+            TAILQ_INSERT_TAIL(forbidden, rentry, items);
         }
-
-        TAILQ_INSERT_TAIL(forbidden, rentry, items);
     }
 
     return;
@@ -113,6 +113,7 @@ static string_list_t *get_changelog(const Header hdr)
     struct tm *logtime = NULL;
     const char *name = NULL;
     const char *line = NULL;
+    int i = 0;
     char tbuf[16];
 
     /* empty header? */
@@ -142,7 +143,16 @@ static string_list_t *get_changelog(const Header hdr)
             line = rpmtdGetString(lines);
 
             /* Convert the time in to an RPM-like string */
-            strftime(tbuf, sizeof(tbuf), "%a %b %d %Y", logtime);
+            if (logtime) {
+                strftime(tbuf, sizeof(tbuf), "%a %b %d %Y", logtime);
+            } else {
+                /* gmtime() failed, but just move on */
+                for (i = 0; i < 15; i++) {
+                    tbuf[i] = '?';
+                }
+
+                tbuf[15] = '\0';
+            }
 
             /* Create a new changelog entry */
             /*
@@ -239,7 +249,7 @@ static char *skip_diff_headers(char *diff_output)
     }
 
     if (!strncmp(diff_walk, "--- ", 4)) {
-        diff_walk = strchr(diff_walk, '\n') + 1;
+        diff_walk = xstrchr(diff_walk, '\n') + 1;
 
         while (*diff_walk == '\n') {
             diff_walk++;
@@ -247,7 +257,7 @@ static char *skip_diff_headers(char *diff_output)
     }
 
     if (!strncmp(diff_walk, "+++ ", 4)) {
-        diff_walk = strchr(diff_walk, '\n') + 1;
+        diff_walk = xstrchr(diff_walk, '\n') + 1;
 
         while (*diff_walk == '\n') {
             diff_walk++;

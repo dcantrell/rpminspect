@@ -29,7 +29,7 @@ static bool is_source(const rpmfile_entry_t *file)
     }
 
     /* The RPM header stores basenames */
-    shortname = rindex(file->fullpath, PATH_SEP) + 1;
+    shortname = xstrrchr(file->fullpath, PATH_SEP) + 1;
 
     /* See if this file is a Source file */
     if (list_contains(source, shortname)) {
@@ -73,18 +73,18 @@ static bool upstream_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         before_sum = checksum(file->peer_file);
         after_sum = checksum(file);
 
-        if (strcmp(before_sum, after_sum)) {
+        if (before_sum && after_sum && strcmp(before_sum, after_sum)) {
             /* capture 'diff -u' output for text files */
             if (is_text_file(ri, file->peer_file) && is_text_file(ri, file)) {
                 diff_head = diff_output = get_file_delta(file->peer_file->fullpath, file->fullpath);
 
                 /* skip the two leading lines */
                 if (strprefix(diff_head, "--- ")) {
-                    diff_head = index(diff_head, '\n') + 1;
+                    diff_head = xstrchr(diff_head, '\n') + 1;
                 }
 
                 if (strprefix(diff_head, "+++ ")) {
-                    diff_head = index(diff_head, '\n') + 1;
+                    diff_head = xstrchr(diff_head, '\n') + 1;
                 }
             }
 

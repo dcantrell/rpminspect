@@ -52,7 +52,7 @@ char *find_cmd(const char *cmd)
     }
 
     /* if cmd contains a PATH_SEP, use as-is */
-    if (strchr(cmd, PATH_SEP)) {
+    if (xstrchr(cmd, PATH_SEP)) {
         r = strdup(cmd);
         assert(r != NULL);
         return r;
@@ -101,6 +101,10 @@ char *find_cmd(const char *cmd)
         /* where is it really? */
         r = realpath(candidate, NULL);
         free(candidate);
+
+        if (r == NULL) {
+            continue;
+        }
 
         /* take a look */
         memset(&sb, 0, sizeof(sb));
@@ -204,7 +208,7 @@ char *run_cmd_vp(int *exitcode, const char *workdir, char **argv)
         setlinebuf(stderr);
 
         /* change to the working directory */
-        if (chdir(workdir) == -1) {
+        if (workdir && (chdir(workdir) == -1)) {
             warn("*** chdir");
         }
 
@@ -308,7 +312,7 @@ char *run_cmd_vp(int *exitcode, const char *workdir, char **argv)
         /* There may be no results from the tool */
         if (output != NULL) {
             /* Trim trailing newline */
-            tail = rindex(output, '\n');
+            tail = xstrrchr(output, '\n');
 
             if (tail != NULL) {
                 tail[strcspn(tail, "\n")] = 0;

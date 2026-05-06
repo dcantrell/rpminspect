@@ -535,12 +535,12 @@ static string_list_t *get_paren_expressions(const char *license)
     start = copy = strdup(license);
     assert(start != NULL);
 
-    while ((start = strchr(start, '(')) != NULL) {
+    while ((start = xstrchr(start, '(')) != NULL) {
         while (*start == '(') {
             start++;
         }
 
-        end = strchr(start, ')');
+        end = xstrchr(start, ')');
 
         if ((end - start) > 0) {
             entry = xalloc(sizeof(*entry));

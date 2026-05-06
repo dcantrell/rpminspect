@@ -313,15 +313,15 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         file_entry->rpm_header = hdr;
         file_entry->idx = path_entry->index;
 
-        if (strrchr(archive_path, PATH_SEP) != NULL) {
+        if (xstrrchr(archive_path, PATH_SEP) != NULL) {
             if (headerIsSource(hdr)) {
-                file_entry->localpath = strdup(strrchr(archive_path, PATH_SEP));
+                file_entry->localpath = strdup(xstrrchr(archive_path, PATH_SEP));
             } else {
                 /* trim trailing PATH_SEP characters */
                 tmp_ap = strdup(archive_path);
                 assert(tmp_ap != NULL);
 
-                if (strrchr(tmp_ap, PATH_SEP)) {
+                if (xstrrchr(tmp_ap, PATH_SEP)) {
                     len_ap = strlen(tmp_ap) - 1;
 
                     while (len_ap >= 0 && tmp_ap[len_ap] == PATH_SEP) {

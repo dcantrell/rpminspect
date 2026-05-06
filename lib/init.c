@@ -1565,6 +1565,8 @@ bool init_security(struct rpminspect *ri)
         free(ver);
         free(rel);
         list_free(rules, free);
+        path = pkg = ver = rel = NULL;
+        rules = NULL;
         pos = 0;
     }
 

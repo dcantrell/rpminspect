@@ -102,9 +102,9 @@ static char *filter_spec_file(struct rpminspect *ri, const char *specfile)
     if (reg_result != 0) {
         regerror(reg_result, &filter_regex, reg_error, sizeof(reg_error));
         warn("*** regcomp: %s", reg_error);
+    } else {
+        filter = true;
     }
-
-    filter = true;
 
     /* filter spec file */
     TAILQ_FOREACH(line, lines, items) {

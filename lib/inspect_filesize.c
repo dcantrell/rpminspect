@@ -62,9 +62,9 @@ static bool filesize_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
         if (r == -1) {
             warn("*** stat");
+        } else {
+            file->st_size = sb.st_size;
         }
-
-        file->st_size = sb.st_size;
     }
 
     if ((file->peer_file->st_nlink > 1) && (file->peer_file->st_size == 0)) {

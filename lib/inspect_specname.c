@@ -35,9 +35,12 @@ static bool specname_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         primary = strdup(headerGetString(file->rpm_header, RPMTAG_NAME));
     } else if (ri->specprimary == PRIMARY_FILENAME) {
         primary = strdup(file->localpath);
-        dot = rindex(primary, '.');
-        assert(dot != NULL);
+        dot = xstrrchr(primary, '.');
         *dot = '\0';
+    }
+
+    if (primary == NULL) {
+        return false;
     }
 
     xasprintf(&specfile, "%s%s", primary, SPEC_FILENAME_EXTENSION);

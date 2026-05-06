@@ -330,7 +330,7 @@ static bool check_explicit_lib_deps(struct rpminspect *ri, Header h, deprule_lis
                     }
 
                     found = true;
-                } else if (strrchr(req->requirement, '(') || strrchr(prov->requirement, '(')) {
+                } else if (xstrrchr(req->requirement, '(') || xstrrchr(prov->requirement, '(')) {
                     /*
                      * we may have a dependency such as:
                      *     Requires: %{name}-libs%{?_isa} = %{version}-%{release}'
@@ -726,7 +726,7 @@ static bool expected_deprule_change(const bool rebase, const deprule_entry_t *de
 
     /* gather any + suffix from the version */
     if (deprule->version) {
-        buf = strrchr(deprule->version, '+');
+        buf = xstrrchr(deprule->version, '+');
 
         if (buf) {
             suffix = strdup(buf);

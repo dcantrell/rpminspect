@@ -729,3 +729,47 @@ bool islowerstr(const char *s)
 
     return true;
 }
+
+/*
+ * Wrapper for strchr() or index() that ensures you don't end up
+ * with a NULL *unless* you pass NULL to the function.  If it doesn't
+ * find c in s then you get a pointer to s rather than NULL.
+ */
+char *xstrchr(const char *s, int c)
+{
+    char *r = NULL;
+
+    if (s == NULL) {
+        return NULL;
+    }
+
+    r = index(s, c);
+
+    if (r == NULL) {
+        r = (char *) s;
+    }
+
+    return r;
+}
+
+/*
+ * Wrapper for strrchr() or rindex() that ensures you don't end up
+ * with a NULL *unless* you pass NULL to the function.  If it doesn't
+ * find c in s then you get a pointer to s rather than NULL.
+ */
+char *xstrrchr(const char *s, int c)
+{
+    char *r = NULL;
+
+    if (s == NULL) {
+        return NULL;
+    }
+
+    r = rindex(s, c);
+
+    if (r == NULL) {
+        r = (char *) s;
+    }
+
+    return r;
+}

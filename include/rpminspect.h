@@ -197,6 +197,8 @@ char *strshorten(const char *s, size_t width);
 char *strtrim(char *s);
 bool isupperstr(const char *s);
 bool islowerstr(const char *s);
+char *xstrchr(const char *s, int c);
+char *xstrrchr(const char *s, int c);
 
 /**
  * @brief Return descriptive string for the given exit code.

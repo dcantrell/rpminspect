@@ -312,7 +312,7 @@ static char *rpm_prep_source(struct rpminspect *ri, const rpmfile_entry_t *file,
 
     /* trim trailing newlines from details */
     if (*details != NULL) {
-        tail = rindex(*details, '\n');
+        tail = xstrrchr(*details, '\n');
 
         if (tail != NULL) {
             tail[strcspn(tail, "\n")] = 0;

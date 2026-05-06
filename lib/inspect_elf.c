@@ -311,7 +311,7 @@ bool is_pic_ok(Elf *elf)
                     continue;
                 }
 
-                if (is_global_reloc(&symtab_shdr, symtab_data, xndxdata, GELF_R_SYM(rela.r_info)) || is_pic_reloc(ehdr.e_machine, GELF_R_TYPE(rela.r_info))) {
+                if (is_global_reloc(&symtab_shdr, symtab_data, xndxdata, GELF_R_SYM(rela.r_info)) && is_pic_reloc(ehdr.e_machine, GELF_R_TYPE(rela.r_info))) {
                     return true;
                 }
             }

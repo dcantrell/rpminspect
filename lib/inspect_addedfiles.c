@@ -51,13 +51,13 @@ static bool have_forbidden_directory(const rpmfile_entry_t *file, const char *fo
         }
 
         /* back up the path */
-        tmp = strrchr(local, PATH_SEP);
+        tmp = xstrrchr(local, PATH_SEP);
 
         if (tmp == local) {
             break;
-        } else {
+        } else if (tmp != NULL) {
             *tmp = '\0';
-            tmp = strrchr(full, PATH_SEP);
+            tmp = xstrrchr(full, PATH_SEP);
             *tmp = '\0';
         }
     }

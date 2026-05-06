@@ -545,7 +545,7 @@ static bool annocheck_driver(struct rpminspect *ri, rpmfile_entry_t *file, rpmpe
         /* If we have a before build, run the command on that */
         if (!ignore) {
             if (file->peer_file) {
-                before_cmd = build_annocheck_cmd(ri->commands.annocheck, hentry->value, annocheck_profile, get_debuginfo_path(ri, file, arch, BEFORE_BUILD), file->peer_file->localpath);
+                before_cmd = build_annocheck_cmd(ri->commands.annocheck, hentry->value, annocheck_profile, get_debuginfo_path(ri, file->peer_file, arch, BEFORE_BUILD), file->peer_file->localpath);
                 argv = build_argv(before_cmd);
                 before_out = run_cmd_vp(&before_exit, peer->before_root, argv);
                 free_argv(argv);

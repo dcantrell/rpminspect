@@ -30,7 +30,7 @@ void output_summary(const results_t *results, const char *dest, __attribute__((u
         /* skip conditions */
         if (!strcmp(result->header, NAME_DIAGNOSTICS)
             || (result->verb == VERB_OK && result->noun == NULL)
-            || (result->severity >= suppress)
+            || (result->severity < suppress)
             || suppressed_results(results, result->header, suppress)) {
             continue;
         }

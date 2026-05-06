@@ -98,38 +98,6 @@ bool inspect_lostpayload(struct rpminspect *ri)
                 xasprintf(&params.msg, _("Package %s on %s became empty (no payloads)"), params.file, params.arch);
                 params.noun = _("subpackage ${FILE} on ${ARCH} now has empty payload");
                 params.remedy = REMEDY_LOSTPAYLOAD;
-           }
-
-            if (rebase) {
-                params.severity = RESULT_INFO;
-                params.waiverauth = NOT_WAIVABLE;
-                params.verb = VERB_OK;
-                good = true;
-            } else {
-                params.severity = RESULT_VERIFY;
-                params.waiverauth = WAIVABLE_BY_ANYONE;
-                params.verb = VERB_FAILED;
-                good = false;
-            }
-
-            add_result(ri, &params);
-            free(params.msg);
-            messaged = true;
-            continue;
-        }
-
-        if (peer->after_files == NULL || TAILQ_EMPTY(peer->after_files)) {
-            params.file = headerGetString(peer->after_hdr, RPMTAG_NAME);
-            params.arch = get_rpm_header_arch(peer->after_hdr);
-
-            if (peer->before_files == NULL || TAILQ_EMPTY(peer->before_files)) {
-                xasprintf(&params.msg, _("Package %s on %s continues to be empty (no payloads)"), params.file, params.arch);
-                params.noun = _("existing empty subpackage ${FILE} on ${ARCH}");
-                params.remedy = 0;
-            } else {
-                xasprintf(&params.msg, _("Package %s on %s became empty (no payloads)"), params.file, params.arch);
-                params.noun = _("subpackage ${FILE} on ${ARCH} now has empty payload");
-                params.remedy = REMEDY_LOSTPAYLOAD;
             }
 
             if (rebase) {

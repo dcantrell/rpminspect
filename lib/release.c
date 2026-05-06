@@ -28,13 +28,19 @@ char *read_release(const rpmfile_t *files)
     string_list_t *spec = NULL;
     string_entry_t *specline = NULL;
 
-    assert(files != NULL);
+    if (files == NULL) {
+        return NULL;
+    }
 
     /* find the spec file in this package */
     TAILQ_FOREACH(entry, files, items) {
         if (strsuffix(entry->localpath, SPEC_FILENAME_EXTENSION)) {
             break;
         }
+    }
+
+    if (entry == NULL) {
+        return NULL;
     }
 
     /* open and read the Release line */
@@ -44,7 +50,7 @@ char *read_release(const rpmfile_t *files)
     TAILQ_FOREACH(specline, spec, items) {
         if (strprefix(specline->data, "Release:")) {
             /* advance past 'Release:' */
-            val = strchr(specline->data, ':');
+            val = xstrchr(specline->data, ':');
             while (*val++ == ':');
 
             /* advance to the value */
@@ -53,7 +59,7 @@ char *read_release(const rpmfile_t *files)
             }
 
             /* now find the beginning of the macros and terminate it */
-            tail = strchr(val, '%');
+            tail = xstrchr(val, '%');
             if (tail && *tail == '%') {
                 *tail = '\0';
             }

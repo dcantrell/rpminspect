@@ -540,7 +540,7 @@ static int download_task(struct rpminspect *ri, struct koji_task *task)
             xasprintf(&src, "%s/work/%s", workri->kojiursine, entry->data);
             sz = curl_get_size(src);
 
-            if (sz < 0) {
+            if (sz > 0) {
                 task->total_size += sz;
             }
 
@@ -821,8 +821,8 @@ static struct koji_build *get_koji_task_as_build(const struct koji_task *task)
     srpm = strdup(entry->data);
     assert(srpm != NULL);
 
-    if (strrchr(srpm, PATH_SEP)) {
-        nvr = strrchr(srpm, PATH_SEP);
+    if (xstrrchr(srpm, PATH_SEP)) {
+        nvr = xstrrchr(srpm, PATH_SEP);
         nvr++;
     } else {
         nvr = srpm;

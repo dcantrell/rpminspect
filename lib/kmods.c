@@ -54,7 +54,7 @@ static void convert_module_parameters(string_list_t *list, const struct kmod_lis
 
     /* The value is of the form <name>:<description>. Drop the description */
     value = kmod_module_info_get_value(modinfo);
-    tmp = strchr(value, ':');
+    tmp = xstrchr(value, ':');
 
     DEBUG_PRINT("found '%s' parameter with value '%s'\n", key, value);
 

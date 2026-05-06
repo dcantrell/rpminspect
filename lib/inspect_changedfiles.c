@@ -282,15 +282,15 @@ static bool changedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         if (exitcode || params.details) {
             if (type) {
                 /* get a reporting type for the message */
-                if (rindex(type, PATH_SEP)) {
-                    comptype = rindex(type, PATH_SEP) + 1;
+                if (xstrrchr(type, PATH_SEP)) {
+                    comptype = xstrrchr(type, PATH_SEP) + 1;
                     assert(comptype != NULL);
                 } else {
                     comptype = type;
                 }
 
-                if (rindex(comptype, '-')) {
-                    comptype = rindex(comptype, '-') + 1;
+                if (xstrrchr(comptype, '-')) {
+                    comptype = xstrrchr(comptype, '-') + 1;
                     assert(comptype != NULL);
                 }
             } else {
@@ -404,7 +404,7 @@ static bool changedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
             if (strlen(short_errors) >= 3) {
                 while (strncmp(short_errors, "@@ ", 3)) {
-                    skip_line = index(short_errors, '\n');
+                    skip_line = xstrchr(short_errors, '\n');
 
                     if (skip_line == NULL) {
                         short_errors = errors;

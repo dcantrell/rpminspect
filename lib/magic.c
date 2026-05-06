@@ -70,7 +70,7 @@ const char *mime_type(struct rpminspect *ri, const char *file)
          * Trim any trailing metadata after the MIME type, such
          * as '; charset=utf-8' and stuff like that.
          */
-        pos = strchr(type, ';');
+        pos = xstrchr(type, ';');
 
         if (pos != NULL) {
             *pos = '\0';

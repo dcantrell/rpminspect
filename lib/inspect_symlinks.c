@@ -141,8 +141,6 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
     /* get the link target */
     len = readlink(file->fullpath, linktarget, sizeof(linktarget) - 1);
-    linktarget[len] = '\0';
-    target = linktarget;
 
     if (len == -1) {
         /* a read error on the link here prevents further analysis */
@@ -155,6 +153,9 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         add_result(ri, &params);
         free(params.msg);
         return false;
+    } else {
+        linktarget[len] = '\0';
+        target = linktarget;
     }
 
     /* save current directory */
@@ -218,8 +219,7 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
                 return false;
             } else if (strprefix(target, "../")) {
                 /* back up a directory level */
-                tmp = rindex(reltarget, PATH_SEP);
-                assert(tmp != NULL);
+                tmp = xstrrchr(reltarget, PATH_SEP);
                 *tmp = '\0';
                 tail = tmp;
                 target += 3;
@@ -235,9 +235,9 @@ static bool symlinks_driver(struct rpminspect *ri, rpmfile_entry_t *file)
                  * Find the directory separator and make it end-of-string.
                  * Now 'target' points to the first directory element.
                  * Take care to account for the final path element
-                 * where there is no PATH_SEP so index() will give us NULL.
+                 * where there is no PATH_SEP so xstrchr() will give us NULL.
                  */
-                tmp = index(target, PATH_SEP);
+                tmp = xstrchr(target, PATH_SEP);
 
                 if (tmp != NULL) {
                     *tmp = '\0';

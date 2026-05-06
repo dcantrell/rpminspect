@@ -76,12 +76,6 @@ static int extract_entry(struct archive *input, struct archive *output, struct a
         if (copy_data(input, output) != ARCHIVE_OK) {
             ret = -1;
         }
-
-        if (r != ARCHIVE_OK) {
-            warnx("*** archive_write_header: %s", archive_error_string(output));
-        } else if (r < ARCHIVE_WARN) {
-            ret = -1;
-        }
     }
 
     r = archive_write_finish_entry(output);

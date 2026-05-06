@@ -67,7 +67,7 @@ static int find_file(const char *fpath, __attribute__((unused)) const struct sta
                 }
 
                 /* skip desktop spec params and any variables */
-                if (strchr(entry->data, '%') || strchr(entry->data, '=')) {
+                if (xstrchr(entry->data, '%') || xstrchr(entry->data, '=')) {
                     continue;
                 }
 
