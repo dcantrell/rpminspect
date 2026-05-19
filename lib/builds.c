@@ -512,7 +512,7 @@ static int download_task(struct rpminspect *ri, struct koji_task *task)
     /* compute total size of all files to download for the task */
     TAILQ_FOREACH(descendent, task->descendents, items) {
         /* skip if we have nothing */
-        if (TAILQ_EMPTY(descendent->srpms) && TAILQ_EMPTY(descendent->rpms)) {
+        if ((descendent->srpms == NULL || TAILQ_EMPTY(descendent->srpms)) && (descendent->rpms == NULL || TAILQ_EMPTY(descendent->rpms))) {
             continue;
         }
 
@@ -603,7 +603,7 @@ static int download_task(struct rpminspect *ri, struct koji_task *task)
     /* download the task */
     TAILQ_FOREACH(descendent, task->descendents, items) {
         /* skip if we have nothing */
-        if (TAILQ_EMPTY(descendent->srpms) && TAILQ_EMPTY(descendent->rpms)) {
+        if ((descendent->srpms == NULL || TAILQ_EMPTY(descendent->srpms)) && (descendent->rpms == NULL || TAILQ_EMPTY(descendent->rpms))) {
             continue;
         }
 
@@ -801,7 +801,7 @@ static struct koji_build *get_koji_task_as_build(const struct koji_task *task)
 
     /* we need exactly one SRPM */
     TAILQ_FOREACH(descendent, task->descendents, items) {
-        if (!TAILQ_EMPTY(descendent->srpms)) {
+        if (descendent->srpms && !TAILQ_EMPTY(descendent->srpms)) {
             srpmlist = descendent->srpms;
             i += list_len(descendent->srpms);
         }
