@@ -28,9 +28,6 @@ endif
 _install := $(shell $(PKG_CMD) install -y git)
 _safedir := $(shell git config --global --add safe.directory $(topdir))
 
-# Pass BUILDTYPE=release to generate a release SRPM
-BUILDTYPE ?= copr
-
 # Spec file and template
 SPEC_TEMPLATE = $(shell ls -1 $(topdir)/*.spec.in)
 SPEC = $(topdir)/$(shell basename $(SPEC_TEMPLATE) .in)
@@ -43,42 +40,21 @@ RPMAUTHOR = $(shell git log | tac | grep ^Author: | head -n 1 | cut -d ' ' -f 2,
 PKG = $(shell grep ^Name: "$(SPEC_TEMPLATE)" | awk '{ print $$2; }')
 VER = $(shell grep 'version :' $(topdir)/meson.build | grep -E "'[0-9]+\.[0-9]+'" | cut -d "'" -f 2)
 
-ifeq ($(BUILDTYPE),copr)
-GITDATE          = $(shell date +'%Y%m%d%H%M')
-GITHASH          = $(shell git rev-parse --short HEAD)
-TARBALL_BASENAME = $(PKG)-$(VER)-$(GITDATE)git$(GITHASH)
-TAG              = HEAD
-else
 TAG              = $(shell git tag -l | sort -V | tail -n 1)
-endif
 
-ifeq ($(BUILDTYPE),release)
 TARBALL_BASENAME = $(PKG)-$(VER)
-endif
 
 srpm:
 	sed -e 's|%%VERSION%%|$(VER)|g' < "$(SPEC_TEMPLATE)" > "$(SPEC)"
 	sed -i -e 's|%%GPGKEYRING%%|gpgkey-$(GPGKEY).gpg|g' "$(SPEC)"
-ifeq ($(BUILDTYPE),copr)
-	sed -i -e '/^Release:/ s/%autorelease$$/1.1.$(GITDATE)git$(GITHASH)/' "$(SPEC)"
-	sed -i -e 's|^Source0:.*$$|Source0: $(TARBALL_BASENAME).tar.gz|g' "$(SPEC)"
-	sed -i -e 's|^%autosetup.*$$|%autosetup -n $(TARBALL_BASENAME)|g' "$(SPEC)"
-	sed -i -e '/^Source1:.*$$/d' "$(SPEC)"
-	sed -i -e '/^Source2:.*$$/d' "$(SPEC)"
-	sed -i -e '/^%{gpgverify}.*$$/d' "$(SPEC)"
-	echo "* $(RPMDATE) $(RPMAUTHOR) - $(VER)-$(GITDATE)git$(GITHASH)" >> "$(SPEC)"
-	echo "- Build $(PKG)-$(VER)-$(GITDATE)git$(GITHASH) snapshot" >> "$(SPEC)"
-endif
 	rm -f "$(TARBALL_BASENAME)".tar.gz.asc
 	git archive \
 		--format=tar \
 		--output='$(topdir)/$(TARBALL_BASENAME).tar' \
 		--prefix='$(TARBALL_BASENAME)/' $(TAG) $(topdir)
 	gzip -9f $(topdir)/$(TARBALL_BASENAME).tar
-ifeq ($(BUILDTYPE),release)
 	gpg --detach-sign --armor "$(TARBALL_BASENAME)".tar.gz
 	gpg --export -a $(GPGKEY) > gpgkey-$(GPGKEY).gpg
-endif
 	rpmbuild \
 		-bs --nodeps \
 		--define "_sourcedir $(topdir)" \

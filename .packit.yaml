@@ -1,0 +1,55 @@
+specfile_path: rpminspect.spec
+
+upstream_package_name: rpminspect
+downstream_package_name: rpminspect
+
+targets:
+  - fedora-all
+  - epel-10
+  - epel-9
+  - epel-8
+
+actions:
+  post-upstream-clone:
+    - cp rpminspect.spec.in rpminspect.spec
+    # Arbitrary version, will be replaced at the `fix-spec-file` action
+    - sed -i -e 's/%%VERSION%%/0.0.0/' rpminspect.spec
+    - sed -i -e '/^Source1:.*$/d' rpminspect.spec
+    - sed -i -e '/^Source2:.*$/d' rpminspect.spec
+    - sed -i -e '/^%{gpgverify}.*$/d' rpminspect.spec
+
+upstream_tag_template: v{version}
+version_suffix: ^{PACKIT_PROJECT_SNAPSHOTID}
+update_release: false
+
+jobs:
+  # Upstream jobs
+  - job: copr_build
+    trigger: pull_request
+
+  - job: copr_build
+    trigger: commit
+    owner: "@rpminspect"
+    project: latest
+
+  # Downstream jobs
+  # Note downstream jobs are disabled because it cannot handle gpg signing
+#  - job: propose_downstream
+#    trigger: release
+#    dist_git_branches:
+#      rawhide:
+#        fast_forward_merge_into:
+#          - fedora-branched
+#          - epel-all
+#
+#  - job: koji_build
+#    trigger: commit
+#    dist_git_branches:
+#      - fedora-all
+#      - epel-all
+#
+#  - job: bodhi_update
+#    trigger: commit
+#    dist_git_branches:
+#      - fedora-branched
+#      - epel-all
