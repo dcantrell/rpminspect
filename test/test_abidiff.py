@@ -140,7 +140,7 @@ class AbidiffNoRebaseWithABIChangeRPMs(TestCompareRPMs):
             compileFlags="-g -Wl,-soname,libcrashy.so.1",
         )
 
-        self.result = "BAD"
+        self.result = "VERIFY"
         self.inspection = "abidiff"
         self.waiver_auth = "Anyone"
 
@@ -159,5 +159,5 @@ class AbidiffNoRebaseWithABIChangeKoji(TestCompareKoji):
         )
 
         self.inspection = "abidiff"
-        self.result = "BAD"
+        self.result = "VERIFY"
         self.waiver_auth = "Anyone"

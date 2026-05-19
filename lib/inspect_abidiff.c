@@ -260,15 +260,9 @@ static bool abidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     params.arch = arch;
     params.file = file->localpath;
 
-    if ((exitcode & ABIDIFF_ERROR) || (exitcode & ABIDIFF_USAGE_ERROR)) {
-        params.severity = RESULT_VERIFY;
-        params.waiverauth = WAIVABLE_BY_ANYONE;
-        params.verb = VERB_FAILED;
-        params.noun = _("abidiff usage error");;
-        report = true;
-    } else if (exitcode & ABIDIFF_ABI_INCOMPATIBLE_CHANGE) {
+    if (exitcode & ABIDIFF_ABI_INCOMPATIBLE_CHANGE) {
         if (!rebase) {
-            params.severity = RESULT_BAD;
+            params.severity = RESULT_VERIFY;
             params.waiverauth = WAIVABLE_BY_ANYONE;
         }
 
@@ -283,6 +277,12 @@ static bool abidiff_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 
         params.verb = VERB_CHANGED;
         params.noun = _("ABI change in ${FILE} on ${ARCH}");
+        report = true;
+    } else if (exitcode & ABIDIFF_USAGE_ERROR) {
+        params.severity = RESULT_VERIFY;
+        params.waiverauth = WAIVABLE_BY_ANYONE;
+        params.verb = VERB_FAILED;
+        params.noun = _("abidiff usage error");;
         report = true;
     }
 
