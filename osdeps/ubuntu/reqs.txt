@@ -1,4 +1,5 @@
 abigail-tools
+bsdextrautils
 cargo
 clamav
 desktop-file-utils
