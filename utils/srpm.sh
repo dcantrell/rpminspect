@@ -13,8 +13,7 @@ if [ ! -f "${CWD}"/.copr/Makefile ]; then
 fi
 
 if [ "$1" = "-c" ]; then
-    echo "Copr build moved to packit. Use 'packit srpm' command instead"
-    exit 1
+    make -f "${CWD}"/.copr/Makefile srpm outdir="${CWD}" BUILDTYPE=copr
 else
-    make -f "${CWD}"/.copr/Makefile srpm outdir="${CWD}"
+    make -f "${CWD}"/.copr/Makefile srpm outdir="${CWD}" BUILDTYPE=release
 fi
