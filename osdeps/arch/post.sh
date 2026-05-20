@@ -3,6 +3,9 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 CWD="$(pwd)"
 TESTDATA="$(realpath "${CWD}"/test/data)"
 
+# Let makepkg run as root
+sed -i -e '/exit\ \$E_ROOT$/d' /usr/bin/makepkg
+
 # Arch Linux does not define an RPM dist tag
 echo '%dist .ri47' > "${HOME}"/.rpmmacros
 
@@ -78,6 +81,15 @@ ninja -C build test
 ninja -C build install
 cd "${CWD}" || exit 1
 rm -rf cdson
+
+# They got rid of xmlrpc-c from the distributions which means you need
+# to get it from the Arch User Repository and then build it locally.
+cd "${CWD}" || exit 1
+git clone https://aur.archlinux.org/libxmlrpc.git
+cd libxmlrpc || exit 1
+makepkg --noconfirm -s -i -c
+cd "${CWD}" || exit 1
+rm -rf libxmlrpc
 
 # Install declarative buildsystem macros for test cases if the system
 # does not provide them.
