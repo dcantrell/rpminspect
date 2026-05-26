@@ -74,53 +74,56 @@ static char *get_shell(const struct rpminspect *ri, const char *fullpath)
     }
 
     free(start);
-
-    /* continue reading looking for a possible 'exec PROG' line */
     buf = NULL;
 
-    while (getline(&buf, &len, fp) != -1) {
-        pos = 0;
-        buf = strtrim(buf);
+    /* continue reading looking for a possible 'exec PROG' line */
+    if (shell != NULL) {
+        while (getline(&buf, &len, fp) != -1) {
+            pos = 0;
+            buf = strtrim(buf);
 
-        /* ignore blank lines and comments */
-        if ((strlen(buf) == 0 || !strcmp(buf, "")) || (*buf == '#')) {
-            continue;
-        } else {
-            fields = strsplit(buf, " \t");
-
-            /* code found, but can't be an exec line */
-            if (list_len(fields) < 2) {
-                list_free(fields, free);
-                fields = NULL;
-
+            /* ignore blank lines and comments */
+            if ((strlen(buf) == 0 || !strcmp(buf, "")) || (*buf == '#')) {
                 continue;
-            }
+            } else {
+                fields = strsplit(buf, " \t");
 
-            /* possible exec line */
-            if (list_len(fields) >= 2) {
-                TAILQ_FOREACH(entry, fields, items) {
-                    if (pos == 0 && strcmp(entry->data, "exec")) {
-                        /* this script contains code but it doesn't begin with 'exec' -> ignore */
-                        break;
-                    } else if (pos == 1) {
-                        free(shell);
+                /* code found, but can't be an exec line */
+                if (list_len(fields) < 2) {
+                    list_free(fields, free);
+                    fields = NULL;
 
-                        if (list_contains(ri->shells, entry->data)) {
-                            /* known shell */
-                            shell = strdup(entry->data);
-                        } else {
-                            /* this script execs another interpreter that we do not understand */
-                            shell = NULL;
-                        }
-
-                        break;
-                    }
-
-                    pos++;
+                    continue;
                 }
 
-                list_free(fields, free);
-                fields = NULL;
+                /* possible exec line */
+                if (list_len(fields) >= 2) {
+                    TAILQ_FOREACH(entry, fields, items) {
+                        if (pos == 0 && strcmp(entry->data, "exec")) {
+                            /* this script contains code but it doesn't begin with 'exec' -> ignore */
+                            break;
+                        } else if (pos == 1) {
+                            free(shell);
+
+                            if (list_contains(ri->shells, entry->data)) {
+                                /* known shell */
+                                shell = strdup(entry->data);
+                            } else {
+                                /* this script execs another interpreter that we do not understand */
+                                shell = NULL;
+                            }
+
+                            break;
+                        } else if (pos > 1) {
+                            break;
+                        }
+
+                        pos++;
+                    }
+
+                    list_free(fields, free);
+                    fields = NULL;
+                }
             }
         }
     }
