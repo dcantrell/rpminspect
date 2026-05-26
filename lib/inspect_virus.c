@@ -26,10 +26,104 @@ static unsigned file_no = (unsigned)-1;
 static int virus_countdown = 4000;
 static int write_fd;
 
+/* File inspection callback to track files being scanned */
+static cl_error_t file_inspection_callback(int fd __attribute__((unused)),
+                                           const char *type __attribute__((unused)),
+                                           const char **pathnames,
+                                           size_t parent_file_size __attribute__((unused)),
+                                           const char *file_name,
+                                           size_t file_size __attribute__((unused)),
+                                           const char *file_buffer __attribute__((unused)),
+                                           uint32_t level,
+                                           uint32_t layer_attributes __attribute__((unused)),
+                                           void *context)
+{
+    virus_scan_context_t *ctx = (virus_scan_context_t *) context;
+    unsigned int i = 0;
+
+    /* free previous file name */
+    if (ctx->current) {
+        free(ctx->current);
+        ctx->current = NULL;
+    }
+
+    /* free previous pathnames */
+    if (ctx->pathnames) {
+        for (i = 0; i < ctx->level; i++) {
+            free(ctx->pathnames[i]);
+            ctx->pathnames[i] = NULL;
+        }
+
+        free(ctx->pathnames);
+        ctx->pathnames = NULL;
+    }
+
+    ctx->level = level;
+
+    /* copy current file name */
+    if (file_name) {
+        ctx->current = strdup(file_name);
+        assert(ctx->current != NULL);
+    }
+
+    /* copy pathnames */
+    if (pathnames && level > 0) {
+        ctx->pathnames = calloc(level, sizeof(*(ctx->pathnames)));
+
+        for (i = 0; i < level; i++) {
+            if (pathnames[i]) {
+                ctx->pathnames[i] = strdup(pathnames[i]);
+                assert(ctx->pathnames[i] != NULL);
+            }
+        }
+    }
+
+    return CL_CLEAN;
+}
+
+/* Virus found callback to record the file path when a virus is detected */
+static void virus_found_callback(int fd __attribute__((unused)),
+                                 const char *virname __attribute__((unused)),
+                                 void *context)
+{
+    virus_scan_context_t *ctx = (virus_scan_context_t *) context;
+    unsigned int i = 0;
+
+    /* build the full path including pathnames */
+    if (ctx->virus_path) {
+        free(ctx->virus_path);
+        ctx->virus_path = NULL;
+    }
+
+    /* construct path: pathname1/pathname2/.../current */
+    if (ctx->pathnames && ctx->level > 0) {
+        ctx->virus_path = strdup(ctx->pathnames[0]);
+        assert(ctx->virus_path != NULL);
+
+        for (i = 1; i < ctx->level; i++) {
+            if (ctx->pathnames[i]) {
+                ctx->virus_path = joindelim('/', ctx->virus_path, ctx->pathnames[i], NULL);
+            }
+        }
+
+        if (ctx->current) {
+            ctx->virus_path = joindelim('/', ctx->virus_path, ctx->current, NULL);
+        }
+    } else if (ctx->current) {
+        ctx->virus_path = strdup(ctx->current);
+        assert(ctx->virus_path != NULL);
+    }
+
+    return;
+}
+
 static bool virus_driver(struct rpminspect *ri __attribute__((unused)), rpmfile_entry_t *file)
 {
     int r = 0;
+    unsigned int i = 0;
     const char *virus = NULL;
+    const char *infected_file = "";
+    virus_scan_context_t ctx;
 
     /* cyclically count from 0 to NCHILDREN-1 */
     file_no++;
@@ -48,11 +142,14 @@ static bool virus_driver(struct rpminspect *ri __attribute__((unused)), rpmfile_
         return true;
     }
 
+    /* Initialize scan context */
+    memset(&ctx, 0, sizeof(ctx));
+
     /* scan the file */
 #ifndef CL_SCAN_STDOPT
-    r = cl_scanfile(file->fullpath, &virus, NULL, engine, &clamav_opts);
+    r = cl_scanfile_callback(file->fullpath, &virus, NULL, engine, &clamav_opts, &ctx);
 #else
-    r = cl_scanfile(file->fullpath, &virus, NULL, engine, CL_SCAN_STDOPT);
+    r = cl_scanfile_callback(file->fullpath, &virus, NULL, engine, CL_SCAN_STDOPT, &ctx);
 #endif
 #if 0 /* debug: uncomment for error injection - test that virus detection indeed works */
     if (child_no == 0 && file_no == 0 && virus_countdown == 4000) {
@@ -79,9 +176,33 @@ static bool virus_driver(struct rpminspect *ri __attribute__((unused)), rpmfile_
          */
         if (virus_countdown != 0) {
             virus_countdown--;
+
+            /* Get the infected file path from context */
+            if (ctx.virus_path && ctx.virus_path[0]) {
+                infected_file = ctx.virus_path;
+            }
+
             full_write(write_fd, virus, strlen(virus) + 1);
             full_write(write_fd, &file, sizeof(file));
+            full_write(write_fd, infected_file, strlen(infected_file) + 1);
         }
+    }
+
+    /* Clean up context */
+    if (ctx.current) {
+        free(ctx.current);
+    }
+
+    if (ctx.pathnames) {
+        for (i = 0; i < ctx.level; i++) {
+            free(ctx.pathnames[i]);
+        }
+
+        free(ctx.pathnames);
+    }
+
+    if (ctx.virus_path) {
+        free(ctx.virus_path);
     }
 
     return true;
@@ -198,6 +319,10 @@ bool inspect_virus(struct rpminspect *ri)
         errx(RI_PROGRAM_ERROR, "*** cl_load: %s", cl_strerror(r));
     }
 
+    /* set up callbacks for tracking infected files within archives */
+    cl_engine_set_clcb_file_inspection(engine, file_inspection_callback);
+    cl_engine_set_clcb_virus_found(engine, virus_found_callback);
+
     /* compile engine */
     r = cl_engine_compile(engine);
 
@@ -307,18 +432,25 @@ bool inspect_virus(struct rpminspect *ri)
         char *output = slot->output;
 
         if (output) {
-            /* consume all pairs of ("virusname",rpmfile_entry_t pointer) in output */
+            /* consume all triples of ("virusname",rpmfile_entry_t pointer,"infected_file") in output */
             while (output[0]) {
                 rpmfile_entry_t *file;
                 const char *virus = output;
+                const char *infected_file = NULL;
+                char *nevra = NULL;
 
                 output += strlen(virus) + 1;
                 memcpy(&file, output, sizeof(file)); /* copy unaligned bytes */
                 output += sizeof(file);
+                infected_file = output;
+                output += strlen(infected_file) + 1;
 
                 params.severity = get_secrule_result_severity(ri, file, SECRULE_VIRUS);
 
                 if (params.severity != RESULT_NULL && params.severity != RESULT_SKIP) {
+                    nevra = get_nevra(file->rpm_header);
+                    assert(nevra != NULL);
+
                     if (params.severity == RESULT_INFO) {
                         params.waiverauth = NOT_WAIVABLE;
                         params.verb = VERB_OK;
@@ -331,9 +463,24 @@ bool inspect_virus(struct rpminspect *ri)
                     params.arch = get_rpm_header_arch(file->rpm_header);
                     params.file = file->localpath;
                     params.remedy = REMEDY_VIRUS;
-                    xasprintf(&params.msg, _("Virus detected in %s in the %s package on %s: %s"), file->localpath, headerGetString(file->rpm_header, RPMTAG_NAME), params.arch, virus);
+
+                    if (headerIsSource(file->rpm_header)) {
+                        if (infected_file && infected_file[0]) {
+                            xasprintf(&params.msg, _("Virus detected in %s in the %s source package: %s (infected file: %s)"), file->localpath, nevra, virus, infected_file);
+                        } else {
+                            xasprintf(&params.msg, _("Virus detected in %s in the %s source package: %s"), file->localpath, nevra, virus);
+                        }
+                    } else {
+                        if (infected_file && infected_file[0]) {
+                            xasprintf(&params.msg, _("Virus detected in %s in the %s package: %s (infected file: %s)"), file->localpath, nevra, virus, infected_file);
+                        } else {
+                            xasprintf(&params.msg, _("Virus detected in %s in the %s package: %s"), file->localpath, nevra, virus);
+                        }
+                    }
+
                     add_result(ri, &params);
                     free(params.msg);
+                    free(nevra);
                 }
             } /* while (there is unprocessed output from this child) */
 

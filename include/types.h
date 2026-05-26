@@ -1173,6 +1173,17 @@ typedef struct _patchstat_t {
     long int lines;
 } patchstat_t;
 
+/*
+ * Used for tracking file paths within scanned archive files in the
+ * virus inspection.
+ */
+typedef struct {
+    char *current;
+    char **pathnames;
+    uint32_t level;
+    char *virus_path;
+} virus_scan_context_t;
+
 #endif
 
 #ifdef __cplusplus
