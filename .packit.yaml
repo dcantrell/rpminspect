@@ -4,6 +4,8 @@ upstream_package_name: rpminspect
 downstream_package_name: rpminspect
 
 actions:
+  get-current-version:
+    - "sed -nr \"s/\\s*version : '(.*)',/\\1/p\" meson.build"
   post-upstream-clone:
     - cp rpminspect.spec.in rpminspect.spec
     # Arbitrary version, will be replaced at the `fix-spec-file` action
@@ -12,7 +14,6 @@ actions:
     - sed -i -e '/^Source2:.*$/d' rpminspect.spec
     - sed -i -e '/^%{gpgverify}.*$/d' rpminspect.spec
 
-upstream_tag_template: v{version}
 version_suffix: ~{PACKIT_PROJECT_SNAPSHOTID}
 update_release: false
 
