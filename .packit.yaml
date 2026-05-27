@@ -3,12 +3,6 @@ specfile_path: rpminspect.spec
 upstream_package_name: rpminspect
 downstream_package_name: rpminspect
 
-targets:
-  - fedora-all
-  - epel-10
-  - epel-9
-  - epel-8
-
 actions:
   post-upstream-clone:
     - cp rpminspect.spec.in rpminspect.spec
@@ -26,6 +20,11 @@ jobs:
   # Upstream jobs
   - job: copr_build
     trigger: pull_request
+    targets:
+      - fedora-all
+      - epel-10
+      - epel-9
+      - epel-8
 
   - job: copr_build
     trigger: commit
