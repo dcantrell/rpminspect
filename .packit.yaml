@@ -13,7 +13,7 @@ actions:
     - sed -i -e '/^%{gpgverify}.*$/d' rpminspect.spec
 
 upstream_tag_template: v{version}
-version_suffix: ^{PACKIT_PROJECT_SNAPSHOTID}
+version_suffix: ~{PACKIT_PROJECT_SNAPSHOTID}
 update_release: false
 
 jobs:
