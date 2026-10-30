@@ -681,11 +681,10 @@ char *strtrim(char *s)
     r[i] = '\0';
 
     /* go to the end and remove trailing whitespace */
-    i = strlen(s) - 1;
+    i = strlen(s);
 
-    while (isspace(s[i])) {
+    while ((i > 0) && isspace(s[--i])) {
         s[i] = '\0';
-        i--;
     }
 
     if (s == NULL) {
