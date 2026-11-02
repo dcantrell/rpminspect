@@ -4,9 +4,12 @@
 #
 
 import os
+import platform
 import rpmfluff
 
 from baseclass import TestCompareRPMs, TestCompareKoji
+
+machine = platform.machine().replace("amd64", "x86_64")
 
 
 class FileNoRemovedRPMs(TestCompareRPMs):
@@ -167,3 +170,61 @@ class FileRemovedRebaseKoji(TestCompareKoji):
         self.inspection = "removedfiles"
         self.result = "INFO"
         self.waiver_auth = "Not Waivable"
+
+
+# Removed file matches a security rule without a securitypath action (INFO)
+class FileRemovedOtherSecruleKoji(TestCompareKoji):
+    def setUp(self):
+        super().setUp()
+
+        with open(os.environ["RPMINSPECT"], "rb") as f:
+            before_src = f.read()
+
+        # /usr/sbin/verify has caps and execstack rules in the test data
+        self.before_rpm.add_installed_file(
+            "usr/sbin/verify",
+            rpmfluff.SourceFile("verify.bin", before_src),
+            mode="0755",
+        )
+
+        self.inspection = "removedfiles"
+        self.result = "INFO"
+        self.waiver_auth = "Not Waivable"
+        self.message = f"/usr/sbin/verify removed from package vaporware on {machine}"
+
+
+# Removed PIE executable is not reported as a library (INFO)
+class ExecutableRemovedKoji(TestCompareKoji):
+    def setUp(self):
+        super().setUp()
+
+        self.before_rpm.add_simple_compilation(
+            compileFlags="-fPIE -pie", installPath="usr/bin/hello-world"
+        )
+
+        self.inspection = "removedfiles"
+        self.result = "INFO"
+        self.waiver_auth = "Not Waivable"
+        self.message = (
+            f"/usr/bin/hello-world removed from package vaporware on {machine}"
+        )
+
+
+# Removed shared library is reported as an ABI break (INFO)
+class LibraryRemovedKoji(TestCompareKoji):
+    def setUp(self):
+        super().setUp()
+
+        self.before_rpm.add_simple_library(
+            libraryName="libvaporware.so.1",
+            installPath="usr/lib/libvaporware.so.1",
+            compileFlags="-Wl,-soname,libvaporware.so.1",
+        )
+
+        self.inspection = "removedfiles"
+        self.result = "INFO"
+        self.waiver_auth = "Not Waivable"
+        self.message = (
+            "ABI break: Library /usr/lib/libvaporware.so.1 with SONAME "
+            f"'libvaporware.so.1' removed from package vaporware on {machine}"
+        )

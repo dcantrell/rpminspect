@@ -24,12 +24,10 @@ static bool rebase = false;
 static bool removedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
 {
     bool result = true;
-    const char *type = NULL;
     const char *name = NULL;
     const char *arch = NULL;
     char *soname = NULL;
     string_entry_t *entry = NULL;
-    security_entry_t *sentry = NULL;
     struct result_params params;
 
     /* Any entry with a peer has not been removed. */
@@ -57,13 +55,9 @@ static bool removedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
         return true;
     }
 
-    /* Collect the RPM architecture and file MIME type */
-    type = get_mime_type(ri, file);
+    /* Collect the RPM name and architecture */
     name = headerGetString(file->rpm_header, RPMTAG_NAME);
     arch = get_rpm_header_arch(file->rpm_header);
-
-    /* Get any possible security rule for this path */
-    sentry = get_secrule_by_path(ri, file);
 
     /* Set up result parameters */
     init_result_params(&params);
@@ -89,7 +83,8 @@ static bool removedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
     if (params.waiverauth == WAIVABLE_BY_SECURITY || (ri->tests & INSPECT_REMOVEDFILES)) {
         params.remedy = REMEDY_REMOVEDFILES;
 
-        if (sentry || params.waiverauth == WAIVABLE_BY_SECURITY) {
+        /* Security rules only apply to files in a security path prefix */
+        if (params.waiverauth == WAIVABLE_BY_SECURITY) {
             params.severity = get_secrule_result_severity(ri, file, SECRULE_SECURITYPATH);
         } else {
             params.severity = RESULT_INFO;
@@ -99,35 +94,28 @@ static bool removedfiles_driver(struct rpminspect *ri, rpmfile_entry_t *file)
             params.waiverauth = NOT_WAIVABLE;
             params.verb = VERB_OK;
         } else {
-            if (sentry) {
-                params.waiverauth = WAIVABLE_BY_SECURITY;
-            } else if ((sentry == NULL) && (params.waiverauth == NULL_WAIVERAUTH)) {
+            if (params.waiverauth == NULL_WAIVERAUTH) {
                 params.waiverauth = WAIVABLE_BY_ANYONE;
             }
 
             params.verb = VERB_FAILED;
         }
 
-        if (is_elf_file(file) && !strcmp(type, "application/x-pie-executable")) {
+        /* Shared libraries carry a SONAME, ET_DYN without one is a PIE executable */
+        if (is_elf_file(file) && is_elf_shared_library(file)) {
             soname = get_elf_soname(file);
+        }
 
-            if (soname) {
-                if (params.waiverauth == WAIVABLE_BY_SECURITY) {
-                    xasprintf(&params.msg, _("ABI break: Library %s with SONAME '%s' removed from package %s on %s; Removing security policy related files requires inspection by the Security Response Team."), file->localpath, soname, name, arch);
+        if (soname) {
+            if (params.waiverauth == WAIVABLE_BY_SECURITY) {
+                xasprintf(&params.msg, _("ABI break: Library %s with SONAME '%s' removed from package %s on %s; Removing security policy related files requires inspection by the Security Response Team."), file->localpath, soname, name, arch);
 
-                } else {
-                    xasprintf(&params.msg, _("ABI break: Library %s with SONAME '%s' removed from package %s on %s"), file->localpath, soname, name, arch);
-                }
-
-                params.noun = _("missing SONAME in ${FILE} on ${ARCH}");
-                free(soname);
             } else {
-                if (params.waiverauth == WAIVABLE_BY_SECURITY) {
-                    xasprintf(&params.msg, _("ABI break: Library %s removed from package %s on %s; Removing security policy related files requires inspection by the Security Response Team."), file->localpath, name, arch);
-                } else {
-                    xasprintf(&params.msg, _("ABI break: Library %s removed from package %s on %s"), file->localpath, name, arch);
-                }
+                xasprintf(&params.msg, _("ABI break: Library %s with SONAME '%s' removed from package %s on %s"), file->localpath, soname, name, arch);
             }
+
+            params.noun = _("missing SONAME in ${FILE} on ${ARCH}");
+            free(soname);
         } else {
             if (params.waiverauth == WAIVABLE_BY_SECURITY) {
                 xasprintf(&params.msg, _("%s removed from package %s on %s; Removing security policy related files requires inspection by the Security Response Team."), file->localpath, name, arch);
