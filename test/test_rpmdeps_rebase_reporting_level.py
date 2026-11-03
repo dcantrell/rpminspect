@@ -326,6 +326,11 @@ class RebaseOwnDepsWithBadLevelSRPM(TestCompareSRPM):
     def setUp(self):
         super().setUp(rebase=True)
 
+        # BuildRequires that follow the package version, older rpm
+        # versions do not add a self Provides to source packages
+        self.before_rpm.add_build_requires("%{name}-devel = %{version}-%{release}")
+        self.after_rpm.add_build_requires("%{name}-devel = %{version}-%{release}")
+
         self.inspection = "rpmdeps"
         self.result = "INFO"
         self.waiver_auth = "Not Waivable"
