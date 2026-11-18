@@ -247,12 +247,12 @@ Here is a description of the subdirectories found in
     security_path_prefix entry.  A rule for one type does not cause
     other inspections to treat the file as security related.
 
-.. _rpminspect: https://github.com/rpminspect/rpminspect
+.. _rpminspect: https://github.com/dcantrell/rpminspect
 
-.. _rpminspect-data-fedora: https://github.com/rpminspect/rpminspect-data-fedora
+.. _rpminspect-data-fedora: https://github.com/dcantrell/rpminspect-data-fedora
 
 .. _RPM: https://rpm-packaging-guide.github.io/
 
 .. _JSON: https://www.json.org
 
-.. _here: https://github.com/rpminspect/rpminspect/blob/master/data/generic.yaml
+.. _here: https://github.com/dcantrell/rpminspect/blob/master/data/generic.yaml

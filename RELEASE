@@ -41,7 +41,7 @@ Use the upstream release repo for these steps:
 
 [ ] make srpm
 
-[ ] Go to https://github.com/rpminspect/rpminspect and draft a new
+[ ] Go to https://github.com/dcantrell/rpminspect and draft a new
     release for this release.  Title it "rpminspect-X.Y" and paste the
     contents of 'newchanges' in the description box.  Attach these
     files to the release from this directory:

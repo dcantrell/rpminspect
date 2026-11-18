@@ -67,11 +67,11 @@ information.  If used with an external build tool, the JSON_ or xUnit_
 data may be more useful as you can construct decision making around
 those results.
 
-.. _rpminspect: https://github.com/rpminspect/rpminspect
+.. _rpminspect: https://github.com/dcantrell/rpminspect
 
 .. _Koji: https://pagure.io/koji/
 
-.. _rpminspect-data-fedora: https://github.com/rpminspect/rpminspect-data-fedora
+.. _rpminspect-data-fedora: https://github.com/dcantrell/rpminspect-data-fedora
 
 .. _RPM: https://rpm-packaging-guide.github.io/
 

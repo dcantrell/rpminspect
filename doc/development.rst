@@ -158,6 +158,6 @@ Copyright statements are in the boilerplates of each source file.
 
 .. _C: https://en.wikipedia.org/wiki/C_(programming_language)
 
-.. _rpminspect: https://github.com/rpminspect/rpminspect
+.. _rpminspect: https://github.com/dcantrell/rpminspect
 
 .. _git: https://git-scm.com/

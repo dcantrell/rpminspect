@@ -56,7 +56,7 @@ fi
 trap 'rm -rf "${TMPDATADIR}"' EXIT
 TMPDATADIR="$(mktemp -d)"
 cd "${TMPDATADIR}" || exit 1
-git clone https://github.com/rpminspect/rpminspect-data-fedora.git
+git clone https://codeberg.org/rpminspect/rpminspect-data-fedora.git
 cd rpminspect-data-fedora || exit 1
 CONF="${TMPDATADIR}/rpminspect-data-fedora/fedora.yaml"
 PROFILES="${TMPDATADIR}/rpminspect-data-fedora/profiles/fedora"

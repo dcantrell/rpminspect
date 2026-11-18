@@ -21,8 +21,8 @@ vendor-specific data package.
 Status
 ------
 
-[![pre-commit](https://github.com/rpminspect/rpminspect/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/pre-commit.yml)
-[![ShellCheck](https://github.com/rpminspect/rpminspect/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/shellcheck.yml)
+[![pre-commit](https://github.com/dcantrell/rpminspect/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/pre-commit.yml)
+[![ShellCheck](https://github.com/dcantrell/rpminspect/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/shellcheck.yml)
 
 For each merge and pull request, rpminspect is built and tested in the
 following environments:
@@ -31,17 +31,17 @@ following environments:
 
 | Platform | Release | Status |
 |:-------------------------------------------------------|:----|----:|
-| [Fedora Linux](https://getfedora.org/)                 | rawhide<br />stable | [![Fedora Linux](https://github.com/rpminspect/rpminspect/actions/workflows/fedora.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/fedora.yml) |
-| [CentOS Stream](https://www.centos.org/)               | 9<br />10           | [![CentOS](https://github.com/rpminspect/rpminspect/actions/workflows/centos.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/centos.yml) |
-| [Ubuntu Linux](https://ubuntu.com/)                    | stable              | [![Ubuntu Linux](https://github.com/rpminspect/rpminspect/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/ubuntu.yml) |
-| [Debian GNU/Linux](https://www.debian.org/)            | testing<br />stable | [![Debian GNU/Linux](https://github.com/rpminspect/rpminspect/actions/workflows/debian.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/debian.yml) |
-| [OpenSUSE Linux](https://www.opensuse.org/)            | Leap                | [![OpenSUSE](https://github.com/rpminspect/rpminspect/actions/workflows/opensuse.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/opensuse.yml) |
-| [Arch Linux](https://archlinux.org/)                   | stable              | [![Arch Linux](https://github.com/rpminspect/rpminspect/actions/workflows/archlinux.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/archlinux.yml) |
-| [Gentoo Linux](https://www.gentoo.org/)                | stable              | [![Gentoo Linux](https://github.com/rpminspect/rpminspect/actions/workflows/gentoo.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/gentoo.yml) |
-| [Alpine Linux](https://www.alpinelinux.org/)           | stable              | [![Alpine Linux](https://github.com/rpminspect/rpminspect/actions/workflows/alpinelinux.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/alpinelinux.yml) |
-| [AlmaLinux](https://almalinux.org/)                    | 8<br />9<br />10    | [![AlmaLinux](https://github.com/rpminspect/rpminspect/actions/workflows/almalinux.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/almalinux.yml) |
-| [Mageia Linux](https://www.mageia.org/)                | stable              | [![Mageia Linux](https://github.com/rpminspect/rpminspect/actions/workflows/mageia.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/mageia.yml) |
-| [FreeBSD](https://www.freebsd.org/)                    | 13.x                | [![FreeBSD](https://github.com/rpminspect/rpminspect/actions/workflows/freebsd.yml/badge.svg)](https://github.com/rpminspect/rpminspect/actions/workflows/freebsd.yml) |
+| [Fedora Linux](https://getfedora.org/)                 | rawhide<br />stable | [![Fedora Linux](https://github.com/dcantrell/rpminspect/actions/workflows/fedora.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/fedora.yml) |
+| [CentOS Stream](https://www.centos.org/)               | 9<br />10           | [![CentOS](https://github.com/dcantrell/rpminspect/actions/workflows/centos.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/centos.yml) |
+| [Ubuntu Linux](https://ubuntu.com/)                    | stable              | [![Ubuntu Linux](https://github.com/dcantrell/rpminspect/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/ubuntu.yml) |
+| [Debian GNU/Linux](https://www.debian.org/)            | testing<br />stable | [![Debian GNU/Linux](https://github.com/dcantrell/rpminspect/actions/workflows/debian.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/debian.yml) |
+| [OpenSUSE Linux](https://www.opensuse.org/)            | Leap                | [![OpenSUSE](https://github.com/dcantrell/rpminspect/actions/workflows/opensuse.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/opensuse.yml) |
+| [Arch Linux](https://archlinux.org/)                   | stable              | [![Arch Linux](https://github.com/dcantrell/rpminspect/actions/workflows/archlinux.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/archlinux.yml) |
+| [Gentoo Linux](https://www.gentoo.org/)                | stable              | [![Gentoo Linux](https://github.com/dcantrell/rpminspect/actions/workflows/gentoo.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/gentoo.yml) |
+| [Alpine Linux](https://www.alpinelinux.org/)           | stable              | [![Alpine Linux](https://github.com/dcantrell/rpminspect/actions/workflows/alpinelinux.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/alpinelinux.yml) |
+| [AlmaLinux](https://almalinux.org/)                    | 8<br />9<br />10    | [![AlmaLinux](https://github.com/dcantrell/rpminspect/actions/workflows/almalinux.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/almalinux.yml) |
+| [Mageia Linux](https://www.mageia.org/)                | stable              | [![Mageia Linux](https://github.com/dcantrell/rpminspect/actions/workflows/mageia.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/mageia.yml) |
+| [FreeBSD](https://www.freebsd.org/)                    | 13.x                | [![FreeBSD](https://github.com/dcantrell/rpminspect/actions/workflows/freebsd.yml/badge.svg)](https://github.com/dcantrell/rpminspect/actions/workflows/freebsd.yml) |
 
 
 Documentation
@@ -276,7 +276,7 @@ Ideally, the configuration file should not need changing.  If you do
 find mistakes, please file an issue or send a pull request to the
 project:
 
-    https://github.com/rpminspect/rpminspect-data-fedora
+    https://github.com/dcantrell/rpminspect-data-fedora
 
 The aim should be the vendor-specific data packages providing
 everything a developer needs to run rpminspect locally for that

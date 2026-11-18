@@ -104,9 +104,9 @@ the test suite.  You may find the information in here helpful if you
 are trying to use rpminspect_ on a non-RPM Linux distribution.
 
 
-.. _rpminspect: https://github.com/rpminspect/rpminspect
+.. _rpminspect: https://github.com/dcantrell/rpminspect
 
-.. _rpminspect-data-fedora: https://github.com/rpminspect/rpminspect-data-fedora
+.. _rpminspect-data-fedora: https://github.com/dcantrell/rpminspect-data-fedora
 
 .. _RPM: https://rpm-packaging-guide.github.io/
 

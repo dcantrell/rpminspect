@@ -22,7 +22,7 @@ Ideally, the configuration file should not need changing.  If you do
 find mistakes, please file an issue or send a pull request to the
 project:
 
-    https://github.com/rpminspect/rpminspect-data-fedora
+    https://github.com/dcantrell/rpminspect-data-fedora
 
 The aim should be the vendor-specific data packages providing
 everything a developer needs to run rpminspect_ locally for that
@@ -579,9 +579,9 @@ run when in comparison mode.
     (e.g., README to README.md) in a minor update that the package
     maintainer might overlook.
 
-.. _rpminspect: https://github.com/rpminspect/rpminspect
+.. _rpminspect: https://github.com/dcantrell/rpminspect
 
-.. _rpminspect-data-fedora: https://github.com/rpminspect/rpminspect-data-fedora
+.. _rpminspect-data-fedora: https://github.com/dcantrell/rpminspect-data-fedora
 
 .. _dnf: https://github.com/rpm-software-management/dnf
 

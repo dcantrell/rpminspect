@@ -44,7 +44,7 @@ is:
 
 ```sh
 git checkout master
-git remote add upstream https://github.com/rpminspect/rpminspect
+git remote add upstream https://github.com/dcantrell/rpminspect
 git fetch upstream
 git rebase upstream/master
 git push -f
