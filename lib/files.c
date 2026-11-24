@@ -353,12 +353,14 @@ rpmfile_t *extract_rpm(struct rpminspect *ri, const char *pkg, Header hdr, const
         if (file_entry->idx == -1) {
             /* capture the mode from the archive entry rather than the RPM header */
             file_entry->st_mode = archive_entry_mode(entry);
+	    file_entry->st_size = archive_entry_size(entry);
+	    file_entry->st_nlink = archive_entry_nlink(entry);
         } else {
             file_entry->st_mode = get_rpm_header_num_array_value(file_entry, RPMTAG_FILEMODES);
+            file_entry->st_size = get_rpm_header_num_array_value(file_entry, RPMTAG_LONGFILESIZES);
+            file_entry->st_nlink = get_rpm_header_num_array_value(file_entry, RPMTAG_FILENLINKS);
         }
 
-        file_entry->st_size = archive_entry_size(entry);
-        file_entry->st_nlink = archive_entry_nlink(entry);
 
         TAILQ_INSERT_TAIL(file_list, file_entry, items);
 
